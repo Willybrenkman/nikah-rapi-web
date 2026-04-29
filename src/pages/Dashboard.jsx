@@ -115,13 +115,8 @@ export default function Dashboard() {
     const nama2 = wedding?.nama_pengantin_2 || 'Pasangan'
     const usedPct = stats.totalBudget > 0 ? Math.round(stats.usedBudget / stats.totalBudget * 100) : 0
 
-    const donutLabels = budgetItems.length > 0
-        ? budgetItems.slice(0, 7).map(i => i.kategori || i.nama || 'Item')
-        : ['Venue', 'Katering', 'Dekorasi', 'Foto/Video', 'Busana', 'Undangan', 'Lainnya']
-
-    const donutValues = budgetItems.length > 0
-        ? budgetItems.slice(0, 7).map(i => i.jumlah_estimasi || 0)
-        : [20, 26, 13, 15, 8, 2.5, 4].map(v => v * 1_000_000)
+    const donutLabels = budgetItems.slice(0, 7).map(i => i.kategori || i.nama || 'Item')
+    const donutValues = budgetItems.slice(0, 7).map(i => i.jumlah_estimasi || 0)
 
     return (
         <div className="animate-fade-in pb-12">
@@ -164,7 +159,16 @@ export default function Dashboard() {
                         <div className="w-10 h-10 rounded-xl bg-ivory flex items-center justify-center text-lg">📊</div>
                     </div>
                     <div className="p-4 sm:p-8 h-[280px] flex items-center justify-center">
-                        {loading ? <Skeleton className="w-48 h-48 rounded-full" /> : (
+                        {loading ? <Skeleton className="w-48 h-48 rounded-full" /> : 
+                        budgetItems.length === 0 ? (
+                            <div className="text-center text-brown-muted animate-fade-in">
+                                <div className="text-5xl mb-3 opacity-30">📊</div>
+                                <p className="text-sm font-semibold mb-1">Belum ada data anggaran</p>
+                                <p className="text-xs opacity-70 cursor-pointer hover:text-rose-gold transition-colors" onClick={() => navigate('/budget')}>
+                                    + Tambahkan di menu Budget
+                                </p>
+                            </div>
+                        ) : (
                             <Doughnut data={{
                             labels: donutLabels,
                             datasets: [{ 
@@ -203,7 +207,13 @@ export default function Dashboard() {
                         <div className="w-10 h-10 rounded-xl bg-ivory flex items-center justify-center text-lg">📉</div>
                     </div>
                     <div className="p-4 sm:p-8 h-[280px] flex items-center justify-center">
-                        {loading ? <Skeleton className="w-full h-full" /> : (
+                        {loading ? <Skeleton className="w-full h-full" /> : 
+                        budgetItems.length === 0 ? (
+                            <div className="text-center text-brown-muted animate-fade-in">
+                                <div className="text-5xl mb-3 opacity-30">📉</div>
+                                <p className="text-sm font-semibold">Belum ada realisasi pengeluaran</p>
+                            </div>
+                        ) : (
                             <Bar data={{
                             labels: budgetItems.slice(0, 6).map(i => (i.kategori || '').substring(0, 10)),
                             datasets: [
