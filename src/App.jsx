@@ -38,6 +38,7 @@ import RekapAkhir from './pages/RekapAkhir'
 import Panduan from './pages/Panduan'
 import Pengaturan from './pages/Pengaturan'
 import Profil from './pages/Profil'
+import ActivityLogs from './pages/ActivityLogs'
 
 function Guard({ children }) {
   const { user, hasAccess, loading } = useAuth()
@@ -132,6 +133,7 @@ export default function App() {
           <Route path="souvenir" element={<Souvenir />} />
           <Route path="catatan" element={<CatatanPenting />} />
           <Route path="rekap" element={<RekapAkhir />} />
+          <Route path="activity" element={<ActivityLogs />} />
           <Route path="panduan" element={<Panduan />} />
           <Route path="pengaturan" element={<Pengaturan />} />
           <Route path="profil" element={<Profil />} />

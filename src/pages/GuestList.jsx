@@ -6,12 +6,15 @@ import { confirmDelete, confirmWarning } from '../lib/swal'
 import toast from 'react-hot-toast'
 import EmptyState from '../components/EmptyState'
 import { exportService } from '../lib/exportService'
+import { activityService } from '../lib/activityService'
+import { useAuth } from '../hooks/useAuth'
 
 const EMPTY = { nama: '', hubungan: 'Keluarga', no_hp: '', asal_kota: '', jumlah_orang: 1, no_meja: '', catatan: '' }
 const hubBadge = { VIP: 'badge-rose', Keluarga: 'badge-yellow', Teman: 'badge-blue', Kolega: 'badge-grey' }
 
 export default function GuestList() {
     const { wedding } = useWedding()
+    const { user } = useAuth()
     const [items, setItems] = useState([])
     const [filter, setFilter] = useState('Semua')
     const [search, setSearch] = useState('')
@@ -166,9 +169,11 @@ export default function GuestList() {
 
             if (editId) { 
                 await supabase.from('tamu_undangan').update(payload).eq('id', editId)
+                activityService.log(wedding.id, user?.email, 'Update Tamu', `Mengubah data tamu: ${cleanNama}`)
                 toast.success('Tamu diperbarui!') 
             } else { 
                 await supabase.from('tamu_undangan').insert(payload)
+                activityService.log(wedding.id, user?.email, 'Tambah Tamu', `Menambah tamu baru: ${cleanNama}`)
                 toast.success('Tamu ditambahkan!') 
             }
             setModal(false)
@@ -204,6 +209,7 @@ export default function GuestList() {
             const { error } = await supabase.from('tamu_undangan').insert(guests)
             if (error) throw error
 
+            activityService.log(wedding.id, user?.email, 'Import Tamu', `Berhasil mengimpor ${guests.length} tamu dari Excel/CSV`)
             toast.success(`${guests.length} tamu berhasil diimpor! ✨`)
             setImportModal(false)
             setImportText('')
@@ -470,25 +476,30 @@ export default function GuestList() {
 
                         <div className="bg-ivory/30 p-5 rounded-2xl border border-ivory mb-6">
                             <h4 className="text-[11px] font-black text-brown uppercase mb-3">Instruksi Cara Impor:</h4>
-                            <ol className="text-[10px] text-brown-muted space-y-2 list-decimal ml-4 leading-relaxed">
-                                <li>Siapkan Excel dengan urutan kolom: <b>Nama, Kategori, WhatsApp, Kota, Pax</b></li>
-                                <li>Blok baris data yang ingin diimpor (tanpa header), lalu tekan <b>Ctrl + C</b></li>
-                                <li>Tempel (<b>Ctrl + V</b>) ke kotak di bawah ini, lalu klik tombol Simpan.</li>
-                            </ol>
-                        </div>
-
-                        <textarea 
-                            className="form-textarea w-full h-64 font-mono text-xs p-4 shadow-inner-white border-rose-gold/20"
-                            placeholder="Tempel data di sini...&#10;Contoh:&#10;Budi Santoso	Teman	08123...	Jakarta	2&#10;Siti Aminah	Keluarga	08567...	Bandung	4"
-                            value={importText}
-                            onChange={e => setImportText(e.target.value)}
-                        />
-
-                        <div className="flex gap-4 justify-end mt-8 pt-6 border-t border-border">
-                            <button className="btn-outline px-8 py-3 text-xs font-bold uppercase tracking-widest" onClick={() => setImportModal(false)}>Batal</button>
-                            <button className="btn-rose px-10 py-3 text-xs font-black uppercase tracking-widest shadow-lg shadow-rose-gold/20" onClick={handleImport} disabled={saving}>
-                                {saving ? 'Sedang Memproses...' : 'Impor & Simpan Data'}
-                            </button>
+                        <div className="p-8 space-y-6">
+                            <div className="bg-rose-gold/5 p-5 rounded-2xl border border-rose-gold/20">
+                                <h3 className="text-xs font-black uppercase tracking-widest text-brown mb-3">Cara Impor dari Excel/CSV:</h3>
+                                <ol className="text-[11px] text-brown-muted space-y-2 list-decimal ml-4 font-medium">
+                                    <li>Buka file Excel daftar tamumu.</li>
+                                    <li>Pastikan kolom berurutan: <span className="font-bold text-brown">Nama, Hubungan, No HP, Kota, Jumlah Orang</span>.</li>
+                                    <li>Copy (Salin) baris data tamu tersebut.</li>
+                                    <li>Tempel (Paste) di kotak teks di bawah ini.</li>
+                                </ol>
+                            </div>
+                            
+                            <textarea 
+                                className="form-textarea w-full h-64 font-mono text-[11px] p-4 bg-white shadow-inner-white"
+                                placeholder="Tempel data di sini...&#10;Contoh:&#10;Bpk Ahmad	Keluarga	08123...	Jakarta	2&#10;Siti Aminah	Teman	08567...	Bandung	1"
+                                value={importText}
+                                onChange={e => setImportText(e.target.value)}
+                            />
+                            
+                            <div className="flex gap-4 pt-4">
+                                <button className="btn-outline flex-1 py-4" onClick={() => setImportModal(false)}>Batal</button>
+                                <button className="btn-rose flex-1 py-4 shadow-lg shadow-rose-gold/20" onClick={handleImport} disabled={saving}>
+                                    {saving ? 'Memproses...' : 'Impor Sekarang 🚀'}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

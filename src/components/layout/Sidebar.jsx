@@ -23,7 +23,8 @@ const NAV = [
   { num: '17', icon: '🎀', label: 'Souvenir & Hampers', path: '/souvenir' },
   { num: '18', icon: '📝', label: 'Catatan Penting', path: '/catatan' },
   { num: '19', icon: '📋', label: 'Rekap Akhir', path: '/rekap' },
-  { num: '20', icon: '📖', label: 'Panduan & Bantuan', path: '/panduan' },
+  { num: '20', icon: '🕵️‍♂️', label: 'Riwayat Aktivitas', path: '/activity' },
+  { num: '21', icon: '📖', label: 'Panduan & Bantuan', path: '/panduan' },
 ]
 
 export default function Sidebar() {

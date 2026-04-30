@@ -6,6 +6,8 @@ import { confirmDelete } from '../lib/swal'
 import toast from 'react-hot-toast'
 import { syncService } from '../lib/syncService'
 import { exportService } from '../lib/exportService'
+import { activityService } from '../lib/activityService'
+import { useAuth } from '../hooks/useAuth'
 import EmptyState from '../components/EmptyState'
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js'
 import { Pie, Bar } from 'react-chartjs-2'
@@ -20,6 +22,7 @@ const EMPTY_FORM = { kategori: '', tipe: '', jumlah_estimasi: '', jumlah_aktual:
 
 export default function BudgetPlanner() {
     const { wedding } = useWedding()
+    const { user } = useAuth()
     const [items, setItems] = useState([])
     const [loading, setLoading] = useState(true)
     const [modal, setModal] = useState(false)
@@ -27,6 +30,7 @@ export default function BudgetPlanner() {
     const [editId, setEditId] = useState(null)
     const [saving, setSaving] = useState(false)
     const [dbPayments, setDbPayments] = useState([])
+    const [payReceiptUrl, setPayReceiptUrl] = useState('')
 
     useEffect(() => { if (wedding) fetchItems() }, [wedding])
 
@@ -105,6 +109,8 @@ export default function BudgetPlanner() {
                 form.jumlah_estimasi, 
                 form.jumlah_aktual
             )
+            
+            activityService.log(wedding.id, user?.email, editId ? 'Update Budget' : 'Tambah Budget', `Kategori: ${form.kategori}, Estimasi: ${est}, Aktual: ${act}`)
 
             toast.success('Data Berhasil Disimpan & Disinkronkan! ✨')
             setModal(false)
@@ -474,6 +480,9 @@ export default function BudgetPlanner() {
                                                         <div className="text-[9px] text-brown-muted italic">{p.payment_date}</div>
                                                     </div>
                                                     <div className="flex items-center gap-3">
+                                                        {p.receipt_url && (
+                                                            <a href={p.receipt_url} target="_blank" rel="noreferrer" className="text-[10px] text-rose-gold hover:underline">🧾 Nota</a>
+                                                        )}
                                                         <div className="font-black text-sage">{rp(p.amount)}</div>
                                                         <button 
                                                             className="text-danger hover:text-danger/70 transition-colors p-1"
@@ -501,6 +510,14 @@ export default function BudgetPlanner() {
                                             <input type="text" id="pay_ket" placeholder="Keterangan (cth: DP 1)" className="text-[10px] p-2 rounded-lg border border-border outline-none focus:border-rose-gold" />
                                             <input type="number" id="pay_amt" placeholder="Nominal Rp" className="text-[10px] p-2 rounded-lg border border-border outline-none focus:border-rose-gold" />
                                         </div>
+                                        <div className="mb-4">
+                                            <FileUpload 
+                                                weddingId={wedding.id} 
+                                                folder="receipts" 
+                                                onUploadComplete={(url) => setPayReceiptUrl(url)} 
+                                            />
+                                            {payReceiptUrl && <p className="text-[9px] text-sage font-bold mt-1">✓ Nota berhasil diunggah</p>}
+                                        </div>
                                         <button 
                                             onClick={async () => {
                                                 const k = document.getElementById('pay_ket').value
@@ -514,12 +531,15 @@ export default function BudgetPlanner() {
                                                         wedding_id: wedding.id,
                                                         description: k, 
                                                         amount: Number(a), 
-                                                        payment_date: new Date().toISOString().split('T')[0] 
+                                                        payment_date: new Date().toISOString().split('T')[0],
+                                                        receipt_url: payReceiptUrl
                                                     }
                                                     
                                                     const { error } = await supabase.from('budget_payments').insert(newPay)
                                                     if (error) throw error
 
+                                                    activityService.log(wedding.id, user?.email, 'Tambah Pembayaran', `Membayar ${k} senilai ${rp(Number(a))} untuk ${form.kategori}`)
+                                                    
                                                     // Refresh list
                                                     const { data } = await supabase.from('budget_payments').select('*').eq('budget_item_id', editId).order('payment_date', { ascending: false })
                                                     setDbPayments(data || [])
@@ -531,6 +551,7 @@ export default function BudgetPlanner() {
                                                     toast.success('Pembayaran tercatat! ✨')
                                                     document.getElementById('pay_ket').value = ''
                                                     document.getElementById('pay_amt').value = ''
+                                                    setPayReceiptUrl('')
                                                 } catch (err) {
                                                     console.error(err)
                                                     toast.error('Gagal mencatat pembayaran')
