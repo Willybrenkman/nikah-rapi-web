@@ -223,10 +223,11 @@ export default function GuestList() {
         }
     }
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (i) => {
         const result = await confirmDelete('Hapus tamu ini?', 'Data tamu akan dihapus permanen.')
         if (!result.isConfirmed) return
-        await supabase.from('tamu_undangan').delete().eq('id', id)
+        await supabase.from('tamu_undangan').delete().eq('id', i.id)
+        activityService.log(wedding.id, user?.email, 'Hapus Tamu', `Menghapus tamu: ${i.nama}`)
         toast.success('Dihapus!')
         setPage(0)
         fetchItems(0, true)
@@ -474,10 +475,8 @@ export default function GuestList() {
                             <button onClick={() => setImportModal(false)} className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-ivory text-brown-muted transition-colors">✕</button>
                         </div>
 
-                        <div className="bg-ivory/30 p-5 rounded-2xl border border-ivory mb-6">
-                            <h4 className="text-[11px] font-black text-brown uppercase mb-3">Instruksi Cara Impor:</h4>
-                        <div className="p-8 space-y-6">
-                            <div className="bg-rose-gold/5 p-5 rounded-2xl border border-rose-gold/20">
+                        <div className="p-0 space-y-0">
+                            <div className="bg-rose-gold/5 p-5 rounded-2xl border border-rose-gold/20 mb-6">
                                 <h3 className="text-xs font-black uppercase tracking-widest text-brown mb-3">Cara Impor dari Excel/CSV:</h3>
                                 <ol className="text-[11px] text-brown-muted space-y-2 list-decimal ml-4 font-medium">
                                     <li>Buka file Excel daftar tamumu.</li>
@@ -488,13 +487,13 @@ export default function GuestList() {
                             </div>
                             
                             <textarea 
-                                className="form-textarea w-full h-64 font-mono text-[11px] p-4 bg-white shadow-inner-white"
+                                className="form-textarea w-full h-64 font-mono text-[11px] p-4 bg-white shadow-inner-white border-rose-gold/10 focus:border-rose-gold"
                                 placeholder="Tempel data di sini...&#10;Contoh:&#10;Bpk Ahmad	Keluarga	08123...	Jakarta	2&#10;Siti Aminah	Teman	08567...	Bandung	1"
                                 value={importText}
                                 onChange={e => setImportText(e.target.value)}
                             />
                             
-                            <div className="flex gap-4 pt-4">
+                            <div className="flex gap-4 pt-6">
                                 <button className="btn-outline flex-1 py-4" onClick={() => setImportModal(false)}>Batal</button>
                                 <button className="btn-rose flex-1 py-4 shadow-lg shadow-rose-gold/20" onClick={handleImport} disabled={saving}>
                                     {saving ? 'Memproses...' : 'Impor Sekarang 🚀'}

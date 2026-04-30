@@ -6,6 +6,8 @@ import { confirmDelete } from '../lib/swal'
 import toast from 'react-hot-toast'
 import { syncService } from '../lib/syncService'
 import { exportService } from '../lib/exportService'
+import { activityService } from '../lib/activityService'
+import { useAuth } from '../hooks/useAuth'
 import FileUpload from '../components/FileUpload'
 
 const rp = (n = 0) => 'Rp ' + Number(n).toLocaleString('id-ID')
@@ -14,6 +16,7 @@ const EMPTY = { nama: '', kategori: 'Venue', pic_nama: '', pic_hp: '', total: ''
 
 export default function VendorManager() {
     const { wedding } = useWedding()
+    const { user } = useAuth()
     const [items, setItems] = useState([])
     const [loading, setLoading] = useState(true)
     const [modal, setModal] = useState(false)

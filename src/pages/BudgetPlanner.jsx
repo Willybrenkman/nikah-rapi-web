@@ -123,11 +123,12 @@ export default function BudgetPlanner() {
         }
     }
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (item) => {
         const result = await confirmDelete('Hapus anggaran ini?', 'Data pengeluaran ini akan dihapus dari rencana budget.')
         if (!result.isConfirmed) return
         
-        await supabase.from('budget_items').delete().eq('id', id)
+        await supabase.from('budget_items').delete().eq('id', item.id)
+        activityService.log(wedding.id, user?.email, 'Hapus Budget', `Menghapus kategori budget: ${item.kategori}`)
         toast.success('Dihapus!')
         fetchItems()
     }
@@ -361,7 +362,7 @@ export default function BudgetPlanner() {
                                                     <button className="btn-sm-edit shadow-sm flex items-center gap-1" onClick={() => openEdit(item)}>
                                                         <span>✏️</span> Edit
                                                     </button>
-                                                    <button className="btn-sm-danger p-1 shadow-sm" onClick={() => handleDelete(item.id)}>✕</button>
+                                                    <button className="btn-sm-danger p-1 shadow-sm" onClick={() => handleDelete(item)}>✕</button>
                                                 </div>
                                             </td>
                                         </tr>
