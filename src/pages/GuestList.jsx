@@ -367,7 +367,7 @@ export default function GuestList() {
                                             <td className="td text-right pr-8">
                                                 <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                                                     <button className="btn-sm-edit shadow-sm" onClick={() => openEdit(item)}>Edit</button>
-                                                    <button className="btn-sm-danger p-1 shadow-sm" onClick={() => handleDelete(item.id)}>✕</button>
+                                                    <button className="btn-sm-danger p-1 shadow-sm" onClick={() => handleDelete(item)}>✕</button>
                                                 </div>
                                             </td>
                                         </tr>

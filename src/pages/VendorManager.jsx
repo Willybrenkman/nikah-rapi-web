@@ -143,6 +143,7 @@ export default function VendorManager() {
                 rawPayload.dp
             )
 
+            activityService.log(wedding.id, user?.email, editId ? 'Update Vendor' : 'Tambah Vendor', `Vendor: ${cleanNama}, Kategori: ${form.kategori}, Total: ${rp(rawPayload.total)}`)
             console.log("✅ Data berhasil tersimpan!")
             toast.success(editId ? 'Vendor & Budget diperbarui! ✨' : 'Vendor & Budget ditambahkan! ✨')
             
@@ -156,14 +157,15 @@ export default function VendorManager() {
         }
     }
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (item) => {
         const result = await confirmDelete('Hapus vendor ini?', 'Semua data kontrak vendor ini akan hilang permanen.')
         if (!result.isConfirmed) return
 
-        const { error } = await supabase.from('vendors').delete().eq('id', id)
+        const { error } = await supabase.from('vendors').delete().eq('id', item.id)
         if (error) {
             toast.error(`Gagal menghapus: ${error.message}`)
         } else {
+            activityService.log(wedding.id, user?.email, 'Hapus Vendor', `Menghapus vendor: ${item.nama}`)
             toast.success('Dihapus!')
             fetchItems()
         }
@@ -303,7 +305,7 @@ export default function VendorManager() {
                                         <td className="td text-right pr-8">
                                             <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                                                 <button className="btn-sm-edit shadow-sm" onClick={() => openEdit(item)}>Edit</button>
-                                                <button className="btn-sm-danger p-1 shadow-sm" onClick={() => handleDelete(item.id)}>✕</button>
+                                                <button className="btn-sm-danger p-1 shadow-sm" onClick={() => handleDelete(item)}>✕</button>
                                             </div>
                                         </td>
                                     </tr>
