@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
+import { confirmDelete } from '../lib/swal'
 import toast from 'react-hot-toast'
 
 const SESI = ['H-1', 'Hari-H Akad', 'Hari-H Resepsi']
@@ -23,6 +24,17 @@ export default function TimelineAcara() {
 
     const fetchItems = async () => {
         setLoading(true)
+        if (wedding.id === 'dummy-wedding-id') {
+            setItems([
+                { id: 1, sesi: 'Hari-H Akad', waktu: '08:00', durasi_menit: 60, event: 'Prosesi Akad Nikah', lokasi: 'Masjid Jami Luxury', status: 'Selesai' },
+                { id: 2, sesi: 'Hari-H Akad', waktu: '09:30', durasi_menit: 30, event: 'Foto Bersama Keluarga', lokasi: 'Masjid Jami Luxury', status: 'Selesai' },
+                { id: 3, sesi: 'Hari-H Resepsi', waktu: '11:00', durasi_menit: 30, event: 'Grand Entrance & Opening', lokasi: 'Grand Ballroom Hotel', status: 'Berlangsung' },
+                { id: 4, sesi: 'Hari-H Resepsi', waktu: '11:30', durasi_menit: 120, event: 'Ramah Tamah & Makan Siang', lokasi: 'Grand Ballroom Hotel', status: 'Belum' },
+                { id: 5, sesi: 'H-1', waktu: '15:00', durasi_menit: 120, event: 'Gladi Resik & Cek Venue', lokasi: 'Grand Ballroom Hotel', status: 'Selesai' },
+            ])
+            setLoading(false)
+            return
+        }
         const { data } = await supabase.from('timeline_events').select('*').eq('wedding_id', wedding.id).order('waktu')
         setItems(data || [])
         setLoading(false)
@@ -41,7 +53,8 @@ export default function TimelineAcara() {
     }
 
     const handleDelete = async (id) => {
-        if (!confirm('Hapus event ini?')) return
+        const result = await confirmDelete('Hapus event ini?', 'Aktivitas timeline ini akan dihapus permanen.')
+        if (!result.isConfirmed) return
         await supabase.from('timeline_events').delete().eq('id', id)
         toast.success('Dihapus!'); fetchItems()
     }

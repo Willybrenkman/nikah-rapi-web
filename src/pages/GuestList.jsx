@@ -4,6 +4,8 @@ import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
 import { confirmDelete } from '../lib/swal'
 import toast from 'react-hot-toast'
+import EmptyState from '../components/EmptyState'
+import { exportService } from '../lib/exportService'
 
 const EMPTY = { nama: '', hubungan: 'Keluarga', no_hp: '', asal_kota: '', jumlah_orang: 1, no_meja: '', catatan: '' }
 const hubBadge = { VIP: 'badge-rose', Keluarga: 'badge-yellow', Teman: 'badge-blue', Kolega: 'badge-grey' }
@@ -18,40 +20,208 @@ export default function GuestList() {
     const [form, setForm] = useState(EMPTY)
     const [editId, setEditId] = useState(null)
     const [saving, setSaving] = useState(false)
+    const [importModal, setImportModal] = useState(false)
+    const [importText, setImportText] = useState('')
 
-    useEffect(() => { if (wedding) fetchItems() }, [wedding])
+    const PAGE_SIZE = 20
+    const [page, setPage] = useState(0)
+    const [hasMore, setHasMore] = useState(true)
 
-    const fetchItems = async () => {
+    useEffect(() => { 
+        if (wedding) {
+            setPage(0)
+            fetchItems(0, true) 
+        }
+    }, [wedding, filter])
+
+    const fetchItems = async (pageIndex = 0, reset = false) => {
         setLoading(true)
-        const { data } = await supabase.from('tamu_undangan').select('*').eq('wedding_id', wedding.id).order('created_at')
-        setItems(data || [])
-        setLoading(false)
+        try {
+            // Bypass for Tester Mode
+            if (wedding.id === 'dummy-wedding-id') {
+                const dummyGuests = [
+                    { id: 1, nama: 'Bpk. Ahmad Subarjo', hubungan: 'VIP', no_hp: '08123456789', asal_kota: 'Jakarta', jumlah_orang: 2, no_meja: 'A1' },
+                    { id: 2, nama: 'Ibu Siti Aminah', hubungan: 'Keluarga', no_hp: '08567890123', asal_kota: 'Bandung', jumlah_orang: 4, no_meja: 'K-01' },
+                    { id: 3, nama: 'Budi Santoso', hubungan: 'Teman', no_hp: '08789012345', asal_kota: 'Surabaya', jumlah_orang: 1, no_meja: 'T-12' },
+                    { id: 4, nama: 'Diana Putri', hubungan: 'Teman', no_hp: '08134567890', asal_kota: 'Jogja', jumlah_orang: 2, no_meja: 'T-13' },
+                    { id: 5, nama: 'Bp. Heru & Ibu', hubungan: 'Kolega', no_hp: '08987654321', asal_kota: 'Semarang', jumlah_orang: 2, no_meja: 'R-05' },
+                ]
+                
+                let filteredData = dummyGuests
+                if (filter !== 'Semua') {
+                    filteredData = dummyGuests.filter(g => g.hubungan === filter)
+                }
+                
+                setItems(filteredData)
+                setHasMore(false)
+                return
+            }
+
+            let query = supabase
+                .from('tamu_undangan')
+                .select('*', { count: 'exact' })
+                .eq('wedding_id', wedding.id)
+                .order('nama', { ascending: true })
+            
+            if (filter !== 'Semua') {
+                query = query.eq('hubungan', filter)
+            }
+            
+            const from = pageIndex * PAGE_SIZE
+            const to = from + PAGE_SIZE - 1
+            
+            const { data, count, error } = await query.range(from, to)
+            
+            if (error) throw error
+
+            if (reset) {
+                setItems(data || [])
+            } else {
+                setItems(prev => [...prev, ...(data || [])])
+            }
+            
+            setHasMore((data || []).length === PAGE_SIZE)
+        } catch (err) {
+            console.error(err)
+            toast.error('Gagal mengambil data tamu')
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const loadMore = () => {
+        const nextPage = page + 1
+        setPage(nextPage)
+        fetchItems(nextPage)
+    }
+
+    const generateSampleData = async () => {
+        setSaving(true)
+        const samples = [
+            { nama: 'Bpk. Ahmad Subarjo', hubungan: 'VIP', jumlah_orang: 2, asal_kota: 'Jakarta', wedding_id: wedding.id },
+            { nama: 'Siti Aminah', hubungan: 'Keluarga', jumlah_orang: 4, asal_kota: 'Bandung', wedding_id: wedding.id },
+            { nama: 'Budi Santoso', hubungan: 'Teman', jumlah_orang: 1, asal_kota: 'Surabaya', wedding_id: wedding.id }
+        ]
+        await supabase.from('tamu_undangan').insert(samples)
+        toast.success('Data contoh berhasil dimuat! ✨')
+        setPage(0)
+        fetchItems(0, true)
+        setSaving(false)
     }
 
     const openAdd = () => { setForm(EMPTY); setEditId(null); setModal(true) }
-    const openEdit = (i) => { setForm({ nama: i.nama, hubungan: i.hubungan, no_hp: i.no_hp || '', asal_kota: i.asal_kota || '', jumlah_orang: i.jumlah_orang || 1, no_meja: i.no_meja || '', catatan: i.catatan || '' }); setEditId(i.id); setModal(true) }
+    const openEdit = (i) => { 
+        setForm({ 
+            nama: i.nama, 
+            hubungan: i.hubungan, 
+            no_hp: i.no_hp || '', 
+            asal_kota: i.asal_kota || '', 
+            jumlah_orang: i.jumlah_orang || 1, 
+            no_meja: i.no_meja || '', 
+            catatan: i.catatan || '' 
+        }); 
+        setEditId(i.id); 
+        setModal(true) 
+    }
 
     const handleSave = async () => {
-        if (!form.nama) { toast.error('Nama tamu wajib diisi!'); return }
+        const cleanNama = form.nama?.trim()
+        const cleanHP = form.no_hp?.trim()
+
+        if (!cleanNama) { toast.error('Nama tamu wajib diisi!'); return }
+        
         setSaving(true)
-        const payload = { ...form, jumlah_orang: Number(form.jumlah_orang) || 1, wedding_id: wedding.id }
-        if (editId) { await supabase.from('tamu_undangan').update(payload).eq('id', editId); toast.success('Tamu diperbarui!') }
-        else { await supabase.from('tamu_undangan').insert(payload); toast.success('Tamu ditambahkan!') }
-        setModal(false); fetchItems(); setSaving(false)
+        try {
+            // Check for duplicates (only for new entries or if name/hp changed)
+            if (!editId) {
+                const { data: existing } = await supabase
+                    .from('tamu_undangan')
+                    .select('id, nama')
+                    .eq('wedding_id', wedding.id)
+                    .or(`nama.ilike.${cleanNama}${cleanHP ? `,no_hp.eq.${cleanHP}` : ''}`)
+                    .maybeSingle()
+
+                if (existing) {
+                    toast.error(`Tamu dengan nama "${existing.nama}" sudah ada di daftar!`)
+                    setSaving(false)
+                    return
+                }
+            }
+
+            const payload = { 
+                ...form, 
+                nama: cleanNama,
+                no_hp: cleanHP,
+                jumlah_orang: Number(form.jumlah_orang) || 1, 
+                wedding_id: wedding.id 
+            }
+
+            if (editId) { 
+                await supabase.from('tamu_undangan').update(payload).eq('id', editId)
+                toast.success('Tamu diperbarui!') 
+            } else { 
+                await supabase.from('tamu_undangan').insert(payload)
+                toast.success('Tamu ditambahkan!') 
+            }
+            setModal(false)
+            setPage(0)
+            fetchItems(0, true)
+        } catch (err) {
+            console.error(err)
+            toast.error('Terjadi kesalahan saat menyimpan data')
+        } finally {
+            setSaving(false)
+        }
+    }
+
+    const handleImport = async () => {
+        if (!importText.trim()) return toast.error('Tempel data dari Excel dulu!')
+        setSaving(true)
+        try {
+            const rows = importText.trim().split('\n')
+            const guests = rows.map(row => {
+                const cols = row.split('\t') // Excel uses Tab
+                return {
+                    nama: cols[0]?.trim(),
+                    hubungan: cols[1]?.trim() || 'Teman',
+                    no_hp: cols[2]?.trim() || '',
+                    asal_kota: cols[3]?.trim() || '',
+                    jumlah_orang: Number(cols[4]) || 1,
+                    wedding_id: wedding.id
+                }
+            }).filter(g => g.nama)
+
+            if (guests.length === 0) throw new Error('Tidak ada data valid ditemukan')
+
+            const { error } = await supabase.from('tamu_undangan').insert(guests)
+            if (error) throw error
+
+            toast.success(`${guests.length} tamu berhasil diimpor! ✨`)
+            setImportModal(false)
+            setImportText('')
+            setPage(0)
+            fetchItems(0, true)
+        } catch (err) {
+            console.error(err)
+            toast.error('Gagal impor. Pastikan format kolom: Nama, Kategori, WA, Kota, Pax')
+        } finally {
+            setSaving(false)
+        }
     }
 
     const handleDelete = async (id) => {
-        if (!confirm('Hapus tamu ini?')) return
+        const result = await confirmDelete('Hapus tamu ini?', 'Data tamu akan dihapus permanen.')
+        if (!result.isConfirmed) return
         await supabase.from('tamu_undangan').delete().eq('id', id)
-        toast.success('Dihapus!'); fetchItems()
+        toast.success('Dihapus!')
+        setPage(0)
+        fetchItems(0, true)
     }
 
     const totalOrang = items.reduce((a, i) => a + (i.jumlah_orang || 1), 0)
     const vipCount = items.filter(i => i.hubungan === 'VIP').length
 
-    const filtered = items
-        .filter(i => filter === 'Semua' || i.hubungan === filter)
-        .filter(i => !search || i.nama.toLowerCase().includes(search.toLowerCase()))
+    const filtered = items.filter(i => !search || i.nama.toLowerCase().includes(search.toLowerCase()))
 
     if (loading && items.length === 0) return <div className="text-center py-20 text-brown-muted font-playfair italic">Menyiapkan daftar tamu undangan kalian...</div>
 
@@ -62,9 +232,19 @@ export default function GuestList() {
                     <h1 className="section-title">Daftar Tamu 👥</h1>
                     <p className="section-subtitle">Manajemen lengkap tamu undangan, kategori, dan penempatan meja</p>
                 </div>
-                <button className="btn-rose px-8 shadow-lg shadow-rose-gold/20 flex items-center gap-2" onClick={openAdd}>
-                    <span>+</span> Tambah Tamu Baru
-                </button>
+                <div className="flex gap-3">
+                    {items.length > 0 && (
+                        <button className="btn-outline px-4 py-2.5 text-[10px] font-black uppercase tracking-widest flex items-center gap-2" onClick={() => exportService.exportGuestList(items)}>
+                            <span>📤</span> Ekspor Excel
+                        </button>
+                    )}
+                    <button className="btn-outline px-6 py-2.5 text-[10px] font-black uppercase tracking-widest flex items-center gap-2" onClick={() => setImportModal(true)}>
+                        <span>📥</span> Impor Excel
+                    </button>
+                    <button className="btn-rose px-8 shadow-lg shadow-rose-gold/20 flex items-center gap-2" onClick={openAdd}>
+                        <span>+</span> Tambah Tamu Baru
+                    </button>
+                </div>
             </div>
 
             {/* Stats */}
@@ -110,65 +290,98 @@ export default function GuestList() {
                 </div>
             </div>
 
-            {/* Table */}
+            {/* Table Container */}
             <div className="card p-0 overflow-hidden group/table shadow-sm border-ivory/50">
                 <div className="p-6 border-b border-border bg-ivory/5 flex items-center justify-between">
                     <h2 className="font-playfair text-xl font-bold text-brown">Rincian Data Tamu</h2>
                     <span className="text-[10px] font-bold text-brown-muted uppercase tracking-widest italic">{filtered.length} Tamu Ditampilkan</span>
                 </div>
-                <div className="overflow-x-auto">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th className="th w-16 text-center">No</th>
-                                <th className="th">Nama Lengkap</th>
-                                <th className="th">Kategori</th>
-                                <th className="th">WhatsApp / HP</th>
-                                <th className="th">Asal Kota</th>
-                                <th className="th text-center">Pax</th>
-                                <th className="th">No Meja</th>
-                                <th className="th text-right pr-8">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filtered.length === 0 ? (
-                                <tr>
-                                    <td colSpan={8} className="td text-center py-24 text-brown-muted italic font-medium">
-                                        {search ? 'Tidak ada tamu yang cocok dengan pencarian.' : 'Belum ada tamu undangan. Mulai tambahkan tamu pertama kalian!'}
-                                    </td>
-                                </tr>
-                            ) : filtered.map((item, i) => (
-                                <tr key={item.id} className="tr group transition-all hover:bg-ivory/10">
-                                    <td className="td text-center text-[10px] text-brown-muted font-black tracking-widest">{String(i + 1).padStart(2, '0')}</td>
-                                    <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors">{item.nama}</td>
-                                    <td className="td">
-                                        <span className={`badge ${hubBadge[item.hubungan] || 'badge-grey'} text-[9px] font-black uppercase tracking-tighter`}>
-                                            {item.hubungan === 'VIP' ? '⭐⭐⭐ VIP' : item.hubungan}
-                                        </span>
-                                    </td>
-                                    <td className="td text-[11px] font-medium text-brown-muted">{item.no_hp || '—'}</td>
-                                    <td className="td text-[11px] font-bold text-brown/70 italic uppercase tracking-tighter">{item.asal_kota || '—'}</td>
-                                    <td className="td text-center">
-                                        <span className="badge-sage text-[10px] font-black min-w-[28px] py-1 inline-block shadow-sm">{item.jumlah_orang || 1} Pax</span>
-                                    </td>
-                                    <td className="td">
-                                        {item.no_meja ? (
-                                            <span className="font-black text-brown text-[10px] bg-ivory border border-border/50 px-3 py-1 rounded-lg shadow-inner-white">MEJA {item.no_meja}</span>
-                                        ) : (
-                                            <span className="text-brown-muted/30 text-[10px] font-black tracking-widest">TBA</span>
-                                        )}
-                                    </td>
-                                    <td className="td text-right pr-8">
-                                        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
-                                            <button className="btn-sm-edit shadow-sm" onClick={() => openEdit(item)}>Edit</button>
-                                            <button className="btn-sm-danger p-1 shadow-sm" onClick={() => handleDelete(item.id)}>✕</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+
+                {items.length === 0 && !loading ? (
+                    <EmptyState 
+                        icon="👥"
+                        title="Daftar Tamu Masih Kosong"
+                        subtitle="Mulai masukkan daftar tamu undanganmu atau gunakan data contoh untuk mencoba fitur."
+                        actionLabel="+ Muat Data Contoh"
+                        onAction={generateSampleData}
+                    />
+                ) : (
+                    <>
+                        <div className="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th className="th w-16 text-center">No</th>
+                                        <th className="th">Nama Lengkap</th>
+                                        <th className="th">Kategori</th>
+                                        <th className="th">WhatsApp / HP</th>
+                                        <th className="th">Asal Kota</th>
+                                        <th className="th text-center">Pax</th>
+                                        <th className="th">No Meja</th>
+                                        <th className="th text-right pr-8">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filtered.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={8} className="td text-center py-24 text-brown-muted italic font-medium">
+                                                Tidak ada tamu yang cocok dengan pencarian.
+                                            </td>
+                                        </tr>
+                                    ) : filtered.map((item, i) => (
+                                        <tr key={item.id} className="tr group transition-all hover:bg-ivory/10">
+                                            <td className="td text-center text-[10px] text-brown-muted font-black tracking-widest">{String(i + 1).padStart(2, '0')}</td>
+                                            <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors">{item.nama}</td>
+                                            <td className="td">
+                                                <span className={`badge ${hubBadge[item.hubungan] || 'badge-grey'} text-[9px] font-black uppercase tracking-tighter`}>
+                                                    {item.hubungan === 'VIP' ? '⭐⭐⭐ VIP' : item.hubungan}
+                                                </span>
+                                            </td>
+                                            <td className="td text-[11px] font-medium text-brown-muted">{item.no_hp || '—'}</td>
+                                            <td className="td text-[11px] font-bold text-brown/70 italic uppercase tracking-tighter">{item.asal_kota || '—'}</td>
+                                            <td className="td text-center">
+                                                <span className="badge-sage text-[10px] font-black min-w-[28px] py-1 inline-block shadow-sm">{item.jumlah_orang || 1} Pax</span>
+                                            </td>
+                                            <td className="td">
+                                                {item.no_meja ? (
+                                                    <span className="font-black text-brown text-[10px] bg-ivory border border-border/50 px-3 py-1 rounded-lg shadow-inner-white">MEJA {item.no_meja}</span>
+                                                ) : (
+                                                    <span className="text-brown-muted/30 text-[10px] font-black tracking-widest">TBA</span>
+                                                )}
+                                            </td>
+                                            <td className="td text-right pr-8">
+                                                <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                                                    <button className="btn-sm-edit shadow-sm" onClick={() => openEdit(item)}>Edit</button>
+                                                    <button className="btn-sm-danger p-1 shadow-sm" onClick={() => handleDelete(item.id)}>✕</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        {hasMore && (
+                            <div className="p-8 flex justify-center bg-ivory/5 border-t border-border">
+                                <button 
+                                    onClick={loadMore} 
+                                    disabled={loading}
+                                    className="btn-outline px-12 py-3 text-[11px] font-black uppercase tracking-[0.2em] hover:bg-rose-gold hover:text-white transition-all shadow-sm"
+                                >
+                                    {loading ? 'Memuat...' : 'Muat Lebih Banyak Tamu ↓'}
+                                </button>
+                            </div>
+                        )}
+                        
+                        {items.length > 0 && items.length < 5 && (
+                             <div className="p-4 text-center border-t border-border/50">
+                                 <button onClick={generateSampleData} className="text-[10px] font-bold text-brown-muted hover:text-rose-gold underline opacity-50 italic">
+                                     Bantu saya dengan data contoh tambahan...
+                                 </button>
+                             </div>
+                        )}
+                    </>
+                )}
             </div>
 
             {/* Modal */}
@@ -229,6 +442,44 @@ export default function GuestList() {
                             <button className="btn-outline px-8 py-3 text-xs font-bold uppercase tracking-widest" onClick={() => setModal(false)}>Batal</button>
                             <button className="btn-rose px-10 py-3 text-xs font-black uppercase tracking-widest shadow-lg shadow-rose-gold/20" onClick={handleSave} disabled={saving}>
                                 {saving ? 'Menyimpan...' : 'Simpan Data Tamu'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Import Modal */}
+            {importModal && (
+                <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setImportModal(false)}>
+                    <div className="modal-box max-w-2xl">
+                        <div className="flex justify-between items-center mb-6">
+                            <div>
+                                <h2 className="font-playfair text-2xl font-bold text-brown">Impor Tamu Massal 📥</h2>
+                                <p className="text-[10px] font-bold text-brown-muted uppercase tracking-widest mt-1">Tempel data langsung dari Excel / Google Sheets</p>
+                            </div>
+                            <button onClick={() => setImportModal(false)} className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-ivory text-brown-muted transition-colors">✕</button>
+                        </div>
+
+                        <div className="bg-ivory/30 p-5 rounded-2xl border border-ivory mb-6">
+                            <h4 className="text-[11px] font-black text-brown uppercase mb-3">Instruksi Cara Impor:</h4>
+                            <ol className="text-[10px] text-brown-muted space-y-2 list-decimal ml-4 leading-relaxed">
+                                <li>Siapkan Excel dengan urutan kolom: <b>Nama, Kategori, WhatsApp, Kota, Pax</b></li>
+                                <li>Blok baris data yang ingin diimpor (tanpa header), lalu tekan <b>Ctrl + C</b></li>
+                                <li>Tempel (<b>Ctrl + V</b>) ke kotak di bawah ini, lalu klik tombol Simpan.</li>
+                            </ol>
+                        </div>
+
+                        <textarea 
+                            className="form-textarea w-full h-64 font-mono text-xs p-4 shadow-inner-white border-rose-gold/20"
+                            placeholder="Tempel data di sini...&#10;Contoh:&#10;Budi Santoso	Teman	08123...	Jakarta	2&#10;Siti Aminah	Keluarga	08567...	Bandung	4"
+                            value={importText}
+                            onChange={e => setImportText(e.target.value)}
+                        />
+
+                        <div className="flex gap-4 justify-end mt-8 pt-6 border-t border-border">
+                            <button className="btn-outline px-8 py-3 text-xs font-bold uppercase tracking-widest" onClick={() => setImportModal(false)}>Batal</button>
+                            <button className="btn-rose px-10 py-3 text-xs font-black uppercase tracking-widest shadow-lg shadow-rose-gold/20" onClick={handleImport} disabled={saving}>
+                                {saving ? 'Sedang Memproses...' : 'Impor & Simpan Data'}
                             </button>
                         </div>
                     </div>

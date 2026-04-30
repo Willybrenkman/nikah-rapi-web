@@ -17,6 +17,21 @@
   --danger: #D4756B;
   --sidebar-w: 260px;
   --topbar-h: 64px;
+  --countdown-bg: #ffffff;
+}
+
+/* Luxury Black & Gold Mode */
+.dark {
+  --ivory: #000000;
+  --brown: #FFFFFF;
+  --brown-muted: #A0A0A0;
+  --border: #1A1A1A;
+  --card-bg: #0A0A0A;
+  --sidebar-bg: #000000;
+  --topbar-bg: rgba(0, 0, 0, 0.85);
+  --countdown-bg: #000000;
+  --rose-gold: #D4AF37; /* Luxury Gold */
+  --rose-dark: #B8860B;
 }
 
 /* ── Reset ───────────────────────────────────────── */
@@ -155,13 +170,13 @@ textarea:focus {
     top: 0;
     bottom: 0;
     width: var(--sidebar-w);
-    background: #fff;
+    background: var(--sidebar-bg, #fff);
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     z-index: 50;
     overflow: hidden;
-    transition: transform .3s ease;
+    transition: transform .3s ease, background-color .3s ease;
   }
 
   .layout-wrapper {
@@ -180,7 +195,7 @@ textarea:focus {
     left: var(--sidebar-w);
     right: 0;
     height: var(--topbar-h);
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--topbar-bg, rgba(255, 255, 255, 0.85));
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
     display: flex;
@@ -189,7 +204,7 @@ textarea:focus {
     padding: 0 28px;
     z-index: 40;
     box-shadow: 0 1px 8px rgba(201, 149, 108, .06);
-    transition: left .3s ease;
+    transition: left .3s ease, background-color .3s ease;
   }
 
   .main-content {
@@ -217,19 +232,21 @@ textarea:focus {
 
   /* Cards */
   .card {
-    background: #fff;
+    background: var(--card-bg, #fff);
     border-radius: 16px;
     border: 1px solid var(--border);
     padding: 24px;
     box-shadow: 0 2px 16px rgba(201, 149, 108, .06);
+    transition: background-color .3s ease, border-color .3s ease;
   }
-
+  
   .stat-card {
-    background: #fff;
+    background: var(--card-bg, #fff);
     border-radius: 16px;
     border: 1px solid var(--border);
     padding: 20px 22px;
     box-shadow: 0 2px 12px rgba(201, 149, 108, .06);
+    transition: background-color .3s ease, border-color .3s ease;
   }
 
   .greeting-card {
@@ -241,6 +258,12 @@ textarea:focus {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: background 0.3s ease;
+  }
+
+  .dark .greeting-card {
+    background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
+    border-color: rgba(212, 175, 55, 0.3);
   }
 
   /* Badges */
@@ -489,9 +512,9 @@ textarea:focus {
   }
 
   .modal-box {
-    background: rgba(255, 255, 255, 0.98);
+    background: var(--card-bg, rgba(255, 255, 255, 0.98));
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--border);
     border-radius: 24px;
     padding: 32px;
     width: 520px;

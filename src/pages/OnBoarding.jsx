@@ -44,6 +44,17 @@ export default function OnBoarding() {
     const handleFinish = async () => {
         if (!form.total_budget) { toast.error('Isi budget pernikahan dulu!'); return }
         setSaving(true)
+
+        // BYPASS UNTUK TESTER (Supabase RLS akan menolak ID dummy)
+        if (user?.id === 'tester-uid') {
+            setTimeout(async () => {
+                toast.success('Profil pernikahan berhasil dibuat (Simulasi)! 🎉')
+                navigate('/', { replace: true })
+                setSaving(false)
+            }, 1000)
+            return
+        }
+
         const { error } = await supabase.from('wedding_profiles').insert({
             user_id: user.id,
             nama_pengantin_1: form.nama_pengantin_1,

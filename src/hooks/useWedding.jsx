@@ -13,7 +13,12 @@ export function WeddingProvider({ children }) {
     setLoading(true)
     try {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { setWedding(null); setLoading(false); return }
+      if (!user) {
+        setWedding(null)
+        setHMin(null)
+        setLoading(false)
+        return
+      }
 
       const { data, error } = await supabase
         .from('wedding_profiles')
@@ -21,13 +26,18 @@ export function WeddingProvider({ children }) {
         .eq('user_id', user.id)
         .single()
 
-      if (error && error.code !== 'PGRST116') console.error(error)
+      if (error || !data) {
+        // User ada tapi belum punya profile → arahkan ke onboarding
+        setWedding(null)
+        setHMin(null)
+        setLoading(false)
+        return
+      }
 
-      const prof = data || null
-      setWedding(prof)
+      setWedding(data)
 
-      if (prof?.tanggal_pernikahan) {
-        const diff = Math.ceil((new Date(prof.tanggal_pernikahan) - new Date()) / 86_400_000)
+      if (data.tanggal_pernikahan) {
+        const diff = Math.ceil((new Date(data.tanggal_pernikahan) - new Date()) / 86_400_000)
         setHMin(Math.max(0, diff))
       } else {
         setHMin(null)

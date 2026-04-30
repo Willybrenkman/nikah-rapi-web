@@ -4,10 +4,13 @@ import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
 import { confirmDelete } from '../lib/swal'
 import toast from 'react-hot-toast'
+import { syncService } from '../lib/syncService'
+import { exportService } from '../lib/exportService'
+import FileUpload from '../components/FileUpload'
 
 const rp = (n = 0) => 'Rp ' + Number(n).toLocaleString('id-ID')
 const KATEGORI = ['Venue', 'Katering', 'Foto/Video', 'Dekorasi', 'MUA', 'Busana', 'Hiburan', 'Lainnya']
-const EMPTY = { nama: '', kategori: 'Venue', pic_nama: '', pic_hp: '', total: '', dp: '', deadline_pelunasan: '', status_kontrak: 'Belum TTD', catatan: '' }
+const EMPTY = { nama: '', kategori: 'Venue', pic_nama: '', pic_hp: '', total: '', dp: '', deadline_pelunasan: '', status_kontrak: 'Belum TTD', catatan: '', kontrak_url: '' }
 
 export default function VendorManager() {
     const { wedding } = useWedding()
@@ -22,6 +25,16 @@ export default function VendorManager() {
 
     const fetchItems = async () => {
         setLoading(true)
+        if (wedding.id === 'dummy-wedding-id') {
+            setItems([
+                { id: 1, nama: 'Grand Ballroom Hotel Luxury', kategori: 'Venue', pic_nama: 'Bpk. Hendra', pic_hp: '0812345678', total: 25000000, dp: 25000000, deadline_pelunasan: '2026-05-01', status_kontrak: 'Sudah TTD' },
+                { id: 2, nama: 'Catering Berkah Barokah', kategori: 'Katering', pic_nama: 'Ibu Ani', pic_hp: '0856789012', total: 45000000, dp: 20000000, deadline_pelunasan: '2026-07-15', status_kontrak: 'Sudah TTD' },
+                { id: 3, nama: 'Glow MUA & Studio', kategori: 'MUA', pic_nama: 'Siska', pic_hp: '0878901234', total: 15000000, dp: 5000000, deadline_pelunasan: '2026-08-10', status_kontrak: 'Sudah TTD' },
+                { id: 4, nama: 'Bloom Decoration', kategori: 'Dekorasi', pic_nama: 'Kevin', pic_hp: '0813456789', total: 10000000, dp: 0, deadline_pelunasan: '2026-09-01', status_kontrak: 'Belum TTD' },
+            ])
+            setLoading(false)
+            return
+        }
         const { data } = await supabase.from('vendors').select('*').eq('wedding_id', wedding.id).order('created_at')
         setItems(data || [])
         setLoading(false)
@@ -29,7 +42,18 @@ export default function VendorManager() {
 
     const openAdd = () => { setForm(EMPTY); setEditId(null); setModal(true) }
     const openEdit = (i) => {
-        setForm({ nama: i.nama, kategori: i.kategori, pic_nama: i.pic_nama || '', pic_hp: i.pic_hp || '', total: i.total || '', dp: i.dp || '', deadline_pelunasan: i.deadline_pelunasan || '', status_kontrak: i.status_kontrak || 'Belum TTD', catatan: i.catatan || '' })
+        setForm({ 
+            nama: i.nama, 
+            kategori: i.kategori, 
+            pic_nama: i.pic_nama || '', 
+            pic_hp: i.pic_hp || '', 
+            total: i.total || '', 
+            dp: i.dp || '', 
+            deadline_pelunasan: i.deadline_pelunasan || '', 
+            status_kontrak: i.status_kontrak || 'Belum TTD', 
+            catatan: i.catatan || '',
+            kontrak_url: i.kontrak_url || ''
+        })
         setEditId(i.id); setModal(true)
     }
 
@@ -55,7 +79,8 @@ export default function VendorManager() {
     }
 
     const handleSave = async () => {
-        if (!form.nama) {
+        const cleanNama = form.nama?.trim()
+        if (!cleanNama) {
             toast.error('Nama vendor wajib diisi!')
             return
         }
@@ -71,6 +96,7 @@ export default function VendorManager() {
         // Persiapkan Payload Dasar
         const rawPayload = { 
             ...form, 
+            nama: cleanNama,
             total: Number(form.total) || 0, 
             dp: Number(form.dp) || 0, 
             deadline_pelunasan: form.deadline_pelunasan || null,
@@ -94,8 +120,28 @@ export default function VendorManager() {
                 throw new Error(result.error.message)
             }
 
+            // --- INVERSE SYNC TO BUDGET ---
+            const typeMap = {
+                'Venue': 'venue',
+                'Katering': 'katering',
+                'Foto/Video': 'foto',
+                'Dekorasi': 'dekorasi',
+                'MUA': 'mua',
+                'Busana': 'mua',
+                'Hiburan': 'hiburan',
+                'Lainnya': 'lainnya'
+            }
+            
+            await syncService.syncToBudget(
+                wedding.id,
+                typeMap[form.kategori] || 'lainnya',
+                form.nama,
+                rawPayload.total,
+                rawPayload.dp
+            )
+
             console.log("✅ Data berhasil tersimpan!")
-            toast.success(editId ? 'Vendor diperbarui!' : 'Vendor ditambahkan!')
+            toast.success(editId ? 'Vendor & Budget diperbarui! ✨' : 'Vendor & Budget ditambahkan! ✨')
             
             setModal(false)
             fetchItems()
@@ -140,9 +186,16 @@ export default function VendorManager() {
                     <h1 className="section-title">Manajemen Vendor 🤝</h1>
                     <p className="section-subtitle">Kelola kontrak, pembayaran, dan kontak penanggung jawab vendor pernikahan</p>
                 </div>
-                <button className="btn-rose px-8 shadow-lg shadow-rose-gold/20 flex items-center gap-2" onClick={openAdd}>
-                    <span>+</span> Tambah Vendor Baru
-                </button>
+                <div className="flex gap-2">
+                    {items.length > 0 && (
+                        <button className="btn-outline px-4 flex items-center gap-2 text-sm" onClick={() => exportService.exportVendors(items)}>
+                            📥 Excel
+                        </button>
+                    )}
+                    <button className="btn-rose px-8 shadow-lg shadow-rose-gold/20 flex items-center gap-2" onClick={openAdd}>
+                        <span>+</span> Tambah Vendor Baru
+                    </button>
+                </div>
             </div>
 
             {deadlineDekat.length > 0 && (
@@ -233,9 +286,16 @@ export default function VendorManager() {
                                             ) : <span className="text-brown-muted/30 text-[10px] font-black tracking-widest">TBA</span>}
                                         </td>
                                         <td className="td">
-                                            <span className={`badge ${kb} text-[9px] font-black uppercase tracking-tighter px-3`}>
-                                                {item.status_kontrak === 'Sudah TTD' ? '✅ TTD' : '⏳ Draft'}
-                                            </span>
+                                            <div className="flex items-center gap-2">
+                                                <span className={`badge ${kb} text-[9px] font-black uppercase tracking-tighter px-3`}>
+                                                    {item.status_kontrak === 'Sudah TTD' ? '✅ TTD' : '⏳ Draft'}
+                                                </span>
+                                                {item.kontrak_url && (
+                                                    <a href={item.kontrak_url} target="_blank" rel="noreferrer" title="Lihat Kontrak" className="text-lg hover:scale-110 transition-transform">
+                                                        📄
+                                                    </a>
+                                                )}
+                                            </div>
                                         </td>
                                         <td className="td text-right pr-8">
                                             <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
@@ -312,6 +372,22 @@ export default function VendorManager() {
                             <div className="form-group">
                                 <label className="form-label">Catatan Tambahan (Layanan/Item)</label>
                                 <textarea className="form-textarea shadow-inner-white" rows={2} placeholder="Detail item layanan, termin pembayaran, dll..." value={form.catatan} onChange={e => setForm(p => ({ ...p, catatan: e.target.value }))} />
+                            </div>
+
+                            <div className="bg-ivory/30 p-4 rounded-2xl border border-ivory/50">
+                                <label className="form-label text-[11px] mb-3 block">File Kontrak / Dokumen Vendor</label>
+                                <div className="flex flex-wrap gap-3">
+                                    {form.kontrak_url && (
+                                        <a href={form.kontrak_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-rose-gold/30 text-[10px] font-bold text-rose-dark shadow-sm hover:bg-rose-gold/5 transition-all">
+                                            <span>📄</span> Lihat Kontrak
+                                        </a>
+                                    )}
+                                    <FileUpload 
+                                        weddingId={wedding.id} 
+                                        folder="vendors" 
+                                        onUploadComplete={(url) => setForm(p => ({ ...p, kontrak_url: url }))} 
+                                    />
+                                </div>
                             </div>
                         </div>
 

@@ -1,7 +1,8 @@
-// src/App.jsx
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { useAuth } from './hooks/useAuth'
+import { supabase } from './lib/supabase'
 import Layout from './components/layout/Layout'
 import TelegramButton from './components/TelegramButton'
 
@@ -34,6 +35,7 @@ import Honeymoon from './pages/Honeymoon'
 import Souvenir from './pages/Souvenir'
 import CatatanPenting from './pages/CatatanPenting'
 import RekapAkhir from './pages/RekapAkhir'
+import Panduan from './pages/Panduan'
 import Pengaturan from './pages/Pengaturan'
 import Profil from './pages/Profil'
 
@@ -61,7 +63,36 @@ function CodeGuard({ children }) {
   return children
 }
 
+
 export default function App() {
+  // Inactivity Timer Logic
+  useEffect(() => {
+    let timeoutId;
+    const TIMEOUT_IN_MS = 30 * 60 * 1000; // 30 minutes
+
+    const resetTimer = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(async () => {
+        const { data } = await supabase.auth.getSession();
+        if (data.session) {
+          await supabase.auth.signOut();
+          window.location.href = '/login?reason=timeout';
+        }
+      }, TIMEOUT_IN_MS);
+    };
+
+    // Events to track
+    const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
+    events.forEach(event => document.addEventListener(event, resetTimer));
+
+    resetTimer(); // Start timer on mount
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      events.forEach(event => document.removeEventListener(event, resetTimer));
+    };
+  }, []);
+
   return (
     <BrowserRouter>
       <Toaster position="top-right" toastOptions={{ style: { fontFamily: "'DM Sans',sans-serif", fontSize: 14 } }} />
@@ -101,6 +132,7 @@ export default function App() {
           <Route path="souvenir" element={<Souvenir />} />
           <Route path="catatan" element={<CatatanPenting />} />
           <Route path="rekap" element={<RekapAkhir />} />
+          <Route path="panduan" element={<Panduan />} />
           <Route path="pengaturan" element={<Pengaturan />} />
           <Route path="profil" element={<Profil />} />
         </Route>

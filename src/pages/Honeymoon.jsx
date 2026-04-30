@@ -2,7 +2,9 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
+import { confirmDelete } from '../lib/swal'
 import toast from 'react-hot-toast'
+import { syncService } from '../lib/syncService'
 
 const rp = (n = 0) => 'Rp ' + Number(n).toLocaleString('id-ID')
 const statusBadge = { Confirmed: 'badge-green', Pending: 'badge-yellow', Belum: 'badge-red' }
@@ -26,6 +28,24 @@ export default function Honeymoon() {
 
     const fetchData = async () => {
         setLoading(true)
+        if (wedding.id === 'dummy-wedding-id') {
+            setInfo({ destinasi: 'Maldives & Dubai', durasi: '10 Hari 9 Malam', total_budget: 75000000 })
+            setItinerary([
+                { id: 1, hari: 'Hari 1', aktivitas: 'Penerbangan Jakarta - Male & Speedboat ke Resort', lokasi: 'Velana Int. Airport', estimasi_biaya: 15000000 },
+                { id: 2, hari: 'Hari 2', aktivitas: 'Snorkeling Safari & Private Sandbank Lunch', lokasi: 'Baa Atoll', estimasi_biaya: 5000000 },
+                { id: 3, hari: 'Hari 3', aktivitas: 'Sunset Dolphin Cruise & Romantic Candle Light Dinner', lokasi: 'Overwater Villa', estimasi_biaya: 7500000 },
+                { id: 4, hari: 'Hari 4', aktivitas: 'Spa Day & Relaxing at Private Pool', lokasi: 'Anantara Resort', estimasi_biaya: 3000000 },
+                { id: 5, hari: 'Hari 5', aktivitas: 'Penerbangan ke Dubai & City Tour Malam Hari', lokasi: 'Burj Khalifa', estimasi_biaya: 10000000 },
+            ])
+            setBooking([
+                { id: 1, item: 'Tiket Pesawat (Emirates)', detail: 'Business Class Jakarta - Male - Dubai', harga: 45000000, status: 'Confirmed' },
+                { id: 2, item: 'Anantara Dhigu Maldives', detail: 'Sunrise Overwater Suite (4 Nights)', harga: 25000000, status: 'Confirmed' },
+                { id: 3, item: 'Armani Hotel Dubai', detail: 'Deluxe Room (3 Nights)', harga: 15000000, status: 'Confirmed' },
+                { id: 4, item: 'Desert Safari Tour', detail: 'Premium Desert Safari with BBQ Dinner', harga: 2500000, status: 'Pending' },
+            ])
+            setLoading(false)
+            return
+        }
         const [infoRes, itiRes, bookRes] = await Promise.all([
             supabase.from('honeymoon_info').select('*').eq('wedding_id', wedding.id).single(),
             supabase.from('honeymoon_itinerary').select('*').eq('wedding_id', wedding.id).order('created_at'),
@@ -40,11 +60,29 @@ export default function Honeymoon() {
     const saveInfo = async () => {
         setSaving(true)
         const payload = { ...info, total_budget: Number(info.total_budget) || 0, wedding_id: wedding.id }
-        const { data } = await supabase.from('honeymoon_info').select('id').eq('wedding_id', wedding.id).single()
-        if (data) await supabase.from('honeymoon_info').update(payload).eq('id', data.id)
-        else await supabase.from('honeymoon_info').insert(payload)
-        toast.success('Info Honeymoon disimpan!')
-        setSaving(false)
+        
+        try {
+            const { data } = await supabase.from('honeymoon_info').select('id').eq('wedding_id', wedding.id).single()
+            if (data) await supabase.from('honeymoon_info').update(payload).eq('id', data.id)
+            else await supabase.from('honeymoon_info').insert(payload)
+
+            // --- INVERSE SYNC TO BUDGET ---
+            await syncService.syncToBudget(
+                wedding.id, 
+                'honeymoon', 
+                `Honeymoon: ${info.destinasi || 'TBA'}`, 
+                payload.total_budget, 
+                0
+            )
+
+            toast.success('Rencana & budget honeymoon disinkronkan! ✨')
+            fetchData()
+        } catch (error) {
+            console.error(error)
+            toast.error('Gagal sinkronisasi data')
+        } finally {
+            setSaving(false)
+        }
     }
 
     const openAddI = () => { setFormI({ hari: '', aktivitas: '', lokasi: '', estimasi_biaya: '' }); setEditIId(null); setModalI(true) }
@@ -59,8 +97,9 @@ export default function Honeymoon() {
         setModalI(false); fetchData(); setSaving(false)
     }
 
-    const deleteIti = async (id) => {
-        if (!confirm('Yakin ingin menghapus itinerary ini?')) return
+    const handleDeleteItinerary = async (id) => {
+        const result = await confirmDelete('Hapus itinerary ini?', 'Aktivitas ini akan dihapus permanen.')
+        if (!result.isConfirmed) return
         await supabase.from('honeymoon_itinerary').delete().eq('id', id)
         toast.success('Itinerary dihapus!')
         fetchData()
@@ -78,8 +117,9 @@ export default function Honeymoon() {
         setModalB(false); fetchData(); setSaving(false)
     }
 
-    const deleteBook = async (id) => {
-        if (!confirm('Yakin ingin menghapus booking ini?')) return
+    const handleDeleteBooking = async (id) => {
+        const result = await confirmDelete('Hapus booking ini?', 'Detail booking akan dihapus permanen.')
+        if (!result.isConfirmed) return
         await supabase.from('honeymoon_booking').delete().eq('id', id)
         toast.success('Booking dihapus!')
         fetchData()

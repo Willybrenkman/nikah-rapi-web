@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
 import { confirmDelete } from '../lib/swal'
 import toast from 'react-hot-toast'
+import { syncService } from '../lib/syncService'
 
 const rp = (n = 0) => 'Rp ' + Number(n).toLocaleString('id-ID')
 const EMPTY_VENDOR = { nama_vendor: '', pic_nama: '', pic_hp: '', total_kontrak: '', dp_dibayar: '', deadline_pelunasan: '', estimasi_porsi: '', harga_per_pax: '' }
@@ -26,6 +27,40 @@ export default function Katering() {
 
     const fetchData = async () => {
         setLoading(true)
+        if (wedding.id === 'dummy-wedding-id') {
+            setVendor({
+                id: 1,
+                nama_vendor: 'Catering Berkah Barokah',
+                pic_nama: 'Ibu Ani',
+                pic_hp: '0856789012',
+                total_kontrak: 45000000,
+                dp_dibayar: 20000000,
+                estimasi_porsi: 500,
+                harga_per_pax: 85000,
+                deadline_pelunasan: '2026-07-15',
+                catatan_khusus: 'Tamu VIP 50 porsi, 10 porsi vegetarian, tanpa MSG.'
+            })
+            setFormV({
+                nama_vendor: 'Catering Berkah Barokah',
+                pic_nama: 'Ibu Ani',
+                pic_hp: '0856789012',
+                total_kontrak: 45000000,
+                dp_dibayar: 20000000,
+                estimasi_porsi: 500,
+                harga_per_pax: 85000,
+                deadline_pelunasan: '2026-07-15'
+            })
+            setCatatan('Tamu VIP 50 porsi, 10 porsi vegetarian, tanpa MSG.')
+            setMenus([
+                { id: 1, nama_menu: 'Nasi Kebuli Spesial', jenis: 'Makanan', sistem: 'Prasmanan', ada: true },
+                { id: 2, nama_menu: 'Ayam Bakar Taliwang', jenis: 'Makanan', sistem: 'Prasmanan', ada: true },
+                { id: 3, nama_menu: 'Sate Padang Authentic', jenis: 'Makanan', sistem: 'Gubukan', ada: true },
+                { id: 4, nama_menu: 'Es Teller Sultan', jenis: 'Minuman', sistem: 'Gubukan', ada: true },
+                { id: 5, nama_menu: 'Pudding Mozaik', jenis: 'Dessert', sistem: 'Display', ada: true },
+            ])
+            setLoading(false)
+            return
+        }
         const [vRes, mRes] = await Promise.all([
             supabase.from('katering_vendor').select('*').eq('wedding_id', wedding.id).single(),
             supabase.from('katering_menu').select('*').eq('wedding_id', wedding.id).order('created_at'),
@@ -38,9 +73,32 @@ export default function Katering() {
     const saveVendor = async () => {
         setSaving(true)
         const payload = { ...formV, total_kontrak: Number(formV.total_kontrak) || 0, dp_dibayar: Number(formV.dp_dibayar) || 0, estimasi_porsi: Number(formV.estimasi_porsi) || 0, harga_per_pax: Number(formV.harga_per_pax) || 0, catatan_khusus: catatan, wedding_id: wedding.id }
-        if (vendor) { await supabase.from('katering_vendor').update(payload).eq('id', vendor.id) }
-        else { await supabase.from('katering_vendor').insert(payload) }
-        toast.success('Data katering disimpan!'); setModalV(false); fetchData(); setSaving(false)
+        
+        try {
+            if (vendor) { 
+                await supabase.from('katering_vendor').update(payload).eq('id', vendor.id) 
+            } else { 
+                await supabase.from('katering_vendor').insert(payload) 
+            }
+
+            // --- INVERSE SYNC TO BUDGET ---
+            await syncService.syncToBudget(
+                wedding.id, 
+                'katering', 
+                formV.nama_vendor || 'Katering', 
+                payload.total_kontrak, 
+                payload.dp_dibayar
+            )
+
+            toast.success('Data katering & budget disinkronkan! ✨')
+            setModalV(false)
+            fetchData()
+        } catch (error) {
+            console.error(error)
+            toast.error('Gagal sinkronisasi ke budget')
+        } finally {
+            setSaving(false)
+        }
     }
 
     const openAddMenu = () => { setFormM(EMPTY_MENU); setEditMId(null); setModalM(true) }

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
+import { confirmDelete } from '../lib/swal'
 import { useWedding } from '../hooks/useWedding'
 import toast from 'react-hot-toast'
 
@@ -27,7 +28,8 @@ export default function Profil() {
     }
 
     const handleLogout = async () => {
-        if (!confirm('Yakin mau keluar?')) return
+        const result = await confirmDelete('Yakin mau keluar?', 'Anda harus login kembali untuk masuk.')
+        if (!result.isConfirmed) return
         await signOut()
         toast.success('Sampai jumpa! 👋')
         navigate('/login', { replace: true })
@@ -48,7 +50,7 @@ export default function Profil() {
             <div className="card mb-6">
                 <div className="flex items-center gap-6 mb-8">
                     <div className="w-20 h-20 rounded-full bg-gradient-to-br from-rose-gold to-dusty-pink flex items-center justify-center text-3xl shadow-sm">
-                        👰
+                        💍
                     </div>
                     <div>
                         <h2 className="font-playfair text-xl font-bold text-brown mb-1">

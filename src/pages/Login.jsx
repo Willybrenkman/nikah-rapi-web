@@ -1,13 +1,42 @@
-// src/pages/Login.jsx
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../hooks/useAuth'
 import toast from 'react-hot-toast'
 
 export default function Login() {
     const [email, setEmail] = useState('')
     const [loading, setLoading] = useState(false)
     const [sent, setSent] = useState(false)
+    const [clickCount, setClickCount] = useState(0)
+    const location = useLocation()
+    const navigate = useNavigate()
+    const { user } = useAuth()
+
+    const handleDevLogin = async () => {
+        setLoading(true)
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: 'admin@nikahrapi.com',
+            password: 'password123'
+        })
+        if (error) {
+            toast.error('Gagal login dev: Pastikan akun admin@nikahrapi.com sudah dibuat di Supabase!')
+        } else {
+            toast.success('Berhasil masuk mode Dev! 🚀')
+            navigate('/')
+        }
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search)
+        if (params.get('reason') === 'timeout') {
+            toast.error('Sesi berakhir karena tidak ada aktivitas selama 30 menit. Silakan masuk kembali.', {
+                duration: 6000,
+                id: 'timeout-toast'
+            })
+        }
+    }, [location])
 
     const handleLogin = async (e) => {
         e.preventDefault()
@@ -55,7 +84,12 @@ export default function Login() {
             <div style={bg} /><div style={floral} />
             <div className="animate-fade-up auth-card" style={{ zIndex: 1, position: 'relative' }}>
                 <div style={{ textAlign: 'center', marginBottom: 8 }}>
-                    <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 32, color: '#C9956C', letterSpacing: 2 }}>NIKAH RAPI ✦</h1>
+                    <h1 
+                        onClick={() => setClickCount(c => c + 1)}
+                        style={{ fontFamily: "'Playfair Display',serif", fontSize: 32, color: '#C9956C', letterSpacing: 2, cursor: 'default', userSelect: 'none' }}
+                    >
+                        NIKAH RAPI ✦
+                    </h1>
                     <p style={{ fontSize: 13, color: '#9B8070', fontStyle: 'italic', marginTop: 4 }}>Rencanakan momen terbaik hidupmu 💍</p>
                 </div>
                 <div style={{ height: 1, background: '#F0E6DF', margin: '24px 0' }} />
@@ -77,6 +111,20 @@ export default function Login() {
                     <button type="submit" disabled={loading} style={{ ...btn, width: '100%', marginTop: 8, opacity: loading ? .7 : 1 }}>
                         {loading ? 'Mengirim Link...' : 'Kirim Link Akses Masuk ✨'}
                     </button>
+
+                    {clickCount >= 7 && (
+                        <div className="animate-fade-in" style={{ marginTop: 24, padding: 16, background: '#f8f9fa', borderRadius: 12, border: '1px dashed #ccc' }}>
+                            <p style={{ fontSize: 12, color: '#666', marginBottom: 8, textAlign: 'center' }}>[Dev Mode] Bypass Error 429</p>
+                            <button 
+                                type="button" 
+                                disabled={loading}
+                                onClick={handleDevLogin}
+                                style={{ ...btn, width: '100%', background: '#2C1810', fontSize: 13 }}
+                            >
+                                🛠️ Masuk Langsung (Tanpa Email)
+                            </button>
+                        </div>
+                    )}
                 </form>
             </div>
         </div>

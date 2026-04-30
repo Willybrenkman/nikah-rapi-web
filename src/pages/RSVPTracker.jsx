@@ -16,6 +16,17 @@ export default function RSVPTracker() {
 
     const fetchItems = async () => {
         setLoading(true)
+        if (wedding.id === 'dummy-wedding-id') {
+            setItems([
+                { id: 1, nama: 'Bpk. Ahmad Subarjo', hubungan: 'VIP', status_rsvp: 'hadir', jumlah_orang: 2, no_meja: 'A1', kupon_makan: true },
+                { id: 2, nama: 'Ibu Siti Aminah', hubungan: 'Keluarga', status_rsvp: 'hadir', jumlah_orang: 4, no_meja: 'K-01', kupon_makan: false },
+                { id: 3, nama: 'Budi Santoso', hubungan: 'Teman', status_rsvp: 'tidak', jumlah_orang: 1, no_meja: 'T-12', kupon_makan: false },
+                { id: 4, nama: 'Diana Putri', hubungan: 'Teman', status_rsvp: 'belum', jumlah_orang: 2, no_meja: 'T-13', kupon_makan: false },
+                { id: 5, nama: 'Bp. Heru & Ibu', hubungan: 'Kolega', status_rsvp: 'hadir', jumlah_orang: 2, no_meja: 'R-05', kupon_makan: true },
+            ])
+            setLoading(false)
+            return
+        }
         const { data } = await supabase.from('tamu_undangan').select('*').eq('wedding_id', wedding.id).order('nama')
         setItems(data || [])
         setLoading(false)
@@ -124,7 +135,7 @@ export default function RSVPTracker() {
                                         <td className="td">
                                             <button onClick={() => toggleKupon(item)} className="transition-all hover:scale-105 active:scale-95 flex items-center gap-2 group/btn">
                                                 {item.kupon_makan ? (
-                                                    <span className="badge badge-green px-4 py-1 font-black uppercase text-[8px] shadow-sm">✓ Terambil</span>
+                                                    <span className="badge badge-green px-4 py-1 font-black uppercase text-[8px] shadow-sm">✓ Sudah</span>
                                                 ) : (
                                                     <span className="badge badge-grey px-4 py-1 font-black uppercase text-[8px] group-hover/btn:border-rose-gold transition-colors">Belum</span>
                                                 )}

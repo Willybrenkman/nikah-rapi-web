@@ -23,6 +23,7 @@ const NAV = [
   { num: '17', icon: '🎀', label: 'Souvenir & Hampers', path: '/souvenir' },
   { num: '18', icon: '📝', label: 'Catatan Penting', path: '/catatan' },
   { num: '19', icon: '📋', label: 'Rekap Akhir', path: '/rekap' },
+  { num: '20', icon: '📖', label: 'Panduan & Bantuan', path: '/panduan' },
 ]
 
 export default function Sidebar() {
@@ -47,11 +48,19 @@ export default function Sidebar() {
       <aside className={`sidebar lg:translate-x-0 ${sidebarOpen ? 'open' : ''}`}>
 
         {/* Header */}
-        <div style={{ padding: '24px 20px 16px', borderBottom: '1px solid #F0E6DF', flexShrink: 0 }}>
-          <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 20, color: '#C9956C', fontWeight: 700 }}>
+        <div style={{ padding: '24px 20px 16px', borderBottom: '1px solid var(--border)', flexShrink: 0, position: 'relative' }}>
+          <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 20, color: 'var(--rose-gold)', fontWeight: 700 }}>
             NIKAH RAPI ✦
           </div>
-          <div style={{ fontSize: 12, color: '#9B8070', marginTop: 2 }}>{couple}</div>
+          <div style={{ fontSize: 12, color: 'var(--brown-muted)', marginTop: 2 }}>{couple}</div>
+          
+          {/* Close button mobile */}
+          <button 
+            onClick={closeSidebar}
+            className="lg:hidden absolute right-4 top-6 w-8 h-8 flex items-center justify-center rounded-lg bg-ivory/50 border border-border"
+          >
+            ✕
+          </button>
         </div>
 
         {/* Nav */}
@@ -83,7 +92,7 @@ export default function Sidebar() {
         </nav>
 
         {/* Footer */}
-        <div style={{ padding: '16px 20px', borderTop: '1px solid #F0E6DF', fontSize: 11, color: '#9B8070', fontStyle: 'italic', textAlign: 'center', flexShrink: 0 }}>
+        <div style={{ padding: '16px 20px', borderTop: '1px solid var(--border)', fontSize: 11, color: 'var(--brown-muted)', fontStyle: 'italic', textAlign: 'center', flexShrink: 0 }}>
           Nikah tanpa drama 💍
         </div>
       </aside>

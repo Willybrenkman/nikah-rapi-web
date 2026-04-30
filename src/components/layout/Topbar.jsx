@@ -4,6 +4,7 @@ import useStore from '../../store/useStore'
 import { useAuth } from '../../hooks/useAuth'
 import { useWedding } from '../../hooks/useWedding'
 import toast from 'react-hot-toast'
+import ThemeToggle from '../ThemeToggle'
 
 const TITLES = {
   '/': 'Dashboard Utama',
@@ -61,7 +62,7 @@ export default function Topbar() {
             <line x1="3" y1="18" x2="21" y2="18" />
           </svg>
         </button>
-        <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 20, color: '#2C1810' }}>
+        <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 20, color: 'var(--brown)' }}>
           {title}
         </h1>
       </div>
@@ -74,25 +75,28 @@ export default function Topbar() {
           </div>
         )}
 
+        <ThemeToggle />
+
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 500 }}>
           <div style={{
             width: 34, height: 34, borderRadius: '50%',
-            background: '#E8C4B8',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15,
-          }}>👰</div>
-          <span className="hidden sm:block">{firstName}</span>
+            background: 'linear-gradient(135deg, var(--gold-soft), var(--gold-dark))',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16,
+            border: '1px solid rgba(255,255,255,0.2)',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+          }}>👤</div>
         </div>
 
         <button
           onClick={handleLogout}
           style={{
             padding: '7px 14px', background: 'transparent',
-            border: '1.5px solid #F0E6DF', borderRadius: 8,
-            fontSize: 12, cursor: 'pointer', color: '#9B8070',
+            border: '1.5px solid var(--border)', borderRadius: 8,
+            fontSize: 12, cursor: 'pointer', color: 'var(--brown-muted)',
             transition: 'all .2s',
           }}
           onMouseEnter={e => { e.target.style.borderColor = '#D4756B'; e.target.style.color = '#D4756B' }}
-          onMouseLeave={e => { e.target.style.borderColor = '#F0E6DF'; e.target.style.color = '#9B8070' }}
+          onMouseLeave={e => { e.target.style.borderColor = 'var(--border)'; e.target.style.color = 'var(--brown-muted)' }}
         >
           Keluar
         </button>

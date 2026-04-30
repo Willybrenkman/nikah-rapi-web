@@ -1,6 +1,7 @@
 -- ============================================================
--- NIKAH RAPI — Complete Supabase SQL Schema
+-- NIKAH RAPI — Complete Supabase SQL Schema (FIXED)
 -- Jalankan di Supabase SQL Editor
+-- Versi: 2.0 — 30 April 2026
 -- ============================================================
 
 -- ── 1. WEDDING PROFILES ──────────────────────────────────────
@@ -14,19 +15,10 @@ CREATE TABLE IF NOT EXISTS wedding_profiles (
   lokasi_resepsi      TEXT,
   total_budget        BIGINT DEFAULT 0,
 
-  -- Dekorasi
-  tema_dekorasi       TEXT,
-  moodboard_notes     TEXT,
-
-  -- Undangan
+  -- Undangan summary counters
   undangan_cetak      INT DEFAULT 0,
   undangan_digital    INT DEFAULT 0,
   undangan_terkirim   INT DEFAULT 0,
-
-  -- Honeymoon
-  hm_destinasi        TEXT,
-  hm_durasi           TEXT,
-  hm_budget           BIGINT DEFAULT 0,
 
   created_at          TIMESTAMPTZ DEFAULT NOW(),
   updated_at          TIMESTAMPTZ DEFAULT NOW()
@@ -37,11 +29,24 @@ CREATE TABLE IF NOT EXISTS budget_items (
   id                UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   wedding_id        UUID REFERENCES wedding_profiles(id) ON DELETE CASCADE NOT NULL,
   kategori          TEXT NOT NULL,
+  tipe              TEXT,
   jumlah_estimasi   BIGINT DEFAULT 0,
   jumlah_aktual     BIGINT DEFAULT 0,
   catatan           TEXT,
+  file_url          TEXT,
   created_at        TIMESTAMPTZ DEFAULT NOW(),
   updated_at        TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ── 2B. BUDGET PAYMENTS (BARU) ───────────────────────────────
+CREATE TABLE IF NOT EXISTS budget_payments (
+  id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  budget_item_id  UUID REFERENCES budget_items(id) ON DELETE CASCADE NOT NULL,
+  wedding_id      UUID REFERENCES wedding_profiles(id) ON DELETE CASCADE NOT NULL,
+  description     TEXT NOT NULL DEFAULT 'Pembayaran',
+  amount          BIGINT DEFAULT 0,
+  payment_date    DATE DEFAULT CURRENT_DATE,
+  created_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- ── 3. SESERAHAN ITEMS ───────────────────────────────────────
@@ -104,6 +109,7 @@ CREATE TABLE IF NOT EXISTS vendors (
   dp                BIGINT DEFAULT 0,
   deadline_pelunasan DATE,
   status_kontrak    TEXT DEFAULT 'Belum TTD',
+  kontrak_url       TEXT,
   catatan           TEXT,
   created_at        TIMESTAMPTZ DEFAULT NOW(),
   updated_at        TIMESTAMPTZ DEFAULT NOW()
@@ -294,7 +300,18 @@ CREATE TABLE IF NOT EXISTS cincin_mahar (
   updated_at        TIMESTAMPTZ DEFAULT NOW()
 );
 
--- ── 20. HONEYMOON ITINERARY ──────────────────────────────────
+-- ── 20. HONEYMOON INFO (BARU — terpisah dari wedding_profiles) ──
+CREATE TABLE IF NOT EXISTS honeymoon_info (
+  id           UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  wedding_id   UUID REFERENCES wedding_profiles(id) ON DELETE CASCADE NOT NULL UNIQUE,
+  destinasi    TEXT,
+  durasi       TEXT,
+  total_budget BIGINT DEFAULT 0,
+  created_at   TIMESTAMPTZ DEFAULT NOW(),
+  updated_at   TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ── 21. HONEYMOON ITINERARY ──────────────────────────────────
 CREATE TABLE IF NOT EXISTS honeymoon_itinerary (
   id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   wedding_id      UUID REFERENCES wedding_profiles(id) ON DELETE CASCADE NOT NULL,
@@ -305,7 +322,7 @@ CREATE TABLE IF NOT EXISTS honeymoon_itinerary (
   created_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
--- ── 21. HONEYMOON BOOKING ────────────────────────────────────
+-- ── 22. HONEYMOON BOOKING ────────────────────────────────────
 CREATE TABLE IF NOT EXISTS honeymoon_booking (
   id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   wedding_id  UUID REFERENCES wedding_profiles(id) ON DELETE CASCADE NOT NULL,
@@ -318,10 +335,10 @@ CREATE TABLE IF NOT EXISTS honeymoon_booking (
   updated_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
--- ── 22. SOUVENIR VENDOR ──────────────────────────────────────
+-- ── 23. SOUVENIR VENDOR (FIXED — tanpa UNIQUE pada wedding_id) ──
 CREATE TABLE IF NOT EXISTS souvenir_vendor (
   id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  wedding_id      UUID REFERENCES wedding_profiles(id) ON DELETE CASCADE NOT NULL UNIQUE,
+  wedding_id      UUID REFERENCES wedding_profiles(id) ON DELETE CASCADE NOT NULL,
   nama_vendor     TEXT,
   pic_nama        TEXT,
   pic_hp          TEXT,
@@ -330,12 +347,13 @@ CREATE TABLE IF NOT EXISTS souvenir_vendor (
   harga_satuan    BIGINT DEFAULT 0,
   deadline_ambil  DATE,
   status_bayar    TEXT DEFAULT 'Belum',
+  checklist_items JSONB DEFAULT '{}',
   catatan         TEXT,
   created_at      TIMESTAMPTZ DEFAULT NOW(),
   updated_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
--- ── 23. SOUVENIR DISTRIBUSI ──────────────────────────────────
+-- ── 24. SOUVENIR DISTRIBUSI ──────────────────────────────────
 CREATE TABLE IF NOT EXISTS souvenir_distribusi (
   id                  UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   wedding_id          UUID REFERENCES wedding_profiles(id) ON DELETE CASCADE NOT NULL,
@@ -346,15 +364,6 @@ CREATE TABLE IF NOT EXISTS souvenir_distribusi (
   updated_at          TIMESTAMPTZ DEFAULT NOW()
 );
 
--- ── 24. SOUVENIR CHECKLIST ───────────────────────────────────
-CREATE TABLE IF NOT EXISTS souvenir_checklist (
-  id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  wedding_id  UUID REFERENCES wedding_profiles(id) ON DELETE CASCADE NOT NULL UNIQUE,
-  items       JSONB DEFAULT '{}',
-  created_at  TIMESTAMPTZ DEFAULT NOW(),
-  updated_at  TIMESTAMPTZ DEFAULT NOW()
-);
-
 -- ============================================================
 -- ROW LEVEL SECURITY (RLS)
 -- Pastikan setiap user hanya bisa akses data miliknya sendiri
@@ -363,6 +372,7 @@ CREATE TABLE IF NOT EXISTS souvenir_checklist (
 -- Enable RLS untuk semua tabel
 ALTER TABLE wedding_profiles      ENABLE ROW LEVEL SECURITY;
 ALTER TABLE budget_items          ENABLE ROW LEVEL SECURITY;
+ALTER TABLE budget_payments       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE seserahan_items       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE kado_angpao           ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tamu_undangan         ENABLE ROW LEVEL SECURITY;
@@ -380,11 +390,11 @@ ALTER TABLE shot_list             ENABLE ROW LEVEL SECURITY;
 ALTER TABLE dekorasi_items        ENABLE ROW LEVEL SECURITY;
 ALTER TABLE undangan_vendor       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE cincin_mahar          ENABLE ROW LEVEL SECURITY;
+ALTER TABLE honeymoon_info        ENABLE ROW LEVEL SECURITY;
 ALTER TABLE honeymoon_itinerary   ENABLE ROW LEVEL SECURITY;
 ALTER TABLE honeymoon_booking     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE souvenir_vendor       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE souvenir_distribusi   ENABLE ROW LEVEL SECURITY;
-ALTER TABLE souvenir_checklist    ENABLE ROW LEVEL SECURITY;
 
 -- ── RLS: wedding_profiles ────────────────────────────────────
 CREATE POLICY "Users can manage own wedding profile"
@@ -402,6 +412,12 @@ $$ LANGUAGE SQL SECURITY DEFINER;
 -- budget_items
 CREATE POLICY "Users manage own budget_items"
   ON budget_items FOR ALL
+  USING (wedding_id = get_wedding_id())
+  WITH CHECK (wedding_id = get_wedding_id());
+
+-- budget_payments (BARU)
+CREATE POLICY "Users manage own budget_payments"
+  ON budget_payments FOR ALL
   USING (wedding_id = get_wedding_id())
   WITH CHECK (wedding_id = get_wedding_id());
 
@@ -507,6 +523,12 @@ CREATE POLICY "Users manage own cincin_mahar"
   USING (wedding_id = get_wedding_id())
   WITH CHECK (wedding_id = get_wedding_id());
 
+-- honeymoon_info (BARU)
+CREATE POLICY "Users manage own honeymoon_info"
+  ON honeymoon_info FOR ALL
+  USING (wedding_id = get_wedding_id())
+  WITH CHECK (wedding_id = get_wedding_id());
+
 -- honeymoon_itinerary
 CREATE POLICY "Users manage own honeymoon_itinerary"
   ON honeymoon_itinerary FOR ALL
@@ -531,16 +553,13 @@ CREATE POLICY "Users manage own souvenir_distribusi"
   USING (wedding_id = get_wedding_id())
   WITH CHECK (wedding_id = get_wedding_id());
 
--- souvenir_checklist
-CREATE POLICY "Users manage own souvenir_checklist"
-  ON souvenir_checklist FOR ALL
-  USING (wedding_id = get_wedding_id())
-  WITH CHECK (wedding_id = get_wedding_id());
-
 -- ============================================================
 -- INDEXES (untuk performa query)
 -- ============================================================
 CREATE INDEX IF NOT EXISTS idx_budget_items_wedding       ON budget_items(wedding_id);
+CREATE INDEX IF NOT EXISTS idx_budget_items_tipe          ON budget_items(tipe);
+CREATE INDEX IF NOT EXISTS idx_budget_payments_item       ON budget_payments(budget_item_id);
+CREATE INDEX IF NOT EXISTS idx_budget_payments_wedding    ON budget_payments(wedding_id);
 CREATE INDEX IF NOT EXISTS idx_seserahan_wedding          ON seserahan_items(wedding_id);
 CREATE INDEX IF NOT EXISTS idx_kado_angpao_wedding        ON kado_angpao(wedding_id);
 CREATE INDEX IF NOT EXISTS idx_tamu_undangan_wedding      ON tamu_undangan(wedding_id);
@@ -555,6 +574,7 @@ CREATE INDEX IF NOT EXISTS idx_dekorasi_wedding           ON dekorasi_items(wedd
 CREATE INDEX IF NOT EXISTS idx_undangan_vendor_wedding    ON undangan_vendor(wedding_id);
 CREATE INDEX IF NOT EXISTS idx_hm_itinerary_wedding       ON honeymoon_itinerary(wedding_id);
 CREATE INDEX IF NOT EXISTS idx_hm_booking_wedding         ON honeymoon_booking(wedding_id);
+CREATE INDEX IF NOT EXISTS idx_souvenir_vendor_wedding    ON souvenir_vendor(wedding_id);
 CREATE INDEX IF NOT EXISTS idx_souvenir_dist_wedding      ON souvenir_distribusi(wedding_id);
 
 -- ============================================================
@@ -577,8 +597,8 @@ BEGIN
     'wedding_profiles','budget_items','seserahan_items','kado_angpao',
     'tamu_undangan','vendors','checklist_items','timeline_events','catatan',
     'katering_vendor','mua_detail','dokumentasi_vendor','dekorasi_items',
-    'undangan_vendor','cincin_mahar','honeymoon_booking','souvenir_vendor',
-    'souvenir_distribusi','souvenir_checklist'
+    'undangan_vendor','cincin_mahar','honeymoon_info','honeymoon_booking',
+    'souvenir_vendor','souvenir_distribusi'
   ]
   LOOP
     EXECUTE format('
@@ -594,4 +614,14 @@ $$;
 -- ============================================================
 -- SELESAI!
 -- Total: 24 tabel + RLS + Indexes + Triggers
+-- 
+-- PERUBAHAN dari v1:
+-- ✅ Tambah tabel: budget_payments (histori pembayaran per budget item)
+-- ✅ Tambah tabel: honeymoon_info (terpisah dari wedding_profiles)
+-- ✅ Tambah kolom: budget_items.tipe, budget_items.file_url
+-- ✅ Tambah kolom: vendors.kontrak_url
+-- ✅ Tambah kolom: souvenir_vendor.checklist_items (JSONB)
+-- ✅ Hapus UNIQUE constraint: souvenir_vendor.wedding_id (support multi-vendor)
+-- ✅ Hapus kolom duplikat: wedding_profiles.hm_*, tema_dekorasi, moodboard_notes
+-- ✅ Hapus tabel: souvenir_checklist (tidak digunakan frontend, diganti JSONB)
 -- ============================================================

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
+import { confirmDelete } from '../lib/swal'
 import toast from 'react-hot-toast'
 
 const EMPTY = { judul: '', kategori: 'Vendor', priority: 'Medium', isi: '' }
@@ -39,7 +40,8 @@ export default function CatatanPenting() {
     }
 
     const handleDelete = async (id) => {
-        if (!confirm('Hapus catatan ini?')) return
+        const result = await confirmDelete('Hapus catatan ini?', 'Catatan tidak bisa dikembalikan.')
+        if (!result.isConfirmed) return
         await supabase.from('catatan').delete().eq('id', id)
         toast.success('Dihapus!'); fetchItems()
     }

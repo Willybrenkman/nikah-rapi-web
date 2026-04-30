@@ -6,7 +6,7 @@ import { confirmDelete } from '../lib/swal'
 import toast from 'react-hot-toast'
 
 const rp = (n = 0) => 'Rp ' + Number(n).toLocaleString('id-ID')
-const AKAD_ITEMS = ['Sajadah Akad', 'Al-Quran', 'Tasbih', 'Kotak Mahar', 'Cincin Akad', 'Buku Nikah (KUA)', 'Vas Bunga Meja Akad', 'Penghulu Dikonfirmasi']
+const AKAD_ITEMS = ['Kotak Cincin', 'Kitab Suci / Buku Doa', 'Alat Ibadah (Sajadah/Rosario)', 'Kotak Mahar / Seserahan', 'Dokumen Sipil / KUA', 'Pemuka Agama Dikonfirmasi', 'Tanda Kasih Orang Tua', 'Bunga Meja Prosesi']
 
 export default function CincinMahar() {
     const { wedding } = useWedding()
@@ -23,6 +23,41 @@ export default function CincinMahar() {
 
     const fetchData = async () => {
         setLoading(true)
+        if (wedding.id === 'dummy-wedding-id') {
+            const dummyData = {
+                id: 1,
+                jenis_mahar: 'Uang Tunai & Logam Mulia',
+                nominal_mahar: 2026000,
+                barang_mahar: 'Logam Mulia 10 Gram, Seperangkat Alat Sholat Premium',
+                penyajian_mahar: 'Frame Kayu Jati Klasik dengan Hiasan Dried Flowers',
+                vendor_mahar: 'Mahar Aesthetic Semarang',
+                harga_mahar: 1500000,
+                status_mahar: 'Selesai',
+                ukuran_cincin_1: 'No. 18',
+                ukuran_cincin_2: 'No. 12',
+                bahan_cincin: 'Emas Putih 18K & Berlian (Ladies)',
+                desain_cincin: 'Classic Band with Solitaire Diamond',
+                vendor_cincin: 'Mulia Jewelry',
+                harga_cincin: 12500000,
+                tanggal_ambil: '2026-07-20',
+                status_cincin: 'Siap Diambil',
+                checklist_akad: {
+                    'Sajadah Akad': true,
+                    'Al-Quran': true,
+                    'Tasbih': true,
+                    'Kotak Mahar': true,
+                    'Cincin Akad': true,
+                    'Buku Nikah (KUA)': false,
+                    'Vas Bunga Meja Akad': true,
+                    'Penghulu Dikonfirmasi': true
+                }
+            }
+            setData(dummyData)
+            setForm(dummyData)
+            setChecklist(dummyData.checklist_akad)
+            setLoading(false)
+            return
+        }
         const { data: d } = await supabase.from('cincin_mahar').select('*').eq('wedding_id', wedding.id).single()
         if (d) { setData(d); setForm(d); setChecklist(d.checklist_akad || {}) }
         setLoading(false)
@@ -274,8 +309,8 @@ export default function CincinMahar() {
                     <div className="flex items-center gap-3">
                         <span className="text-2xl">📜</span>
                         <div>
-                            <h2 className="font-playfair text-lg font-bold text-brown leading-tight">Checklist Perlengkapan Akad</h2>
-                            <p className="text-xs text-brown-muted mt-0.5">Persiapan esensial untuk momen sakral</p>
+                            <h2 className="font-playfair text-lg font-bold text-brown leading-tight">Checklist Prosesi Sakral (Akad / Pemberkatan)</h2>
+                            <p className="text-xs text-brown-muted mt-0.5">Persiapan perlengkapan esensial untuk momen pengesahan</p>
                         </div>
                     </div>
                     <div className="text-right">

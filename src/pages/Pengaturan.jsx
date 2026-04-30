@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
 import { useAuth } from '../hooks/useAuth'
 import toast from 'react-hot-toast'
+import { confirmDelete } from '../lib/swal'
 
 export default function Pengaturan() {
     const { wedding, refetch } = useWedding()
@@ -65,12 +66,12 @@ export default function Pengaturan() {
                     </div>
                     <div className="p-8 space-y-6">
                         <div className="form-group">
-                            <label className="form-label">Nama Pengantin Wanita</label>
-                            <input className="form-input shadow-inner-white" placeholder="Masukkan nama lengkap pengantin wanita..." value={form.nama_pengantin_1} onChange={e => setForm(p => ({ ...p, nama_pengantin_1: e.target.value }))} />
+                            <label className="form-label">Nama Calon Pengantin 1</label>
+                            <input className="form-input shadow-inner-white" placeholder="Masukkan nama kamu..." value={form.nama_pengantin_1} onChange={e => setForm(p => ({ ...p, nama_pengantin_1: e.target.value }))} />
                         </div>
                         <div className="form-group">
-                            <label className="form-label">Nama Pengantin Pria</label>
-                            <input className="form-input shadow-inner-white" placeholder="Masukkan nama lengkap pengantin pria..." value={form.nama_pengantin_2} onChange={e => setForm(p => ({ ...p, nama_pengantin_2: e.target.value }))} />
+                            <label className="form-label">Nama Calon Pengantin 2</label>
+                            <input className="form-input shadow-inner-white" placeholder="Masukkan nama pasanganmu..." value={form.nama_pengantin_2} onChange={e => setForm(p => ({ ...p, nama_pengantin_2: e.target.value }))} />
                         </div>
                         <div className="form-group">
                             <label className="form-label">Alamat Email Terdaftar</label>
@@ -83,8 +84,8 @@ export default function Pengaturan() {
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="form-group">
-                                <label className="form-label">Lokasi Akad Nikah</label>
-                                <input className="form-input shadow-inner-white" placeholder="Nama Masjid / Gedung..." value={form.lokasi_akad} onChange={e => setForm(p => ({ ...p, lokasi_akad: e.target.value }))} />
+                                <label className="form-label">Lokasi Sakral (Akad / Pemberkatan)</label>
+                                <input className="form-input shadow-inner-white" placeholder="Nama Masjid / Gereja / Vihara / Gedung..." value={form.lokasi_akad} onChange={e => setForm(p => ({ ...p, lokasi_akad: e.target.value }))} />
                             </div>
                             <div className="form-group">
                                 <label className="form-label">Lokasi Resepsi</label>
@@ -142,11 +143,12 @@ export default function Pengaturan() {
                             <div className="pt-6">
                                 <button
                                     onClick={async () => { 
-                                        if (confirm('⚠️ PERHATIAN: Ini akan menghapus semua data profil wedding Anda. Data vendor, budget, dan tamu mungkin akan terpengaruh. Lanjutkan?')) { 
+                                        const result = await confirmDelete('⚠️ PERHATIAN: Hapus profil?', 'Semua data profil wedding Anda akan dihapus permanen. Data vendor, budget, dan tamu mungkin akan terpengaruh. Lanjutkan?')
+                                        if (result.isConfirmed) { 
                                             await supabase.from('wedding_profiles').delete().eq('id', wedding?.id); 
                                             await refetch(); 
                                             toast.success('Data wedding berhasil direset.'); 
-                                        } 
+                                        }
                                     }}
                                     className="w-full py-4 bg-transparent border-2 border-dashed border-rose-gold/30 rounded-2xl text-rose-gold text-xs font-black uppercase tracking-[0.2em] hover:bg-rose-gold/5 transition-colors group"
                                 >

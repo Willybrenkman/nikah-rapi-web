@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
 import { confirmDelete } from '../lib/swal'
 import toast from 'react-hot-toast'
+import { syncService } from '../lib/syncService'
 
 const rp = (n = 0) => 'Rp ' + Number(n).toLocaleString('id-ID')
 const STATUS_BAYAR = ['Belum', 'DP 50%', 'Lunas']
@@ -31,19 +32,29 @@ export default function Souvenir() {
 
     const fetchData = async () => {
         setLoading(true)
+        if (wedding.id === 'dummy-wedding-id') {
+            setVendors([
+                { id: 1, nama_vendor: 'Kado Kita Souvenir', pic_nama: 'Ibu Sari', pic_hp: '0812345678', jenis_souvenir: 'Diffuser Kayu Premium', total_dipesan: 300, harga_satuan: 25000, deadline_ambil: '2026-08-01', status_bayar: 'DP 50%', checklist_items: { 'Desain disetujui': true, 'Sample OK': true, 'Pelunasan selesai': false, 'Semua souvenir diterima': false, 'Distribusi ke tamu selesai': false } },
+                { id: 2, nama_vendor: 'Hampers Luxury', pic_nama: 'Bpk. Budi', pic_hp: '0856789012', jenis_souvenir: 'Set Keramik Premium (VIP)', total_dipesan: 50, harga_satuan: 150000, deadline_ambil: '2026-08-15', status_bayar: 'Lunas', checklist_items: { 'Desain disetujui': true, 'Sample OK': true, 'Pelunasan selesai': true, 'Semua souvenir diterima': true, 'Distribusi ke tamu selesai': false } },
+            ])
+            setChecklist({ 'Desain disetujui': true, 'Sample OK': true, 'Pelunasan selesai': false, 'Semua souvenir diterima': false, 'Distribusi ke tamu selesai': false })
+            setDistribusi([
+                { id: 1, kategori: 'Tamu Akad', jumlah: 100, sudah_distribusi: 0 },
+                { id: 2, kategori: 'Tamu Resepsi', jumlah: 250, sudah_distribusi: 0 },
+                { id: 3, kategori: 'Hampers VIP', jumlah: 50, sudah_distribusi: 10 },
+            ])
+            setLoading(false)
+            return
+        }
         const [vRes, dRes] = await Promise.all([
-            // ← pakai select tanpa .single() supaya tidak error saat kosong
             supabase.from('souvenir_vendor').select('*').eq('wedding_id', wedding.id).order('created_at'),
             supabase.from('souvenir_distribusi').select('*').eq('wedding_id', wedding.id).order('created_at')
         ])
         if (vRes.error) console.error('Vendor fetch error:', vRes.error)
         setVendors(vRes.data || [])
-
-        // pakai checklist dari vendor pertama sebagai default
         if (vRes.data && vRes.data.length > 0) {
             setChecklist(vRes.data[0].checklist_items || {})
         }
-
         setDistribusi(dRes.data || [])
         setLoading(false)
     }
@@ -80,24 +91,37 @@ export default function Souvenir() {
             wedding_id: wedding.id
         }
 
-        let res
-        if (editVId) {
-            res = await supabase.from('souvenir_vendor').update(payload).eq('id', editVId)
-        } else {
-            res = await supabase.from('souvenir_vendor').insert(payload)
-        }
+        try {
+            let res
+            if (editVId) {
+                res = await supabase.from('souvenir_vendor').update(payload).eq('id', editVId)
+            } else {
+                res = await supabase.from('souvenir_vendor').insert(payload)
+            }
 
-        if (res.error) {
-            console.error('Save vendor error:', res.error)
-            toast.error('Gagal menyimpan vendor: ' + res.error.message)
+            if (res.error) throw res.error
+
+            // --- INVERSE SYNC TO BUDGET ---
+            const { data: allItems } = await supabase.from('souvenir_vendor').select('total_dipesan, harga_satuan').eq('wedding_id', wedding.id)
+            const newTotal = (allItems || []).reduce((sum, v) => sum + ((v.total_dipesan || 0) * (v.harga_satuan || 0)), 0)
+
+            await syncService.syncToBudget(
+                wedding.id, 
+                'souvenir', 
+                'Souvenir & Hampers', 
+                newTotal, 
+                0
+            )
+
+            toast.success(editVId ? 'Vendor & Budget diperbarui! ✨' : 'Vendor & Budget ditambahkan! ✨')
+            setModalV(false)
+            await fetchData()
+        } catch (error) {
+            console.error(error)
+            toast.error('Gagal sinkronisasi budget')
+        } finally {
             setSaving(false)
-            return
         }
-
-        toast.success(editVId ? 'Vendor diperbarui!' : 'Vendor berhasil ditambahkan!')
-        setModalV(false)
-        await fetchData()
-        setSaving(false)
     }
 
     const deleteVendor = async (id) => {
@@ -143,6 +167,7 @@ export default function Souvenir() {
     // ── Computed ─────────────────────────────────────────────────────────────
     const totalBiaya = vendors.reduce((sum, v) => sum + ((v.total_dipesan || 0) * (v.harga_satuan || 0)), 0)
     const totalUnit = vendors.reduce((sum, v) => sum + (v.total_dipesan || 0), 0)
+    const totalDistribusi = distribusi.reduce((sum, d) => sum + (d.sudah_distribusi || 0), 0)
     const checkDone = CHECKLIST_ITEMS.filter(i => checklist[i]).length
     const firstVendor = vendors[0] || null
 
@@ -177,11 +202,16 @@ export default function Souvenir() {
                 </div>
 
                 {/* Stats */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                     <div className="stat-card hover:shadow-xl transition-all">
                         <div className="w-12 h-12 rounded-2xl bg-rose-gold/10 flex items-center justify-center text-xl mb-4">📦</div>
                         <div className="font-playfair text-2xl font-bold text-brown leading-tight">{totalUnit}</div>
                         <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Total Pesanan (Pcs)</div>
+                    </div>
+                    <div className="stat-card hover:shadow-xl transition-all border-sage/20 shadow-sm relative overflow-hidden">
+                        <div className="w-12 h-12 rounded-2xl bg-sage/10 flex items-center justify-center text-xl mb-4 text-sage">🎁</div>
+                        <div className="font-playfair text-2xl font-bold text-sage leading-tight">{totalDistribusi} <span className="text-sm font-sans font-medium text-brown-muted/70">/ {totalUnit}</span></div>
+                        <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Telah Dibagikan</div>
                     </div>
                     <div className="stat-card hover:shadow-xl transition-all border-sage/20 shadow-sm">
                         <div className="w-12 h-12 rounded-2xl bg-sage/10 flex items-center justify-center text-xl mb-4">🏪</div>

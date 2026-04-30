@@ -2,7 +2,9 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
+import { confirmDelete } from '../lib/swal'
 import toast from 'react-hot-toast'
+import { exportService } from '../lib/exportService'
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js'
 import { Doughnut, Bar } from 'react-chartjs-2'
 ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend)
@@ -25,6 +27,16 @@ export default function KadoAngpao() {
 
     const fetchItems = async () => {
         setLoading(true)
+        if (wedding.id === 'dummy-wedding-id') {
+            setItems([
+                { id: 1, nama: 'Keluarga Bpk. Subarjo', hubungan: 'Keluarga', jenis: 'Angpao', nominal: 2000000, sesi: 'Akad', sudah_ucapkan: true, catatan: '' },
+                { id: 2, nama: 'Siti Aminah', hubungan: 'Sahabat', jenis: 'Kado', deskripsi_kado: 'Set Blender Philips', sesi: 'Resepsi', sudah_ucapkan: false, catatan: '' },
+                { id: 3, nama: 'Budi Santoso', hubungan: 'Teman', jenis: 'Keduanya', nominal: 500000, deskripsi_kado: 'Voucher MAP 100k', sesi: 'Resepsi', sudah_ucapkan: false, catatan: '' },
+                { id: 4, nama: 'Kolega Kantor ABC', hubungan: 'Kolega', jenis: 'Angpao', nominal: 1500000, sesi: 'Resepsi', sudah_ucapkan: true, catatan: '' },
+            ])
+            setLoading(false)
+            return
+        }
         const { data } = await supabase.from('kado_angpao').select('*').eq('wedding_id', wedding.id).order('created_at')
         setItems(data || [])
         setLoading(false)
@@ -46,7 +58,8 @@ export default function KadoAngpao() {
     }
 
     const handleDelete = async (id) => {
-        if (!confirm('Hapus data ini?')) return
+        const result = await confirmDelete('Hapus data ini?', 'Catatan kado ini tidak bisa dikembalikan.')
+        if (!result.isConfirmed) return
         await supabase.from('kado_angpao').delete().eq('id', id)
         toast.success('Dihapus!'); fetchItems()
     }
@@ -71,9 +84,16 @@ export default function KadoAngpao() {
                     <h1 className="section-title">Kado & Angpao 🎁 <span className="badge-exclusive ml-2">✦ Eksklusif</span></h1>
                     <p className="section-subtitle">Rekap pemberian tamu, manajemen angpao, dan pelacakan ucapan terima kasih</p>
                 </div>
-                <button className="btn-rose px-8 shadow-lg shadow-rose-gold/20 flex items-center gap-2" onClick={openAdd}>
-                    <span>+</span> Tambah Data Pemberian
-                </button>
+                <div className="flex gap-2">
+                    {items.length > 0 && (
+                        <button className="btn-outline px-4 flex items-center gap-2 text-sm" onClick={() => exportService.exportKadoAngpao(items)}>
+                            📥 Excel
+                        </button>
+                    )}
+                    <button className="btn-rose px-8 shadow-lg shadow-rose-gold/20 flex items-center gap-2" onClick={openAdd}>
+                        <span>+</span> Tambah Data Pemberian
+                    </button>
+                </div>
             </div>
 
             {belumUcapkan > 0 && (

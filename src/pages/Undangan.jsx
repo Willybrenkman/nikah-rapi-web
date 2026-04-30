@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
 import { confirmDelete } from '../lib/swal'
 import toast from 'react-hot-toast'
+import { syncService } from '../lib/syncService'
 
 const rp = (n = 0) => 'Rp ' + Number(n).toLocaleString('id-ID')
 const EMPTY = { nama_vendor: '', layanan: '', harga: '', status_bayar: 'Belum', status_kerja: 'Belum' }
@@ -24,6 +25,17 @@ export default function Undangan() {
 
     const fetchData = async () => {
         setLoading(true)
+        if (wedding.id === 'dummy-wedding-id') {
+            setItems([
+                { id: 1, nama_vendor: 'Paperly Invitations', layanan: 'Cetak 300 pcs, Emboss Gold, Hardcover', harga: 4500000, status_bayar: 'Lunas', status_kerja: 'Selesai' },
+                { id: 2, nama_vendor: 'NikahRapi Digital', layanan: 'Undangan Web Premium + RSVP System', harga: 500000, status_bayar: 'Lunas', status_kerja: 'Live' },
+            ])
+            setCetak(300)
+            setDigital(450)
+            setTerkirim(520)
+            setLoading(false)
+            return
+        }
         const [vRes, pRes] = await Promise.all([
             supabase.from('undangan_vendor').select('*').eq('wedding_id', wedding.id).order('created_at'),
             supabase.from('wedding_profiles').select('undangan_cetak,undangan_digital,undangan_terkirim').eq('id', wedding.id).single(),
@@ -45,9 +57,35 @@ export default function Undangan() {
         if (!form.nama_vendor) { toast.error('Nama vendor wajib!'); return }
         setSaving(true)
         const payload = { ...form, harga: Number(form.harga) || 0, wedding_id: wedding.id }
-        if (editId) { await supabase.from('undangan_vendor').update(payload).eq('id', editId); toast.success('Diperbarui!') }
-        else { await supabase.from('undangan_vendor').insert(payload); toast.success('Ditambahkan!') }
-        setModal(false); fetchData(); setSaving(false)
+        
+        try {
+            if (editId) { 
+                await supabase.from('undangan_vendor').update(payload).eq('id', editId) 
+            } else { 
+                await supabase.from('undangan_vendor').insert(payload) 
+            }
+
+            // --- INVERSE SYNC TO BUDGET ---
+            const { data: allItems } = await supabase.from('undangan_vendor').select('harga').eq('wedding_id', wedding.id)
+            const newTotal = (allItems || []).reduce((a, i) => a + (i.harga || 0), 0)
+
+            await syncService.syncToBudget(
+                wedding.id, 
+                'undangan', 
+                'Paket Undangan', 
+                newTotal, 
+                0 // Kita anggap aktual diatur di budget planner
+            )
+
+            toast.success('Undangan & budget diperbarui! ✨')
+            setModal(false)
+            fetchData()
+        } catch (error) {
+            console.error(error)
+            toast.error('Gagal sinkronisasi budget')
+        } finally {
+            setSaving(false)
+        }
     }
 
     const handleDelete = async (id) => {

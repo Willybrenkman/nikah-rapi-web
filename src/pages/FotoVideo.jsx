@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
 import { confirmDelete } from '../lib/swal'
 import toast from 'react-hot-toast'
+import { syncService } from '../lib/syncService'
 
 const rp = (n = 0) => 'Rp ' + Number(n).toLocaleString('id-ID')
 const EMPTY_SHOT = { sesi: 'Akad', deskripsi: '', priority: 'High', status: 'Belum' }
@@ -28,6 +29,19 @@ export default function FotoVideo() {
 
     const fetchData = async () => {
         setLoading(true)
+        if (wedding.id === 'dummy-wedding-id') {
+            setFoto({ id: 1, tipe: 'foto', nama: 'Memoria Photography', no_hp: '0812345678', paket: 'Premium Wedding (2 Photographers, All Raw, 50 Edited, 1 Album)', total: 10000000, dp: 3000000 })
+            setVideo({ id: 2, tipe: 'video', nama: 'Cinematic Story', no_hp: '0856789012', paket: 'Cinematic Highlight (3-5 mins) + Full Documentary', total: 8000000, dp: 2000000 })
+            setShots([
+                { id: 1, sesi: 'Akad', deskripsi: 'Momen Ijab Kabul & Salaman', priority: 'High', status: 'Done' },
+                { id: 2, sesi: 'Akad', deskripsi: 'Tukar Cincin & Buku Nikah', priority: 'High', status: 'Done' },
+                { id: 3, sesi: 'Resepsi', deskripsi: 'Grand Entrance (Walking in)', priority: 'High', status: 'Belum' },
+                { id: 4, sesi: 'Resepsi', deskripsi: 'Sesi Foto dengan VIP', priority: 'Medium', status: 'Belum' },
+                { id: 5, sesi: 'Resepsi', deskripsi: 'Lempar Bunga & Games', priority: 'Low', status: 'Belum' },
+            ])
+            setLoading(false)
+            return
+        }
         const [fRes, vRes, sRes] = await Promise.all([
             supabase.from('dokumentasi_vendor').select('*').eq('wedding_id', wedding.id).eq('tipe', 'foto').single(),
             supabase.from('dokumentasi_vendor').select('*').eq('wedding_id', wedding.id).eq('tipe', 'video').single(),
@@ -50,9 +64,32 @@ export default function FotoVideo() {
         setSaving(true)
         const payload = { ...formF, tipe: activeTipe, total: Number(formF.total) || 0, dp: Number(formF.dp) || 0, wedding_id: wedding.id }
         const existing = activeTipe === 'foto' ? foto : video
-        if (existing) { await supabase.from('dokumentasi_vendor').update(payload).eq('id', existing.id) }
-        else { await supabase.from('dokumentasi_vendor').insert(payload) }
-        toast.success('Data disimpan!'); setModalF(false); fetchData(); setSaving(false)
+        
+        try {
+            if (existing) { 
+                await supabase.from('dokumentasi_vendor').update(payload).eq('id', existing.id) 
+            } else { 
+                await supabase.from('dokumentasi_vendor').insert(payload) 
+            }
+
+            // --- INVERSE SYNC TO BUDGET ---
+            await syncService.syncToBudget(
+                wedding.id, 
+                activeTipe === 'foto' ? 'foto' : 'video', 
+                `${activeTipe === 'foto' ? 'Fotografer' : 'Videografer'}: ${payload.nama || 'TBA'}`, 
+                payload.total, 
+                payload.dp
+            )
+
+            toast.success('Data vendor & budget disimpan! ✨')
+            setModalF(false)
+            fetchData()
+        } catch (error) {
+            console.error(error)
+            toast.error('Gagal sinkronisasi budget')
+        } finally {
+            setSaving(false)
+        }
     }
 
     const openAddShot = () => { setFormS(EMPTY_SHOT); setEditSId(null); setModalS(true) }

@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
 import toast from 'react-hot-toast'
+import { syncService } from '../lib/syncService'
+import { exportService } from '../lib/exportService'
+import { confirmDelete } from '../lib/swal'
 
 const rp = (n = 0) => 'Rp ' + Number(n).toLocaleString('id-ID')
 const KATEGORI = ['Fashion', 'Kecantikan', 'Perhiasan', 'Elektronik', 'Makanan', 'Ibadah', 'Mahar', 'Lainnya']
@@ -24,6 +27,15 @@ export default function SeserahanTracker() {
 
     const fetchItems = async () => {
         setLoading(true)
+        if (wedding.id === 'dummy-wedding-id') {
+            setItems([
+                { id: 1, nama: 'Set Makeup Premium', kategori: 'Kecantikan', estimasi: 2500000, aktual: 2450000, tempat_beli: 'Sephora', status: 'Sudah Beli', catatan: 'Lengkap dengan pouch' },
+                { id: 2, nama: 'Sepatu Kerja Pria', kategori: 'Fashion', estimasi: 1200000, aktual: 0, tempat_beli: 'Zalora', status: 'Belum Beli', catatan: 'Ukuran 42' },
+                { id: 3, nama: 'Perhiasan Emas', kategori: 'Perhiasan', estimasi: 15000000, aktual: 15000000, tempat_beli: 'Toko Emas', status: 'Sudah Kemas', catatan: 'Mahar utama' },
+            ])
+            setLoading(false)
+            return
+        }
         const { data } = await supabase.from('seserahan_items').select('*').eq('wedding_id', wedding.id).order('created_at')
         setItems(data || [])
         setLoading(false)
@@ -39,13 +51,42 @@ export default function SeserahanTracker() {
         if (!form.nama) { toast.error('Nama item wajib diisi!'); return }
         setSaving(true)
         const payload = { nama: form.nama, kategori: form.kategori, estimasi: Number(form.estimasi) || 0, aktual: Number(form.aktual) || 0, tempat_beli: form.tempat_beli, status: form.status, catatan: form.catatan, wedding_id: wedding.id }
-        if (editId) { await supabase.from('seserahan_items').update(payload).eq('id', editId); toast.success('Item diperbarui!') }
-        else { await supabase.from('seserahan_items').insert(payload); toast.success('Item ditambahkan!') }
-        setModal(false); fetchItems(); setSaving(false)
+
+        try {
+            if (editId) {
+                await supabase.from('seserahan_items').update(payload).eq('id', editId)
+            } else {
+                await supabase.from('seserahan_items').insert(payload)
+            }
+
+            // --- INVERSE SYNC TO BUDGET ---
+            const { data: allItems } = await supabase.from('seserahan_items').select('estimasi, aktual').eq('wedding_id', wedding.id)
+            const newTotalEst = (allItems || []).reduce((a, i) => a + (i.estimasi || 0), 0)
+            const newTotalAkt = (allItems || []).reduce((a, i) => a + (i.aktual || 0), 0)
+
+            await syncService.syncToBudget(
+                wedding.id,
+                'hantaran',
+                'Hantaran & Seserahan',
+                newTotalEst,
+                newTotalAkt
+            )
+
+            toast.success('Seserahan & budget diperbarui! ✨')
+            setModal(false)
+            fetchItems()
+        } catch (error) {
+            console.error(error)
+            toast.error('Gagal sinkronisasi budget')
+        } finally {
+            setSaving(false)
+        }
     }
 
     const handleDelete = async (id) => {
-        if (!confirm('Hapus item ini?')) return
+        const result = await confirmDelete('Hapus item ini?', 'Data seserahan ini tidak bisa dikembalikan.')
+        if (!result.isConfirmed) return
+        
         await supabase.from('seserahan_items').delete().eq('id', id)
         toast.success('Dihapus!'); fetchItems()
     }
@@ -77,9 +118,16 @@ export default function SeserahanTracker() {
                     <h1 className="section-title">Pelacak Seserahan 🎁 <span className="badge-exclusive ml-2">✦ Premium</span></h1>
                     <p className="section-subtitle">Daftar hantaran, progres pembelian, hingga pengemasan seserahan pernikahan</p>
                 </div>
-                <button className="btn-rose px-8 shadow-lg shadow-rose-gold/20 flex items-center gap-2" onClick={openAdd}>
-                    <span>+</span> Tambah Item Seserahan
-                </button>
+                <div className="flex gap-2">
+                    {items.length > 0 && (
+                        <button className="btn-outline px-4 flex items-center gap-2 text-sm" onClick={() => exportService.exportSeserahan(items)}>
+                            📥 Excel
+                        </button>
+                    )}
+                    <button className="btn-rose px-8 shadow-lg shadow-rose-gold/20 flex items-center gap-2" onClick={openAdd}>
+                        <span>+</span> Tambah Item Seserahan
+                    </button>
+                </div>
             </div>
 
             {/* Stats */}
@@ -131,9 +179,9 @@ export default function SeserahanTracker() {
             {/* Filter */}
             <div className="flex gap-2 mb-8 overflow-x-auto pb-4 scrollbar-hide">
                 {['Semua', ...STATUS].map(f => (
-                    <button 
-                        key={f} 
-                        className={`filter-btn whitespace-nowrap px-8 py-3 text-[10px] uppercase font-black tracking-widest transition-all ${filter === f ? 'active ring-4 ring-rose-gold/5 shadow-md shadow-rose-gold/10' : 'bg-white text-brown-muted hover:bg-ivory/50 border border-ivory/50 shadow-sm'}`} 
+                    <button
+                        key={f}
+                        className={`filter-btn whitespace-nowrap px-8 py-3 text-[10px] uppercase font-black tracking-widest transition-all ${filter === f ? 'active ring-4 ring-rose-gold/5 shadow-md shadow-rose-gold/10' : 'bg-white text-brown-muted hover:bg-ivory/50 border border-ivory/50 shadow-sm'}`}
                         onClick={() => setFilter(f)}
                     >
                         {f === 'Sudah Kemas' ? 'Siap Hantar' : f === 'Sudah Beli' ? 'Telah Dibeli' : f === 'Belum Beli' ? 'Perlu Dibeli' : 'Semua Status'}
@@ -229,7 +277,7 @@ export default function SeserahanTracker() {
                             </div>
                             <button onClick={() => setModal(false)} className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-ivory text-brown-muted transition-colors border border-transparent hover:border-border">✕</button>
                         </div>
-                        
+
                         <div className="space-y-5">
                             <div className="form-group">
                                 <label className="form-label">Nama Barang / Item</label>

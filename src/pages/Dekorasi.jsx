@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
 import { confirmDelete } from '../lib/swal'
 import toast from 'react-hot-toast'
+import { syncService } from '../lib/syncService'
 
 const rp = (n = 0) => 'Rp ' + Number(n).toLocaleString('id-ID')
 const AREA = ['Altar/Pelaminan', 'Pintu Masuk', 'Area Tamu', 'Backdrop Foto', 'Seluruh Area', 'Lainnya']
@@ -69,9 +70,36 @@ export default function Dekorasi() {
         if (!form.nama) { toast.error('Nama item wajib!'); return }
         setSaving(true)
         const payload = { ...form, estimasi: Number(form.estimasi) || 0, wedding_id: wedding.id }
-        if (editId) { await supabase.from('dekorasi_items').update(payload).eq('id', editId); toast.success('Diperbarui!') }
-        else { await supabase.from('dekorasi_items').insert(payload); toast.success('Ditambahkan!') }
-        setModal(false); fetchData(); setSaving(false)
+        
+        try {
+            if (editId) { 
+                await supabase.from('dekorasi_items').update(payload).eq('id', editId) 
+            } else { 
+                await supabase.from('dekorasi_items').insert(payload) 
+            }
+
+            // --- INVERSE SYNC TO BUDGET ---
+            // Ambil data terbaru untuk menghitung total
+            const { data: allItems } = await supabase.from('dekorasi_items').select('estimasi').eq('wedding_id', wedding.id)
+            const newTotal = (allItems || []).reduce((a, i) => a + (i.estimasi || 0), 0)
+
+            await syncService.syncToBudget(
+                wedding.id, 
+                'dekorasi', 
+                'Dekorasi Pernikahan', 
+                newTotal, 
+                0 // Kita anggap aktual diatur di budget planner atau di modul vendor gabungan
+            )
+
+            toast.success('Dekorasi & budget diperbarui! ✨')
+            setModal(false)
+            fetchData()
+        } catch (error) {
+            console.error(error)
+            toast.error('Gagal sinkronisasi budget')
+        } finally {
+            setSaving(false)
+        }
     }
 
     const handleDelete = async (id) => {

@@ -4,6 +4,8 @@ import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
+import toast from 'react-hot-toast'
+import { exportService } from '../lib/exportService'
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
 
 const rp = (n = 0) => 'Rp ' + Number(n).toLocaleString('id-ID')
@@ -14,6 +16,7 @@ export default function RekapAkhir() {
     const [budgetItems, setBudgetItems] = useState([])
     const [kesan, setKesan] = useState('')
     const [loading, setLoading] = useState(true)
+    const [exporting, setExporting] = useState(false)
 
     useEffect(() => { if (wedding) fetchData() }, [wedding])
 
@@ -60,6 +63,37 @@ export default function RekapAkhir() {
         ]
     }
 
+    const handleExportAll = async () => {
+        setExporting(true)
+        try {
+            const [bRes, gRes, vRes, sRes, aRes, cRes, tRes] = await Promise.all([
+                supabase.from('budget_items').select('*').eq('wedding_id', wedding.id),
+                supabase.from('tamu_undangan').select('*').eq('wedding_id', wedding.id).order('nama'),
+                supabase.from('vendors').select('*').eq('wedding_id', wedding.id),
+                supabase.from('seserahan_items').select('*').eq('wedding_id', wedding.id),
+                supabase.from('kado_angpao').select('*').eq('wedding_id', wedding.id),
+                supabase.from('checklist_items').select('*').eq('wedding_id', wedding.id),
+                supabase.from('timeline_events').select('*').eq('wedding_id', wedding.id).order('waktu'),
+            ])
+            exportService.exportRekapLengkap({
+                budget: bRes.data || [],
+                guests: gRes.data || [],
+                vendors: vRes.data || [],
+                seserahan: sRes.data || [],
+                angpao: aRes.data || [],
+                checklist: cRes.data || [],
+                timeline: tRes.data || [],
+                weddingProfile: wedding,
+            })
+            toast.success('File Excel berhasil diunduh! 📥')
+        } catch (err) {
+            console.error(err)
+            toast.error('Gagal mengekspor data')
+        } finally {
+            setExporting(false)
+        }
+    }
+
     if (loading) return (
         <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
             <div className="text-5xl animate-bounce-slow">📊</div>
@@ -74,6 +108,17 @@ export default function RekapAkhir() {
                     <h1 className="section-title">Rekap Akhir 📋</h1>
                     <p className="section-subtitle">Ringkasan lengkap perjalanan persiapan hari bahagia kalian</p>
                 </div>
+                <button 
+                    className="btn-rose px-8 shadow-lg shadow-rose-gold/20 flex items-center gap-2" 
+                    onClick={handleExportAll}
+                    disabled={exporting}
+                >
+                    {exporting ? (
+                        <><span className="animate-spin">⏳</span> Mengunduh...</>
+                    ) : (
+                        <><span>📥</span> Download Rekap Excel</>
+                    )}
+                </button>
             </div>
 
             {/* Stats */}

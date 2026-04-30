@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
 import { confirmDelete } from '../lib/swal'
 import toast from 'react-hot-toast'
+import { syncService } from '../lib/syncService'
 
 const rp = (n = 0) => 'Rp ' + Number(n).toLocaleString('id-ID')
 
@@ -24,6 +25,38 @@ export default function MUABusana() {
 
     const fetchData = async () => {
         setLoading(true)
+        if (wedding.id === 'dummy-wedding-id') {
+            setMua({
+                id: 1,
+                nama_mua: 'Glow MUA & Studio',
+                no_hp: '0878901234',
+                paket: 'Pengantin Lengkap (Akad + Resepsi + 2 Mama)',
+                total: 15000000,
+                dp: 5000000,
+                catatan: 'Request makeup flawless-modern, tidak mau cukur alis.'
+            })
+            setFormMUA({
+                nama_mua: 'Glow MUA & Studio',
+                no_hp: '0878901234',
+                paket: 'Pengantin Lengkap (Akad + Resepsi + 2 Mama)',
+                total: 15000000,
+                dp: 5000000,
+                catatan: 'Request makeup flawless-modern, tidak mau cukur alis.'
+            })
+            setJadwal([
+                { id: 1, tanggal: '2026-06-15', waktu: '10:00', agenda: 'Trial Makeup & Hijab Do', status: 'Selesai' },
+                { id: 2, tanggal: '2026-06-20', waktu: '13:00', agenda: 'Fitting Kebaya Perdana', status: 'Selesai' },
+                { id: 3, tanggal: '2026-07-25', waktu: '15:00', agenda: 'Final Fitting & Pengambilan Busana', status: 'Belum' },
+            ])
+            setAksesori([
+                { id: 1, nama: 'Siger Sunda Silver', selesai: true },
+                { id: 2, nama: 'Melati Asli (Booking)', selesai: true },
+                { id: 3, nama: 'Heels 9cm (Custom)', selesai: true },
+                { id: 4, nama: 'Kalung Permata', selesai: false },
+            ])
+            setLoading(false)
+            return
+        }
         const [muaRes, jadwalRes, aksRes] = await Promise.all([
             supabase.from('mua_detail').select('*').eq('wedding_id', wedding.id).single(),
             supabase.from('mua_jadwal').select('*').eq('wedding_id', wedding.id).order('tanggal'),
@@ -38,9 +71,32 @@ export default function MUABusana() {
     const saveMUA = async () => {
         setSaving(true)
         const payload = { ...formMUA, total: Number(formMUA.total) || 0, dp: Number(formMUA.dp) || 0, wedding_id: wedding.id }
-        if (mua) { await supabase.from('mua_detail').update(payload).eq('id', mua.id) }
-        else { await supabase.from('mua_detail').insert(payload) }
-        toast.success('Data MUA disimpan!'); setModalMUA(false); fetchData(); setSaving(false)
+        
+        try {
+            if (mua) { 
+                await supabase.from('mua_detail').update(payload).eq('id', mua.id) 
+            } else { 
+                await supabase.from('mua_detail').insert(payload) 
+            }
+
+            // --- INVERSE SYNC TO BUDGET ---
+            await syncService.syncToBudget(
+                wedding.id, 
+                'mua', 
+                formMUA.nama_mua || 'MUA & Busana', 
+                payload.total, 
+                payload.dp
+            )
+
+            toast.success('Data MUA & budget disinkronkan! ✨')
+            setModalMUA(false)
+            fetchData()
+        } catch (error) {
+            console.error(error)
+            toast.error('Gagal sinkronisasi data')
+        } finally {
+            setSaving(false)
+        }
     }
 
     const deleteMUA = async () => {

@@ -23,6 +23,17 @@ export default function Checklist() {
 
     const fetchItems = async () => {
         setLoading(true)
+        if (wedding.id === 'dummy-wedding-id') {
+            setItems([
+                { id: 1, task: 'Booking Venue Utama', kategori: 'Venue', deadline: '2026-05-15', pic: 'Pria', priority: 'High', status: 'Selesai', is_done: true },
+                { id: 2, task: 'Fitting Kebaya Pengantin', kategori: 'Busana', deadline: '2026-06-20', pic: 'Wanita', priority: 'High', status: 'Proses', is_done: false },
+                { id: 3, task: 'Finalisasi Menu Katering', kategori: 'Katering', deadline: '2026-07-01', pic: 'Keluarga', priority: 'Medium', status: 'Proses', is_done: false },
+                { id: 4, task: 'Pemesanan Souvenir (500 pcs)', kategori: 'Souvenir', deadline: '2026-05-30', pic: 'Wanita', priority: 'Medium', status: 'Selesai', is_done: true },
+                { id: 5, task: 'Pendaftaran ke KUA', kategori: 'Admin', deadline: '2026-08-10', pic: 'Pria', priority: 'High', status: 'Belum', is_done: false },
+            ])
+            setLoading(false)
+            return
+        }
         const { data } = await supabase.from('checklist_items').select('*').eq('wedding_id', wedding.id).order('created_at')
         setItems(data || [])
         setLoading(false)
