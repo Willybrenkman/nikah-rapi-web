@@ -239,7 +239,7 @@ export default function Honeymoon() {
                                     ) : itinerary.map(i => (
                                         <tr key={i.id} className="tr group transition-all hover:bg-ivory/10">
                                             <td className="td text-center">
-                                                <span className="text-[10px] font-black text-rose-gold bg-rose-gold/5 px-2 py-1 rounded-lg border border-rose-gold/10">{i.hari}</span>
+                                                <span className="inline-block text-[10px] font-black text-rose-gold bg-rose-gold/5 px-2 py-1 rounded-lg border border-rose-gold/10">{i.hari}</span>
                                             </td>
                                             <td className="td">
                                                 <div className="font-bold text-brown group-hover:text-rose-gold transition-colors">{i.aktivitas}</div>

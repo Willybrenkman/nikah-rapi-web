@@ -231,7 +231,7 @@ export default function SeserahanTracker() {
                                     <td className="td text-[10px] font-bold text-brown-muted italic">{rp(item.estimasi)}</td>
                                     <td className="td">
                                         {item.aktual ? (
-                                            <span className="text-[11px] font-black text-brown bg-sage/5 px-3 py-1.5 rounded-xl border border-sage/10 shadow-sm">{rp(item.aktual)}</span>
+                                            <span className="inline-block text-[11px] font-black text-brown bg-sage/5 px-3 py-1.5 rounded-xl border border-sage/10 shadow-sm">{rp(item.aktual)}</span>
                                         ) : (
                                             <span className="text-[9px] text-brown-muted/40 font-black uppercase tracking-[0.15em] italic">Menunggu...</span>
                                         )}

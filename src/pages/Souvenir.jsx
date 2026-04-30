@@ -363,7 +363,7 @@ export default function Souvenir() {
                                             </td>
                                             <td className="td text-center font-black text-brown">{d.jumlah} <span className="text-[9px] text-brown-muted ml-0.5 opacity-50">Pcs</span></td>
                                             <td className="td text-center">
-                                                <span className="bg-sage/5 text-sage px-3 py-1.5 rounded-xl border border-sage/10 font-black shadow-sm text-xs">{d.sudah_distribusi || 0}</span>
+                                                <span className="inline-block bg-sage/5 text-sage px-3 py-1.5 rounded-xl border border-sage/10 font-black shadow-sm text-xs">{d.sudah_distribusi || 0}</span>
                                             </td>
                                             <td className="td min-w-[220px]">
                                                 <div className="flex items-center gap-4">
