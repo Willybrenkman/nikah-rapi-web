@@ -393,11 +393,11 @@ textarea:focus {
   }
 
   .td {
-    @apply px-3.5 py-[11px] text-[13px] text-brown-main border-b border-[#FAF4F0];
+    @apply px-3.5 py-[11px] text-[13px] text-brown-main border-b border-border-soft;
   }
 
   .tr:hover td {
-    background: #FDFAF6;
+    background: rgba(201, 149, 108, 0.05); /* Subtle rose-gold tint for hover */
   }
 
   .tr:last-child td {

@@ -4,17 +4,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        'ivory': '#FDFAF6',
-        'rose-gold': '#C9956C',
-        'rose-dark': '#b07d55',
-        'dusty-pink': '#E8C4B8',
-        'sage': '#8BAF8B',
-        'brown-main': '#2C1810',
-        'brown-muted': '#9B8070',
-        'brown-light': '#E8C4B8',
-        'border-soft': '#F0E6DF',
-        'surface': '#FAF4F0',
-        'danger': '#D4756B',
+        'ivory': 'var(--ivory)',
+        'rose-gold': 'var(--rose-gold)',
+        'rose-dark': 'var(--rose-dark)',
+        'dusty-pink': 'var(--dusty-pink)',
+        'sage': 'var(--sage)',
+        'brown-main': 'var(--brown)',
+        'brown-muted': 'var(--brown-muted)',
+        'brown-light': 'var(--dusty-pink)',
+        'border-soft': 'var(--border)',
+        'surface': 'var(--ivory)',
+        'danger': 'var(--danger)',
       },
       fontFamily: {
         playfair: ['"Playfair Display"', 'serif'],

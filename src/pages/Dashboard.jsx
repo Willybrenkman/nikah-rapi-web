@@ -327,10 +327,10 @@ export default function Dashboard() {
                         <table>
                             <thead>
                                 <tr>
-                                    <th className="th">Vendor</th>
-                                    <th className="th">Kategori</th>
-                                    <th className="th">Deadline</th>
-                                    <th className="th">Status</th>
+                                    <th className="th text-rose-gold">Vendor</th>
+                                    <th className="th text-rose-gold">Kategori</th>
+                                    <th className="th text-rose-gold">Deadline</th>
+                                    <th className="th text-rose-gold">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -343,9 +343,9 @@ export default function Dashboard() {
                                     }
                                     const badge = sisa <= 14 ? 'badge-red' : sisa <= 30 ? 'badge-yellow' : 'badge-green'
                                     return (
-                                        <tr key={v.id} className="tr hover:bg-ivory/30 group">
-                                            <td className="td font-bold text-brown">{v.nama}</td>
-                                            <td className="td"><span className="text-[10px] font-bold text-brown-muted bg-ivory px-2 py-0.5 rounded-md">{v.kategori}</span></td>
+                                        <tr key={v.id} className="tr hover:bg-ivory/10 group">
+                                            <td className="td font-bold text-rose-gold">{v.nama}</td>
+                                            <td className="td"><span className="text-[10px] font-bold text-brown-muted bg-ivory/10 px-2 py-0.5 rounded-md">{v.kategori}</span></td>
                                             <td className="td text-brown-muted text-xs font-medium">
                                                 {v.deadline_pelunasan ? new Date(v.deadline_pelunasan).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '—'}
                                             </td>
