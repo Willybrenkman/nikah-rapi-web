@@ -53,7 +53,7 @@ export function WeddingProvider({ children }) {
   useEffect(() => {
     fetchWedding()
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') fetchWedding()
+      if (event === 'SIGNED_IN') fetchWedding()
       if (event === 'SIGNED_OUT') { setWedding(null); setHMin(null) }
     })
     return () => subscription.unsubscribe()

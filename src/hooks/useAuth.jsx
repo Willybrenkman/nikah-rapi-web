@@ -57,8 +57,14 @@ export function AuthProvider({ children }) {
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
           if (session?.user) {
             setUser(session.user)
-            setLoading(true)
-            await checkAccess(session.user.id)
+            
+            // Saat ganti tab, Supabase sering trigger TOKEN_REFRESHED.
+            // Kita tidak perlu re-check access dan memunculkan loading screen
+            // karena session sudah aktif.
+            if (event === 'SIGNED_IN') {
+              setLoading(true)
+              await checkAccess(session.user.id)
+            }
           }
         } else if (event === 'SIGNED_OUT') {
           setUser(null)
