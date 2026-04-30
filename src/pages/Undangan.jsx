@@ -173,8 +173,8 @@ export default function Undangan() {
                                 </div>
                             </div>
                             <div className="flex gap-2">
-                                <button className="btn-outline w-1/3 py-4 text-xs font-black uppercase tracking-widest active:scale-95 transition-all text-danger border-danger hover:bg-danger hover:text-white" onClick={resetStats}>Reset</button>
-                                <button className="btn-rose w-2/3 py-4 text-xs font-black uppercase tracking-widest shadow-lg shadow-rose-gold/20 active:scale-95 transition-all" onClick={saveStats}>Simpan Perubahan</button>
+                                <button className="btn-outline justify-center w-1/3 py-4 text-xs font-black uppercase tracking-widest active:scale-95 transition-all text-danger border-danger hover:bg-danger hover:text-white" onClick={resetStats}>Reset</button>
+                                <button className="btn-rose justify-center w-2/3 py-4 text-xs font-black uppercase tracking-widest shadow-lg shadow-rose-gold/20 active:scale-95 transition-all" onClick={saveStats}>Simpan Perubahan</button>
                             </div>
                         </div>
                     </div>

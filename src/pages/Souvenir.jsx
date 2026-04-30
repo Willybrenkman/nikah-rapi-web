@@ -275,7 +275,7 @@ export default function Souvenir() {
                                             <div className="text-[10px] text-brown-muted">{v.pic_hp || '-'}</div>
                                         </td>
                                         <td className="td">
-                                            <span className="bg-ivory/50 text-brown px-3 py-1 rounded-xl border border-border text-xs font-bold">
+                                            <span className="inline-block bg-ivory/50 text-brown px-3 py-1 rounded-xl border border-border text-xs font-bold">
                                                 🎁 {v.jenis_souvenir || '-'}
                                             </span>
                                         </td>
