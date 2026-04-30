@@ -69,14 +69,23 @@ export default function BudgetPlanner() {
 
     const handleSave = async () => {
         if (!form.kategori) { toast.error('Nama kategori wajib diisi!'); return }
+        
+        const est = Number(form.jumlah_estimasi) || 0;
+        const act = Number(form.jumlah_aktual) || 0;
+        
+        if (est < 0 || act < 0) {
+            toast.error('Nominal dana tidak boleh minus!');
+            return;
+        }
+        
         setSaving(true)
         
         try {
             const payload = { 
                 kategori: form.kategori,
                 tipe: form.tipe,
-                jumlah_estimasi: Number(form.jumlah_estimasi) || 0, 
-                jumlah_aktual: Number(form.jumlah_aktual) || 0, 
+                jumlah_estimasi: est, 
+                jumlah_aktual: act, 
                 catatan: form.catatan,
                 file_url: form.file_url,
                 wedding_id: wedding.id 

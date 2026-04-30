@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
-import { confirmDelete } from '../lib/swal'
+import { confirmDelete, confirmWarning } from '../lib/swal'
 import toast from 'react-hot-toast'
 import EmptyState from '../components/EmptyState'
 import { exportService } from '../lib/exportService'
@@ -142,9 +142,17 @@ export default function GuestList() {
                     .maybeSingle()
 
                 if (existing) {
-                    toast.error(`Tamu dengan nama "${existing.nama}" sudah ada di daftar!`)
-                    setSaving(false)
-                    return
+                    const result = await confirmWarning(
+                        'Kemungkinan Data Ganda',
+                        `Tamu dengan nama "${existing.nama}" sudah terdaftar. Apakah ini orang yang berbeda?`,
+                        'Ya, Simpan Data Baru',
+                        'Batal'
+                    )
+                    
+                    if (!result.isConfirmed) {
+                        setSaving(false)
+                        return
+                    }
                 }
             }
 

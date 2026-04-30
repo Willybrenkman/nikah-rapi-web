@@ -22,6 +22,27 @@ export const confirmDelete = (title = 'Hapus item ini?', text = 'Data yang dihap
     })
 }
 
+export const confirmWarning = (title, text, confirmText = 'Lanjutkan', cancelText = 'Batal') => {
+    return Swal.fire({
+        title: title,
+        text: text,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#C9956C', // Rose Gold
+        cancelButtonColor: '#9B8070', // Muted Brown
+        confirmButtonText: confirmText,
+        cancelButtonText: cancelText,
+        background: '#fff',
+        color: '#5D4037',
+        customClass: {
+            popup: 'rounded-3xl border-none shadow-2xl',
+            title: 'font-playfair font-bold',
+            confirmButton: 'rounded-xl px-6 py-3 font-bold uppercase tracking-widest text-xs',
+            cancelButton: 'rounded-xl px-6 py-3 font-bold uppercase tracking-widest text-xs'
+        }
+    })
+}
+
 export const alertSuccess = (title, text) => {
     return Swal.fire({
         title: title,
