@@ -113,9 +113,9 @@ export default function TimelineAcara() {
                                     {displayed.filter(i => i.sesi === sesi).map(item => (
                                         <div key={item.id} className="relative group/item">
                                             {/* Dot */}
-                                            <div className="absolute -left-[36px] top-2 w-4 h-4 rounded-full bg-white border-[3px] border-rose-gold shadow-sm z-10 group-hover/item:scale-125 transition-transform"></div>
+                                            <div className="absolute -left-[36px] top-2 w-4 h-4 rounded-full bg-[var(--card-bg)] border-[3px] border-rose-gold shadow-sm z-10 group-hover/item:scale-125 transition-transform"></div>
                                             
-                                            <div className="bg-white border border-ivory/50 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group/card relative overflow-hidden">
+                                            <div className="bg-[var(--card-bg)] border border-border rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group/card relative overflow-hidden">
                                                 <div className="absolute top-0 right-0 w-24 h-24 bg-rose-gold/5 rounded-bl-full -mr-8 -mt-8 transition-all group-hover/card:scale-110"></div>
                                                 
                                                 <div className="flex justify-between items-start mb-3 relative z-10">
