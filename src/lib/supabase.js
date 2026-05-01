@@ -16,6 +16,10 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,
-    storage: window.sessionStorage
+    // ✅ FIX: Gunakan localStorage untuk session persistence yang lebih stabil.
+    // sessionStorage bersifat per-tab dan bisa hilang di edge cases tertentu.
+    // localStorage bertahan lintas tab dan lebih reliable untuk token refresh.
+    // Keamanan tetap terjaga karena ada inactivity timeout (30 menit) di App.jsx.
+    storage: window.localStorage
   },
 });
