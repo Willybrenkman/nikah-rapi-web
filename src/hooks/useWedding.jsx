@@ -4,39 +4,71 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from './useAuth'
 
 const WeddingContext = createContext(null)
+const WEDDING_CACHE_KEY = 'nr_wedding'
+
+// Helper: baca cache dari localStorage
+function readCache() {
+  try {
+    const raw = localStorage.getItem(WEDDING_CACHE_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch { return null }
+}
+
+// Helper: tulis cache ke localStorage
+function writeCache(data) {
+  try {
+    if (data) {
+      localStorage.setItem(WEDDING_CACHE_KEY, JSON.stringify(data))
+    } else {
+      localStorage.removeItem(WEDDING_CACHE_KEY)
+    }
+  } catch {}
+}
+
+// Helper: hitung hari menuju pernikahan
+function calcHMin(tanggal) {
+  if (!tanggal) return null
+  const diff = Math.ceil((new Date(tanggal) - new Date()) / 86_400_000)
+  return Math.max(0, diff)
+}
 
 export function WeddingProvider({ children }) {
-  // ✅ FIX: Ambil user dari auth context, bukan dari getUser() network call
-  const { user, loading: authLoading } = useAuth()
-  
-  const [wedding, setWedding] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [hMin, setHMin] = useState(null)
-  
-  // ✅ FIX: Cache user ID terakhir yang di-fetch untuk mencegah 
-  // re-fetch saat tab switch (user object baru tapi ID sama)
+  const { user } = useAuth()
+
+  // ✅ Baca cached wedding data untuk instant rendering saat refresh
+  const cachedRef = useRef(readCache())
+
+  const [wedding, setWedding] = useState(cachedRef.current)
+  const [loading, setLoading] = useState(!cachedRef.current) // false jika ada cache!
+  const [hMin, setHMin] = useState(() => calcHMin(cachedRef.current?.tanggal_pernikahan))
   const lastFetchedUserId = useRef(null)
+
+  const updateWedding = useCallback((data) => {
+    setWedding(data)
+    setHMin(calcHMin(data?.tanggal_pernikahan))
+    writeCache(data)
+  }, [])
 
   const fetchWedding = useCallback(async (userId, force = false) => {
     if (!userId) {
-      setWedding(null)
-      setHMin(null)
+      updateWedding(null)
       setLoading(false)
       lastFetchedUserId.current = null
       return
     }
 
-    // ✅ FIX: Skip fetch jika sudah punya data untuk user yang sama
-    // Ini mencegah loading spinner muncul saat pindah tab
+    // Skip fetch jika sudah punya data untuk user yang sama
     if (!force && lastFetchedUserId.current === userId) {
       setLoading(false)
       return
     }
 
-    setLoading(true)
+    // ✅ Jika ada cache, JANGAN tampilkan loading — refresh di background
+    if (!cachedRef.current) {
+      setLoading(true)
+    }
+
     try {
-      // ✅ FIX: Tidak lagi memanggil supabase.auth.getUser() (network call!)
-      // User sudah didapat dari auth context (di-cache di memory)
       const { data, error } = await supabase
         .from('wedding_profiles')
         .select('*')
@@ -44,49 +76,43 @@ export function WeddingProvider({ children }) {
         .single()
 
       if (error || !data) {
-        // User ada tapi belum punya profile → arahkan ke onboarding
-        setWedding(null)
-        setHMin(null)
+        updateWedding(null)
       } else {
-        setWedding(data)
-
-        if (data.tanggal_pernikahan) {
-          const diff = Math.ceil((new Date(data.tanggal_pernikahan) - new Date()) / 86_400_000)
-          setHMin(Math.max(0, diff))
-        } else {
-          setHMin(null)
-        }
+        updateWedding(data)
+        cachedRef.current = data
       }
-
       lastFetchedUserId.current = userId
     } catch (err) {
       console.error('useWedding error:', err)
-      setWedding(null)
+      // Jika network error tapi ada cache, tetap gunakan cache
+      if (!cachedRef.current) {
+        updateWedding(null)
+      }
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [updateWedding])
 
-  // ✅ FIX: React ke auth context changes, bukan buat listener onAuthStateChange sendiri
-  // Ini menghapus listener duplikat yang menyebabkan double API calls → 429
+  // ✅ React ke user changes langsung — TIDAK tunggu authLoading
+  // Ini membuat wedding fetch berjalan PARALEL dengan checkAccess
   useEffect(() => {
-    // Tunggu auth selesai loading sebelum fetch wedding
-    if (authLoading) return
+    if (user === undefined) return // Auth belum dicek, keep cached data
 
     if (user?.id) {
       fetchWedding(user.id)
     } else {
-      setWedding(null)
-      setHMin(null)
+      // user === null → signed out
+      updateWedding(null)
       setLoading(false)
       lastFetchedUserId.current = null
+      cachedRef.current = null
     }
-  }, [user?.id, authLoading, fetchWedding])
+  }, [user, fetchWedding, updateWedding])
 
-  // Fungsi refetch yang bisa dipanggil manual (dari OnBoarding, Pengaturan, dll)
   const refetch = useCallback(() => {
     if (user?.id) {
-      lastFetchedUserId.current = null // Reset cache agar force fetch
+      lastFetchedUserId.current = null
+      cachedRef.current = null
       return fetchWedding(user.id, true)
     }
   }, [user?.id, fetchWedding])

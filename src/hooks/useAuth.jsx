@@ -1,21 +1,29 @@
-import React, { createContext, useContext, useEffect, useState, useRef } from 'react'
+import React, { createContext, useContext, useEffect, useState, useRef, useMemo } from 'react'
 import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext()
+const ACCESS_CACHE_KEY = 'nr_access'
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const [hasAccess, setHasAccess] = useState(false)
+  // ✅ Baca cached access untuk instant rendering saat refresh
+  const cachedAccess = useMemo(() => {
+    try { return localStorage.getItem(ACCESS_CACHE_KEY) === '1' }
+    catch { return false }
+  }, [])
+
+  const [user, setUser] = useState(undefined) // undefined = belum dicek, null = tidak ada
+  const [hasAccess, setHasAccess] = useState(cachedAccess)
   const [loading, setLoading] = useState(true)
-  
-  // ✅ FIX: Track apakah initial auth sudah selesai
-  // Setelah initial auth, JANGAN PERNAH set loading=true lagi
-  // Ini mencegah loading spinner muncul saat pindah tab
   const initializedRef = useRef(false)
+
+  const setAccessWithCache = (value) => {
+    setHasAccess(value)
+    try { localStorage.setItem(ACCESS_CACHE_KEY, value ? '1' : '0') } catch {}
+  }
 
   const checkAccess = async (userId) => {
     if (!userId) {
-      setHasAccess(false)
+      setAccessWithCache(false)
       return
     }
     try {
@@ -24,18 +32,16 @@ export function AuthProvider({ children }) {
         .select('id')
         .eq('used_by', userId)
         .limit(1)
-
-      setHasAccess(data && data.length > 0)
+      setAccessWithCache(data && data.length > 0)
     } catch (err) {
       console.error('checkAccess error:', err)
-      setHasAccess(false)
+      // On error, keep cached value (don't break UX)
     }
   }
 
   useEffect(() => {
     let mounted = true
 
-    // 1. Cek session yang sudah ada saat mount
     const initAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession()
@@ -43,14 +49,29 @@ export function AuthProvider({ children }) {
 
         if (session?.user) {
           setUser(session.user)
-          await checkAccess(session.user.id)
+
+          if (cachedAccess) {
+            // ✅ FAST PATH: Cached access → stop loading instantly
+            // Verify di background tanpa blocking UI
+            setLoading(false)
+            initializedRef.current = true
+            checkAccess(session.user.id) // fire-and-forget
+          } else {
+            // SLOW PATH: No cache → harus verify dulu
+            await checkAccess(session.user.id)
+            if (mounted) {
+              setLoading(false)
+              initializedRef.current = true
+            }
+          }
         } else {
           setUser(null)
-          setHasAccess(false)
+          setAccessWithCache(false)
+          setLoading(false)
+          initializedRef.current = true
         }
       } catch (err) {
         console.error('initAuth error:', err)
-      } finally {
         if (mounted) {
           setLoading(false)
           initializedRef.current = true
@@ -60,7 +81,6 @@ export function AuthProvider({ children }) {
 
     initAuth()
 
-    // 2. Listen perubahan auth (login / logout / token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (!mounted) return
@@ -68,32 +88,25 @@ export function AuthProvider({ children }) {
         if (event === 'SIGNED_IN') {
           if (session?.user) {
             setUser(session.user)
-
             if (initializedRef.current) {
-              // ✅ FIX: Setelah initial auth selesai, re-check access 
-              // di background TANPA menampilkan loading spinner.
-              // Ini mencegah flash loading saat pindah tab Chrome.
-              checkAccess(session.user.id) // fire-and-forget, no await
+              checkAccess(session.user.id) // background
             } else {
-              // Fresh login pertama kali - tunggu checkAccess selesai
               await checkAccess(session.user.id)
               setLoading(false)
               initializedRef.current = true
             }
           }
         } else if (event === 'TOKEN_REFRESHED') {
-          // ✅ Token refresh saat ganti tab — hanya update user object,
-          // JANGAN trigger loading atau re-check access
           if (session?.user) {
             setUser(session.user)
           }
         } else if (event === 'SIGNED_OUT') {
           setUser(null)
-          setHasAccess(false)
+          setAccessWithCache(false)
           setLoading(false)
           initializedRef.current = false
+          try { localStorage.removeItem(ACCESS_CACHE_KEY) } catch {}
         }
-        // INITIAL_SESSION event (Supabase v2.39+) sudah di-handle oleh initAuth()
       }
     )
 
@@ -106,8 +119,9 @@ export function AuthProvider({ children }) {
   const signOut = async () => {
     await supabase.auth.signOut()
     setUser(null)
-    setHasAccess(false)
+    setAccessWithCache(false)
     initializedRef.current = false
+    try { localStorage.removeItem(ACCESS_CACHE_KEY) } catch {}
   }
 
   const refreshAccess = async () => {
