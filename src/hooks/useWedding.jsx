@@ -5,8 +5,8 @@ import { useAuth } from './useAuth'
 
 const WeddingContext = createContext(null)
 const WEDDING_CACHE_KEY = 'nr_wedding'
+const WEDDING_TIMEOUT_MS = 8000
 
-// Helper: baca cache dari localStorage
 function readCache() {
   try {
     const raw = localStorage.getItem(WEDDING_CACHE_KEY)
@@ -14,18 +14,13 @@ function readCache() {
   } catch { return null }
 }
 
-// Helper: tulis cache ke localStorage
 function writeCache(data) {
   try {
-    if (data) {
-      localStorage.setItem(WEDDING_CACHE_KEY, JSON.stringify(data))
-    } else {
-      localStorage.removeItem(WEDDING_CACHE_KEY)
-    }
+    if (data) localStorage.setItem(WEDDING_CACHE_KEY, JSON.stringify(data))
+    else localStorage.removeItem(WEDDING_CACHE_KEY)
   } catch {}
 }
 
-// Helper: hitung hari menuju pernikahan
 function calcHMin(tanggal) {
   if (!tanggal) return null
   const diff = Math.ceil((new Date(tanggal) - new Date()) / 86_400_000)
@@ -35,11 +30,9 @@ function calcHMin(tanggal) {
 export function WeddingProvider({ children }) {
   const { user } = useAuth()
 
-  // ✅ Baca cached wedding data untuk instant rendering saat refresh
   const cachedRef = useRef(readCache())
-
   const [wedding, setWedding] = useState(cachedRef.current)
-  const [loading, setLoading] = useState(!cachedRef.current) // false jika ada cache!
+  const [loading, setLoading] = useState(!cachedRef.current)
   const [hMin, setHMin] = useState(() => calcHMin(cachedRef.current?.tanggal_pernikahan))
   const lastFetchedUserId = useRef(null)
 
@@ -57,13 +50,12 @@ export function WeddingProvider({ children }) {
       return
     }
 
-    // Skip fetch jika sudah punya data untuk user yang sama
     if (!force && lastFetchedUserId.current === userId) {
       setLoading(false)
       return
     }
 
-    // ✅ Jika ada cache, JANGAN tampilkan loading — refresh di background
+    // Jika ada cache, jangan tampilkan loading
     if (!cachedRef.current) {
       setLoading(true)
     }
@@ -84,7 +76,6 @@ export function WeddingProvider({ children }) {
       lastFetchedUserId.current = userId
     } catch (err) {
       console.error('useWedding error:', err)
-      // Jika network error tapi ada cache, tetap gunakan cache
       if (!cachedRef.current) {
         updateWedding(null)
       }
@@ -93,13 +84,16 @@ export function WeddingProvider({ children }) {
     }
   }, [updateWedding])
 
-  // ✅ React ke user changes langsung — TIDAK tunggu authLoading
-  // Ini membuat wedding fetch berjalan PARALEL dengan checkAccess
-  useEffect(() => {
-    if (user === undefined) return // Auth belum dicek, keep cached data
+  // ✅ Gunakan user?.id sebagai dependency (primitive, stabil)
+  // bukan user (object reference yang berubah terus)
+  const userId = user?.id
+  const isUserChecked = user !== undefined
 
-    if (user?.id) {
-      fetchWedding(user.id)
+  useEffect(() => {
+    if (!isUserChecked) return // Auth belum dicek
+
+    if (userId) {
+      fetchWedding(userId)
     } else {
       // user === null → signed out
       updateWedding(null)
@@ -107,15 +101,27 @@ export function WeddingProvider({ children }) {
       lastFetchedUserId.current = null
       cachedRef.current = null
     }
-  }, [user, fetchWedding, updateWedding])
+  }, [userId, isUserChecked, fetchWedding, updateWedding])
+
+  // ✅ Safety timeout: jangan stuck loading forever
+  useEffect(() => {
+    if (!loading) return
+    const t = setTimeout(() => {
+      if (loading) {
+        console.warn('Wedding fetch timeout - forcing loading=false')
+        setLoading(false)
+      }
+    }, WEDDING_TIMEOUT_MS)
+    return () => clearTimeout(t)
+  }, [loading])
 
   const refetch = useCallback(() => {
-    if (user?.id) {
+    if (userId) {
       lastFetchedUserId.current = null
       cachedRef.current = null
-      return fetchWedding(user.id, true)
+      return fetchWedding(userId, true)
     }
-  }, [user?.id, fetchWedding])
+  }, [userId, fetchWedding])
 
   return (
     <WeddingContext.Provider value={{ wedding, loading, hMin, refetch }}>

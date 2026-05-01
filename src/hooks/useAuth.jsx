@@ -4,14 +4,16 @@ import { supabase } from '../lib/supabase'
 const AuthContext = createContext()
 const ACCESS_CACHE_KEY = 'nr_access'
 
+// ✅ Safety timeout: jangan pernah stuck loading lebih dari 5 detik
+const AUTH_TIMEOUT_MS = 5000
+
 export function AuthProvider({ children }) {
-  // ✅ Baca cached access untuk instant rendering saat refresh
   const cachedAccess = useMemo(() => {
     try { return localStorage.getItem(ACCESS_CACHE_KEY) === '1' }
     catch { return false }
   }, [])
 
-  const [user, setUser] = useState(undefined) // undefined = belum dicek, null = tidak ada
+  const [user, setUser] = useState(undefined)
   const [hasAccess, setHasAccess] = useState(cachedAccess)
   const [loading, setLoading] = useState(true)
   const initializedRef = useRef(false)
@@ -35,12 +37,20 @@ export function AuthProvider({ children }) {
       setAccessWithCache(data && data.length > 0)
     } catch (err) {
       console.error('checkAccess error:', err)
-      // On error, keep cached value (don't break UX)
     }
   }
 
   useEffect(() => {
     let mounted = true
+
+    // ✅ Safety timeout: force stop loading jika initAuth hang
+    const timeoutId = setTimeout(() => {
+      if (mounted && loading) {
+        console.warn('Auth init timeout - forcing loading=false')
+        setLoading(false)
+        initializedRef.current = true
+      }
+    }, AUTH_TIMEOUT_MS)
 
     const initAuth = async () => {
       try {
@@ -51,13 +61,12 @@ export function AuthProvider({ children }) {
           setUser(session.user)
 
           if (cachedAccess) {
-            // ✅ FAST PATH: Cached access → stop loading instantly
-            // Verify di background tanpa blocking UI
+            // FAST PATH: cached access → instant render
             setLoading(false)
             initializedRef.current = true
-            checkAccess(session.user.id) // fire-and-forget
+            checkAccess(session.user.id) // background verify
           } else {
-            // SLOW PATH: No cache → harus verify dulu
+            // SLOW PATH: verify access first
             await checkAccess(session.user.id)
             if (mounted) {
               setLoading(false)
@@ -67,12 +76,15 @@ export function AuthProvider({ children }) {
         } else {
           setUser(null)
           setAccessWithCache(false)
-          setLoading(false)
-          initializedRef.current = true
+          if (mounted) {
+            setLoading(false)
+            initializedRef.current = true
+          }
         }
       } catch (err) {
         console.error('initAuth error:', err)
         if (mounted) {
+          setUser(null)
           setLoading(false)
           initializedRef.current = true
         }
@@ -89,11 +101,13 @@ export function AuthProvider({ children }) {
           if (session?.user) {
             setUser(session.user)
             if (initializedRef.current) {
-              checkAccess(session.user.id) // background
+              checkAccess(session.user.id)
             } else {
               await checkAccess(session.user.id)
-              setLoading(false)
-              initializedRef.current = true
+              if (mounted) {
+                setLoading(false)
+                initializedRef.current = true
+              }
             }
           }
         } else if (event === 'TOKEN_REFRESHED') {
@@ -112,6 +126,7 @@ export function AuthProvider({ children }) {
 
     return () => {
       mounted = false
+      clearTimeout(timeoutId)
       subscription.unsubscribe()
     }
   }, [])
