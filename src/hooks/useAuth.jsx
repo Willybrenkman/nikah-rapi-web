@@ -114,12 +114,23 @@ export function AuthProvider({ children }) {
           if (session?.user) {
             setUser(session.user)
           }
+        } else if (event === 'INITIAL_SESSION') {
+          // ✅ Supabase v2.39+ fires this on mount
+          // Sudah di-handle oleh initAuth(), abaikan saja
+          if (session?.user) {
+            setUser(session.user)
+          }
         } else if (event === 'SIGNED_OUT') {
-          setUser(null)
-          setAccessWithCache(false)
-          setLoading(false)
-          initializedRef.current = false
-          try { localStorage.removeItem(ACCESS_CACHE_KEY) } catch {}
+          // ✅ FIX: Hanya handle SIGNED_OUT SETELAH initial auth selesai!
+          // Ini mencegah race condition dimana token refresh gagal (slow/429)
+          // memicu SIGNED_OUT sebelum initAuth() selesai → user ke-kick
+          if (initializedRef.current) {
+            setUser(null)
+            setAccessWithCache(false)
+            setLoading(false)
+            initializedRef.current = false
+            try { localStorage.removeItem(ACCESS_CACHE_KEY) } catch {}
+          }
         }
       }
     )
