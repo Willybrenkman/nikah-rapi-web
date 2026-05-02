@@ -4,7 +4,7 @@ import { Toaster } from 'react-hot-toast'
 import { useAuth } from './hooks/useAuth'
 import { supabase } from './lib/supabase'
 import Layout from './components/layout/Layout'
-import TelegramButton from './components/TelegramButton'
+import WhatsAppButton from './components/WhatsAppButton'
 
 // Auth pages
 import Login from './pages/Login'
@@ -97,7 +97,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Toaster position="top-right" toastOptions={{ style: { fontFamily: "'DM Sans',sans-serif", fontSize: 14 } }} />
-      <TelegramButton />
+      <WhatsAppButton />
       <Routes>
         {/* ── Public ── */}
         <Route path="/login" element={<Login />} />
