@@ -28,11 +28,11 @@ function calcHMin(tanggal) {
 }
 
 export function WeddingProvider({ children }) {
-  const { user } = useAuth()
+  const { user, loading: authLoading } = useAuth()
 
   const cachedRef = useRef(readCache())
   const [wedding, setWedding] = useState(cachedRef.current)
-  const [loading, setLoading] = useState(!cachedRef.current)
+  const [loading, setLoading] = useState(true) // ✅ Selalu mulai true, tunggu auth selesai
   const [hMin, setHMin] = useState(() => calcHMin(cachedRef.current?.tanggal_pernikahan))
   const lastFetchedUserId = useRef(null)
 
@@ -88,24 +88,22 @@ export function WeddingProvider({ children }) {
     }
   }, [updateWedding])
 
-  // ✅ Gunakan user?.id sebagai dependency (primitive, stabil)
-  // bukan user (object reference yang berubah terus)
   const userId = user?.id
-  const isUserChecked = user !== undefined
 
+  // ✅ FIX: Tunggu auth selesai loading sebelum mengambil keputusan
   useEffect(() => {
-    if (!isUserChecked) return // Auth belum dicek
+    if (authLoading) return // Auth belum selesai, jangan lakukan apa-apa
 
     if (userId) {
       fetchWedding(userId)
     } else {
-      // user === null → signed out
+      // user === null & auth sudah selesai → benar-benar signed out
       updateWedding(null)
       setLoading(false)
       lastFetchedUserId.current = null
       cachedRef.current = null
     }
-  }, [userId, isUserChecked, fetchWedding, updateWedding])
+  }, [userId, authLoading, fetchWedding, updateWedding])
 
   // ✅ Safety timeout: jangan stuck loading forever
   useEffect(() => {
