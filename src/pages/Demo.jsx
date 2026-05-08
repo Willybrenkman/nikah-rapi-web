@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js';
-import { Doughnut, Bar } from 'react-chartjs-2';
+import { Doughnut, Bar, Pie } from 'react-chartjs-2';
 
 ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
@@ -116,16 +116,8 @@ const Demo = () => {
           <main className="main-content relative p-4 md:p-8">
             <div className={isLocked ? "blur-[6px] opacity-60 pointer-events-none select-none transition-all duration-500" : ""}>
               {activeMenu === 'Dashboard Utama' && <DemoDashboard />}
-              {activeMenu === 'Budget Planner' && (
-                <div className="animate-fade-in">
-                  <img src="/landing-assets/budget.png" alt="Budget Planner" className="rounded-xl shadow-sm border border-[#E8D5B0]/30 w-full" />
-                </div>
-              )}
-              {activeMenu === 'Seserahan Tracker ✦' && (
-                <div className="animate-fade-in">
-                  <img src="/landing-assets/seserahan.png" alt="Seserahan Tracker" className="rounded-xl shadow-sm border border-[#E8D5B0]/30 w-full" />
-                </div>
-              )}
+              {activeMenu === 'Budget Planner' && <DemoBudget />}
+              {activeMenu === 'Seserahan Tracker ✦' && <DemoSeserahan />}
               {/* Fallback for locked menus to show something to blur over */}
               {activeMenu !== 'Dashboard Utama' && activeMenu !== 'Budget Planner' && activeMenu !== 'Seserahan Tracker ✦' && (
                  <DemoDashboard />
@@ -337,4 +329,272 @@ const DemoDashboard = () => {
   );
 };
 
+// ==========================================
+// DEMO BUDGET PLANNER (INTERACTIVE)
+// ==========================================
+const DemoBudget = () => {
+  const rp = (n = 0) => 'Rp ' + Number(n).toLocaleString('id-ID');
+  const COLORS = ['#C9956C', '#E8C4B8', '#8BAF8B', '#D4756B', '#E8A87C'];
+
+  const items = [
+    { id: 1, kategori: 'Gedung & Venue', icon: '🏢', jumlah_estimasi: 25000000, jumlah_aktual: 25000000 },
+    { id: 2, kategori: 'Katering (500 Pax)', icon: '🍽️', jumlah_estimasi: 45000000, jumlah_aktual: 20000000 },
+    { id: 3, kategori: 'MUA & Kebaya', icon: '💄', jumlah_estimasi: 15000000, jumlah_aktual: 5000000 },
+    { id: 4, kategori: 'Dekorasi Pelaminan', icon: '🌸', jumlah_estimasi: 10000000, jumlah_aktual: 0 },
+    { id: 5, kategori: 'Undangan Digital', icon: '💌', jumlah_estimasi: 500000, jumlah_aktual: 500000 },
+  ];
+
+  const totalEst = items.reduce((a, i) => a + i.jumlah_estimasi, 0);
+  const totalReal = items.reduce((a, i) => a + i.jumlah_aktual, 0);
+  const sisa = totalEst - totalReal;
+
+  return (
+    <div className="animate-fade-in pb-12">
+      <div className="section-header">
+        <div>
+          <h1 className="section-title">Perencana Anggaran 💰</h1>
+          <p className="section-subtitle">Pantau rencana estimasi dan realisasi pengeluaran pernikahan kalian</p>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+        <div className="stat-card hover:shadow-xl transition-all hover:-translate-y-1">
+          <div className="w-12 h-12 rounded-2xl bg-rose-gold/10 flex items-center justify-center text-xl mb-4">📋</div>
+          <div className="font-playfair text-2xl font-bold text-brown leading-tight">{rp(totalEst)}</div>
+          <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Total Estimasi Awal</div>
+        </div>
+        <div className="stat-card hover:shadow-xl transition-all hover:-translate-y-1">
+          <div className="w-12 h-12 rounded-2xl bg-danger/5 flex items-center justify-center text-xl mb-4">💸</div>
+          <div className="font-playfair text-2xl font-bold text-brown leading-tight">{rp(totalReal)}</div>
+          <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Total Realisasi Dana</div>
+        </div>
+        <div className="stat-card hover:shadow-xl transition-all hover:-translate-y-1">
+          <div className="w-12 h-12 rounded-2xl bg-sage/10 flex items-center justify-center text-xl mb-4">✨</div>
+          <div className="font-playfair text-2xl font-bold text-brown leading-tight">{rp(sisa)}</div>
+          <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Sisa Anggaran</div>
+        </div>
+      </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
+        <div className="card lg:col-span-2 shadow-sm">
+          <div className="p-6 border-b border-[var(--border)]">
+            <h2 className="font-playfair text-lg font-bold text-brown">Alokasi Dana per Kategori</h2>
+          </div>
+          <div className="p-8 h-[340px]">
+            <Pie 
+              data={{ 
+                labels: items.map(i => i.kategori), 
+                datasets: [{ data: items.map(i => i.jumlah_estimasi), backgroundColor: COLORS, borderWidth: 0, hoverOffset: 20 }] 
+              }}
+              options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, usePointStyle: true, padding: 20, boxWidth: 8 } } } }} 
+            />
+          </div>
+        </div>
+        <div className="card lg:col-span-3 shadow-sm">
+          <div className="p-6 border-b border-[var(--border)]">
+            <h2 className="font-playfair text-lg font-bold text-brown">Komparasi Estimasi vs Aktual</h2>
+          </div>
+          <div className="p-8 h-[340px]">
+            <Bar 
+              data={{
+                labels: items.map(i => i.kategori),
+                datasets: [
+                  { label: 'Estimasi', data: items.map(i => i.jumlah_estimasi), backgroundColor: '#C9956C50', borderRadius: 6, barThickness: 16 },
+                  { label: 'Aktual', data: items.map(i => i.jumlah_aktual), backgroundColor: '#8BAF8BCC', borderRadius: 6, barThickness: 16 },
+                ]
+              }} 
+              options={{ 
+                responsive: true, maintainAspectRatio: false, 
+                plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, usePointStyle: true, padding: 20, boxWidth: 8 } } }, 
+                scales: { y: { beginAtZero: true, grid: { color: '#F0E6DF' }, ticks: { font: { size: 9 }, color: '#826A5E' } }, x: { grid: { display: false }, ticks: { font: { size: 9 }, color: '#5C4033' } } } 
+              }} 
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="card p-0 overflow-hidden shadow-sm">
+        <div className="p-6 border-b border-[var(--border)] flex justify-between items-center">
+          <h2 className="font-playfair text-xl font-bold text-brown">Rincian Pengeluaran Terperinci</h2>
+          <span className="text-[10px] font-bold text-brown-muted uppercase tracking-widest">{items.length} Kategori</span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-[var(--border)]">
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider w-12 text-center">No</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Kategori</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Estimasi</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Aktual</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Selisih</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Progres</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item, i) => {
+                const sel = item.jumlah_estimasi - item.jumlah_aktual;
+                const pct = item.jumlah_estimasi > 0 ? Math.min(100, Math.round(item.jumlah_aktual / item.jumlah_estimasi * 100)) : 0;
+                const badge = item.jumlah_aktual === 0 ? 'bg-[#9B8070]/10 text-[#9B8070]' : pct >= 100 ? 'bg-[#8BAF8B]/15 text-[#5C7361]' : 'bg-[#D4756B]/10 text-[#D4756B]';
+                const blabel = item.jumlah_aktual === 0 ? 'Belum Bayar' : pct >= 100 ? 'Lunas' : 'Bayar Sebagian';
+                return (
+                  <tr key={item.id} className="border-b border-[var(--border)] hover:bg-[var(--ivory)]/5 transition-colors">
+                    <td className="p-4 text-center text-[10px] text-brown-muted font-bold">{String(i + 1).padStart(2, '0')}</td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-[var(--ivory)]/50 flex items-center justify-center text-xl">{item.icon}</div>
+                        <span className="font-bold text-brown">{item.kategori}</span>
+                      </div>
+                    </td>
+                    <td className="p-4 text-[11px] font-bold text-brown-muted">{rp(item.jumlah_estimasi)}</td>
+                    <td className="p-4 text-[11px] font-bold text-brown">{rp(item.jumlah_aktual)}</td>
+                    <td className={`p-4 text-[11px] font-bold ${sel >= 0 ? 'text-[#8BAF8B]' : 'text-[#D4756B]'}`}>
+                      {sel >= 0 ? '+' : ''}{rp(Math.abs(sel))}
+                    </td>
+                    <td className="p-4 min-w-[140px]">
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 h-2 bg-[var(--ivory)] rounded-full overflow-hidden">
+                          <div className="progress-fill h-full rounded-full" style={{ width: `${pct}%` }} />
+                        </div>
+                        <span className="text-[10px] font-bold text-brown-muted">{pct}%</span>
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      <span className={`${badge} text-[9px] font-bold uppercase tracking-tight px-3 py-1.5 rounded-full`}>{blabel}</span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ==========================================
+// DEMO SESERAHAN TRACKER (INTERACTIVE)
+// ==========================================
+const DemoSeserahan = () => {
+  const rp = (n = 0) => 'Rp ' + Number(n).toLocaleString('id-ID');
+  const items = [
+    { id: 1, nama: 'Set Makeup Premium', kategori: 'Kecantikan', icon: '💄', estimasi: 2500000, aktual: 2450000, tempat_beli: 'Sephora', status: 'Sudah Beli' },
+    { id: 2, nama: 'Sepatu Kerja Pria', kategori: 'Fashion', icon: '👕', estimasi: 1200000, aktual: 0, tempat_beli: 'Zalora', status: 'Belum Beli' },
+    { id: 3, nama: 'Perhiasan Emas 24K', kategori: 'Perhiasan', icon: '💍', estimasi: 15000000, aktual: 15000000, tempat_beli: 'Toko Emas Sejahtera', status: 'Sudah Kemas' },
+    { id: 4, nama: 'Sarung & Peci Premium', kategori: 'Ibadah', icon: '🕋', estimasi: 800000, aktual: 750000, tempat_beli: 'Tokopedia', status: 'Sudah Kemas' },
+    { id: 5, nama: 'Tas Branded', kategori: 'Fashion', icon: '👜', estimasi: 5000000, aktual: 0, tempat_beli: 'Mall Central', status: 'Belum Beli' },
+    { id: 6, nama: 'Parfum Set', kategori: 'Kecantikan', icon: '🌸', estimasi: 1500000, aktual: 1500000, tempat_beli: 'Guardian', status: 'Sudah Beli' },
+  ];
+
+  const sudahKemas = items.filter(i => i.status === 'Sudah Kemas').length;
+  const totalEst = items.reduce((a, i) => a + i.estimasi, 0);
+  const pct = items.length > 0 ? Math.round(sudahKemas / items.length * 100) : 0;
+  const badgeMap = { 'Sudah Kemas': 'bg-[#8BAF8B]/15 text-[#5C7361]', 'Sudah Beli': 'bg-[#4A90D9]/10 text-[#4A90D9]', 'Belum Beli': 'bg-[#D4756B]/10 text-[#D4756B]' };
+  const labelMap = { 'Sudah Kemas': '✨ Siap', 'Sudah Beli': '🛒 Dibeli', 'Belum Beli': '📦 Belum' };
+
+  return (
+    <div className="animate-fade-in pb-12">
+      <div className="section-header">
+        <div>
+          <h1 className="section-title">Pelacak Seserahan 🎁 <span className="text-[10px] bg-rose-gold text-white px-2 py-0.5 rounded-full ml-2 align-middle font-bold">✦ Premium</span></h1>
+          <p className="section-subtitle">Daftar hantaran, progres pembelian, hingga pengemasan seserahan pernikahan</p>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="stat-card hover:shadow-xl transition-all">
+          <div className="w-12 h-12 rounded-2xl bg-rose-gold/10 flex items-center justify-center text-xl mb-4">🎁</div>
+          <div className="font-playfair text-2xl font-bold text-brown">{items.length}</div>
+          <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Total Hantaran</div>
+        </div>
+        <div className="stat-card hover:shadow-xl transition-all">
+          <div className="w-12 h-12 rounded-2xl bg-rose-gold/5 flex items-center justify-center text-xl mb-4">💰</div>
+          <div className="font-playfair text-2xl font-bold text-brown">{rp(totalEst)}</div>
+          <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Estimasi Biaya</div>
+        </div>
+        <div className="stat-card hover:shadow-xl transition-all">
+          <div className="w-12 h-12 rounded-2xl bg-sage/10 flex items-center justify-center text-xl mb-4">🎀</div>
+          <div className="font-playfair text-2xl font-bold text-brown">{sudahKemas}</div>
+          <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Siap / Dikemas</div>
+        </div>
+        <div className="stat-card hover:shadow-xl transition-all">
+          <div className="w-12 h-12 rounded-2xl bg-[var(--ivory)] flex items-center justify-center text-xl mb-4">⏳</div>
+          <div className="font-playfair text-2xl font-bold text-brown">{items.length - sudahKemas}</div>
+          <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Belum Selesai</div>
+        </div>
+      </div>
+
+      {/* Progress */}
+      <div className="card mb-10 p-6 md:p-10 shadow-sm overflow-hidden relative">
+        <div className="relative z-10">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-8">
+            <div>
+              <h3 className="font-playfair text-xl font-bold text-brown">Progres Persiapan Hantaran</h3>
+              <p className="text-[10px] font-bold text-brown-muted uppercase tracking-widest mt-1">Status Pengemasan & Kelengkapan</p>
+            </div>
+            <div className="md:text-right">
+              <span className="font-playfair text-4xl font-bold text-rose-gold">{pct}%</span>
+              <p className="text-[10px] font-bold text-brown-muted uppercase tracking-widest mt-1">{sudahKemas} dari {items.length} Item Selesai</p>
+            </div>
+          </div>
+          <div className="progress-track h-5 bg-[var(--ivory)] rounded-full p-1">
+            <div className="progress-fill h-full rounded-full transition-all duration-1000" style={{ width: `${pct}%` }} />
+          </div>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="card p-0 overflow-hidden shadow-sm">
+        <div className="p-6 border-b border-[var(--border)] flex items-center justify-between">
+          <h2 className="font-playfair text-xl font-bold text-brown">Rincian Barang Seserahan</h2>
+          <span className="text-[10px] font-bold text-brown-muted uppercase tracking-widest">{items.length} Item</span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-[var(--border)]">
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider w-12 text-center">No</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Nama Item</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Kategori</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Estimasi</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Aktual</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Toko</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item, i) => (
+                <tr key={item.id} className="border-b border-[var(--border)] hover:bg-[var(--ivory)]/5 transition-colors">
+                  <td className="p-4 text-center text-[10px] text-brown-muted font-bold">{String(i + 1).padStart(2, '0')}</td>
+                  <td className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-[var(--ivory)]/50 flex items-center justify-center text-xl">{item.icon}</div>
+                      <span className="font-bold text-brown">{item.nama}</span>
+                    </div>
+                  </td>
+                  <td className="p-4">
+                    <span className="bg-rose-gold/10 text-rose-gold text-[9px] font-bold uppercase px-3 py-1 rounded-full">{item.kategori}</span>
+                  </td>
+                  <td className="p-4 text-[11px] font-bold text-brown-muted">{rp(item.estimasi)}</td>
+                  <td className="p-4 text-[11px] font-bold text-brown">{item.aktual ? rp(item.aktual) : <span className="text-[9px] text-brown-muted/40 italic uppercase">Menunggu...</span>}</td>
+                  <td className="p-4 text-[10px] font-bold text-brown-muted">{item.tempat_beli}</td>
+                  <td className="p-4">
+                    <span className={`${badgeMap[item.status]} text-[9px] font-bold uppercase tracking-tight px-3 py-1.5 rounded-full`}>{labelMap[item.status]}</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default Demo;
+
