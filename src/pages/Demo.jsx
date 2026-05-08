@@ -32,7 +32,7 @@ const Demo = () => {
     { num: '01', icon: '📊', label: 'Dashboard Utama', locked: false },
     { num: '02', icon: '💰', label: 'Budget Planner', locked: false },
     { num: '03', icon: '📦', label: 'Seserahan Tracker ✦', locked: false },
-    { num: '04', icon: '🎁', label: 'Kado & Angpao ✦', locked: true },
+    { num: '04', icon: '🎁', label: 'Kado & Angpao ✦', locked: false },
     { num: '05', icon: '👥', label: 'Guest List', locked: true },
     { num: '06', icon: '✉️', label: 'RSVP Tracker', locked: true },
     { num: '07', icon: '🤝', label: 'Vendor Manager', locked: true },
@@ -107,7 +107,7 @@ const Demo = () => {
                 PREVIEW MODE
               </span>
               <button onClick={() => navigate('/')} className="text-xs font-bold text-brown-muted hover:text-rose-gold transition-colors border border-border px-3 py-1.5 rounded-lg">
-                Keluar Demo
+                ← Kembali
               </button>
             </div>
           </header>
@@ -118,10 +118,9 @@ const Demo = () => {
               {activeMenu === 'Dashboard Utama' && <DemoDashboard />}
               {activeMenu === 'Budget Planner' && <DemoBudget />}
               {activeMenu === 'Seserahan Tracker ✦' && <DemoSeserahan />}
-              {/* Fallback for locked menus to show something to blur over */}
-              {activeMenu !== 'Dashboard Utama' && activeMenu !== 'Budget Planner' && activeMenu !== 'Seserahan Tracker ✦' && (
-                 <DemoDashboard />
-              )}
+              {activeMenu === 'Kado & Angpao ✦' && <DemoKadoAngpao />}
+              {/* Unique placeholder per locked menu — keeps curiosity gap intact */}
+              {isLocked && <DemoLockedPlaceholder menuLabel={activeMenu} />}
             </div>
 
             {isLocked && (
@@ -586,6 +585,358 @@ const DemoSeserahan = () => {
                   <td className="p-4">
                     <span className={`${badgeMap[item.status]} text-[9px] font-bold uppercase tracking-tight px-3 py-1.5 rounded-full`}>{labelMap[item.status]}</span>
                   </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ==========================================
+// DEMO KADO & ANGPAO TRACKER (USP — must showcase)
+// ==========================================
+const DemoKadoAngpao = () => {
+  const rp = (n = 0) => 'Rp ' + Number(n).toLocaleString('id-ID');
+  const entries = [
+    { id: 1, nama: 'Pak Budi & Ibu Sari', hubungan: 'Keluarga Ayah', tipe: 'Angpao', nominal: 2000000, kado: '-', status: 'Sudah Terima Kasih', icon: '👨‍👩‍👧' },
+    { id: 2, nama: 'Tante Lina', hubungan: 'Keluarga Ibu', tipe: 'Angpao', nominal: 1500000, kado: '-', status: 'Sudah Terima Kasih', icon: '👩' },
+    { id: 3, nama: 'Pak Dharma (Bos)', hubungan: 'Kantor', tipe: 'Kado + Angpao', nominal: 3000000, kado: 'Set Peralatan Dapur', status: 'Belum', icon: '💼' },
+    { id: 4, nama: 'Andi & Maya', hubungan: 'Teman Kuliah', tipe: 'Angpao', nominal: 500000, kado: '-', status: 'Belum', icon: '👫' },
+    { id: 5, nama: 'Keluarga Sebelah', hubungan: 'Tetangga', tipe: 'Kado', nominal: 0, kado: 'Mesin Cuci Sharp', status: 'Sudah Terima Kasih', icon: '🏠' },
+    { id: 6, nama: 'Geng SMA', hubungan: 'Teman SMA', tipe: 'Kado + Angpao', nominal: 2500000, kado: 'Hampers + Voucher Belanja', status: 'Belum', icon: '👯' },
+    { id: 7, nama: 'Kak Reza', hubungan: 'Sepupu', tipe: 'Angpao', nominal: 1000000, kado: '-', status: 'Sudah Terima Kasih', icon: '👨' },
+  ];
+
+  const totalAngpao = entries.reduce((sum, e) => sum + e.nominal, 0);
+  const totalPemberi = entries.length;
+  const sudahTk = entries.filter(e => e.status === 'Sudah Terima Kasih').length;
+  const belumTk = totalPemberi - sudahTk;
+  const pctTk = totalPemberi > 0 ? Math.round(sudahTk / totalPemberi * 100) : 0;
+
+  // Aggregate by hubungan for chart
+  const byHubungan = entries.reduce((acc, e) => {
+    acc[e.hubungan] = (acc[e.hubungan] || 0) + e.nominal;
+    return acc;
+  }, {});
+  const hubunganLabels = Object.keys(byHubungan);
+  const hubunganValues = Object.values(byHubungan);
+  const COLORS = ['#C9956C', '#8BAF8B', '#D4756B', '#E8C4B8', '#9B8070', '#C9A96E'];
+
+  const badgeMap = { 'Sudah Terima Kasih': 'bg-[#8BAF8B]/15 text-[#5C7361]', 'Belum': 'bg-[#D4756B]/10 text-[#D4756B]' };
+  const labelMap = { 'Sudah Terima Kasih': '✓ Sudah TK', 'Belum': '⏰ Belum TK' };
+
+  return (
+    <div className="animate-fade-in pb-12">
+      <div className="section-header">
+        <div>
+          <h1 className="section-title">Kado & Angpao Tracker 🎁 <span className="text-[10px] bg-rose-gold text-white px-2 py-0.5 rounded-full ml-2 align-middle font-bold">✦ Eksklusif</span></h1>
+          <p className="section-subtitle">Catat semua pemberi, nominal angpao, dan kado — biar tidak ada yang lupa diucapkan terima kasih</p>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="stat-card hover:shadow-xl transition-all">
+          <div className="w-12 h-12 rounded-2xl bg-rose-gold/10 flex items-center justify-center text-xl mb-4">💰</div>
+          <div className="font-playfair text-2xl font-bold text-brown">{rp(totalAngpao)}</div>
+          <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Total Angpao Diterima</div>
+        </div>
+        <div className="stat-card hover:shadow-xl transition-all">
+          <div className="w-12 h-12 rounded-2xl bg-[#C9956C20] flex items-center justify-center text-xl mb-4">👥</div>
+          <div className="font-playfair text-2xl font-bold text-brown">{totalPemberi}</div>
+          <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Total Pemberi</div>
+        </div>
+        <div className="stat-card hover:shadow-xl transition-all">
+          <div className="w-12 h-12 rounded-2xl bg-sage/10 flex items-center justify-center text-xl mb-4">✓</div>
+          <div className="font-playfair text-2xl font-bold text-brown">{sudahTk}</div>
+          <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Sudah Diterima Kasih</div>
+        </div>
+        <div className="stat-card hover:shadow-xl transition-all">
+          <div className="w-12 h-12 rounded-2xl bg-[#D4756B20] flex items-center justify-center text-xl mb-4">⏰</div>
+          <div className="font-playfair text-2xl font-bold text-brown">{belumTk}</div>
+          <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Perlu Follow Up</div>
+        </div>
+      </div>
+
+      {/* Progress + Chart */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
+        <div className="card lg:col-span-2 shadow-sm">
+          <div className="p-6 border-b border-[var(--border)]">
+            <h3 className="text-lg font-bold text-brown font-playfair">Status Ucapan Terima Kasih</h3>
+            <p className="text-[10px] text-brown-muted uppercase tracking-widest mt-1">Yang sudah & belum dihubungi</p>
+          </div>
+          <div className="p-8 flex flex-col items-center justify-center h-[280px]">
+            <div className="relative w-40 h-40">
+              <Doughnut data={{
+                labels: ['Sudah TK', 'Belum TK'],
+                datasets: [{ data: [sudahTk, belumTk], backgroundColor: ['#8BAF8B', '#D4756B'], borderWidth: 0 }]
+              }} options={{ responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { display: false } } }} />
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <span className="font-playfair text-3xl font-bold text-brown">{pctTk}%</span>
+                <span className="text-[9px] text-brown-muted font-bold uppercase tracking-wider">Selesai</span>
+              </div>
+            </div>
+            <p className="text-xs text-brown-muted mt-4 text-center">{sudahTk} dari {totalPemberi} pemberi sudah diberi ucapan terima kasih</p>
+          </div>
+        </div>
+
+        <div className="card lg:col-span-3 shadow-sm">
+          <div className="p-6 border-b border-[var(--border)]">
+            <h2 className="font-playfair text-lg font-bold text-brown">Distribusi Angpao per Relasi</h2>
+            <p className="text-[10px] text-brown-muted uppercase tracking-widest mt-1">Dari mana saja dukungan finansial datang</p>
+          </div>
+          <div className="p-8 h-[280px]">
+            <Bar
+              data={{
+                labels: hubunganLabels,
+                datasets: [{ label: 'Total Angpao', data: hubunganValues, backgroundColor: COLORS, borderRadius: 6, barThickness: 22 }]
+              }}
+              options={{
+                indexAxis: 'y',
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { x: { beginAtZero: true, grid: { color: '#F0E6DF' }, ticks: { font: { size: 9 }, color: '#826A5E', callback: (v) => 'Rp ' + (v / 1000000) + 'jt' } }, y: { grid: { display: false }, ticks: { font: { size: 9 }, color: '#5C4033' } } }
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="card p-0 overflow-hidden shadow-sm">
+        <div className="p-6 border-b border-[var(--border)] flex items-center justify-between">
+          <h2 className="font-playfair text-xl font-bold text-brown">Daftar Pemberi & Pemberian</h2>
+          <span className="text-[10px] font-bold text-brown-muted uppercase tracking-widest">{entries.length} Pemberi</span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-[var(--border)]">
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider w-12 text-center">No</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Nama Pemberi</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Hubungan</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Tipe</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Nominal Angpao</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Kado</th>
+                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {entries.map((e, i) => (
+                <tr key={e.id} className="border-b border-[var(--border)] hover:bg-[var(--ivory)]/5 transition-colors">
+                  <td className="p-4 text-center text-[10px] text-brown-muted font-bold">{String(i + 1).padStart(2, '0')}</td>
+                  <td className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-[var(--ivory)]/50 flex items-center justify-center text-xl">{e.icon}</div>
+                      <span className="font-bold text-brown">{e.nama}</span>
+                    </div>
+                  </td>
+                  <td className="p-4 text-[11px] font-bold text-brown-muted">{e.hubungan}</td>
+                  <td className="p-4">
+                    <span className="bg-rose-gold/10 text-rose-gold text-[9px] font-bold uppercase px-3 py-1 rounded-full">{e.tipe}</span>
+                  </td>
+                  <td className="p-4 text-[11px] font-bold text-brown">{e.nominal > 0 ? rp(e.nominal) : <span className="text-[9px] text-brown-muted/40 italic">—</span>}</td>
+                  <td className="p-4 text-[10px] font-bold text-brown-muted">{e.kado === '-' ? <span className="text-[9px] text-brown-muted/40 italic">—</span> : e.kado}</td>
+                  <td className="p-4">
+                    <span className={`${badgeMap[e.status]} text-[9px] font-bold uppercase tracking-tight px-3 py-1.5 rounded-full`}>{labelMap[e.status]}</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ==========================================
+// DEMO LOCKED PLACEHOLDER (unique skeleton per menu)
+// Keeps curiosity gap intact — each locked menu shows
+// a different layout hint of what's inside.
+// ==========================================
+const DemoLockedPlaceholder = ({ menuLabel }) => {
+  // Strip the ✦ marker for matching
+  const key = menuLabel.replace(' ✦', '').trim();
+
+  // Per-menu config: hint of what user would see
+  const config = {
+    'Guest List': {
+      title: 'Daftar Tamu Undangan',
+      subtitle: 'Kelola data tamu, kategori, & alamat dalam satu tempat',
+      stats: [
+        { icon: '👥', label: 'Total Tamu', value: '247' },
+        { icon: '🏷️', label: 'Kategori', value: '8' },
+        { icon: '📍', label: 'Lokasi', value: '12 Kota' },
+        { icon: '✉️', label: 'Sudah Diundang', value: '189' },
+      ],
+      tableTitle: 'Daftar Tamu',
+      tableCols: ['No', 'Nama', 'Kategori', 'Hubungan', 'Kontak', 'Status'],
+      tableRows: 7,
+    },
+    'RSVP Tracker': {
+      title: 'RSVP Tracker',
+      subtitle: 'Pantau konfirmasi kehadiran tamu secara real-time',
+      stats: [
+        { icon: '✅', label: 'Hadir', value: '156' },
+        { icon: '❌', label: 'Tidak Hadir', value: '23' },
+        { icon: '⏰', label: 'Belum Konfirmasi', value: '68' },
+        { icon: '📊', label: 'Response Rate', value: '72%' },
+      ],
+      tableTitle: 'Status Konfirmasi Tamu',
+      tableCols: ['No', 'Nama Tamu', 'Tanggal Konfirmasi', 'Status', 'Jumlah Orang', 'Catatan'],
+      tableRows: 6,
+    },
+    'Vendor Manager': {
+      title: 'Vendor Manager',
+      subtitle: 'Pantau DP, pelunasan, dan deadline pembayaran semua vendor',
+      stats: [
+        { icon: '🤝', label: 'Total Vendor', value: '14' },
+        { icon: '💵', label: 'Sudah DP', value: '11' },
+        { icon: '⚠️', label: 'Deadline Dekat', value: '3' },
+        { icon: '✓', label: 'Lunas', value: '5' },
+      ],
+      tableTitle: 'Status Pembayaran Vendor',
+      tableCols: ['No', 'Nama Vendor', 'Kategori', 'Total Biaya', 'Sudah Dibayar', 'Deadline', 'Status'],
+      tableRows: 7,
+    },
+    'Timeline Acara': {
+      title: 'Timeline Acara',
+      subtitle: 'Susun jadwal acara dari prosesi hingga resepsi',
+      stats: [
+        { icon: '📅', label: 'Total Acara', value: '8' },
+        { icon: '⏰', label: 'Durasi Total', value: '14 Jam' },
+        { icon: '👥', label: 'Penanggung Jawab', value: '12' },
+        { icon: '📍', label: 'Lokasi', value: '3' },
+      ],
+      tableTitle: 'Susunan Acara',
+      tableCols: ['Waktu', 'Acara', 'Lokasi', 'PJ', 'Durasi', 'Catatan'],
+      tableRows: 6,
+    },
+    'Checklist Persiapan': {
+      title: 'Checklist Persiapan',
+      subtitle: 'Cek list persiapan H-90 sampai hari H biar gak ada yang ketinggalan',
+      stats: [
+        { icon: '✅', label: 'Selesai', value: '47' },
+        { icon: '🔄', label: 'Sedang Proses', value: '12' },
+        { icon: '⏰', label: 'Belum', value: '23' },
+        { icon: '📊', label: 'Progress', value: '57%' },
+      ],
+      tableTitle: 'Daftar Persiapan',
+      tableCols: ['No', 'Tugas', 'Kategori', 'Deadline', 'PIC', 'Status'],
+      tableRows: 7,
+    },
+    'Dekorasi & Tema': {
+      title: 'Dekorasi & Tema',
+      subtitle: 'Tentukan tema, palette warna, dan detail dekorasi',
+      stats: [
+        { icon: '🎨', label: 'Tema Utama', value: 'Rustic' },
+        { icon: '🌸', label: 'Palette Warna', value: '5' },
+        { icon: '💐', label: 'Bunga & Hias', value: '23' },
+        { icon: '📸', label: 'Inspirasi', value: '47' },
+      ],
+      tableTitle: 'Detail Dekorasi',
+      tableCols: ['No', 'Item', 'Lokasi', 'Vendor', 'Estimasi', 'Status'],
+      tableRows: 6,
+    },
+    'Katering & Menu': {
+      title: 'Katering & Menu',
+      subtitle: 'Susun menu makanan, jumlah porsi, dan special diet tamu',
+      stats: [
+        { icon: '🍽️', label: 'Menu Item', value: '24' },
+        { icon: '👥', label: 'Total Porsi', value: '500' },
+        { icon: '🥗', label: 'Vegetarian', value: '15' },
+        { icon: '💵', label: 'Cost / Pax', value: 'Rp 175k' },
+      ],
+      tableTitle: 'Daftar Menu',
+      tableCols: ['No', 'Nama Menu', 'Kategori', 'Porsi', 'Harga / Pax', 'Total'],
+      tableRows: 7,
+    },
+  };
+
+  // Default fallback for menus we haven't customized
+  const data = config[key] || {
+    title: key,
+    subtitle: 'Fitur premium NIKAH RAPI',
+    stats: [
+      { icon: '✨', label: 'Fitur', value: 'Premium' },
+      { icon: '📊', label: 'Data', value: 'Real-time' },
+      { icon: '☁️', label: 'Backup', value: 'Cloud' },
+      { icon: '🔄', label: 'Sync', value: 'Auto' },
+    ],
+    tableTitle: 'Detail Data',
+    tableCols: ['No', 'Item', 'Kategori', 'Status'],
+    tableRows: 6,
+  };
+
+  return (
+    <div className="animate-fade-in pb-12">
+      <div className="section-header">
+        <div>
+          <h1 className="section-title">{data.title} <span className="text-[10px] bg-rose-gold text-white px-2 py-0.5 rounded-full ml-2 align-middle font-bold">✦ Premium</span></h1>
+          <p className="section-subtitle">{data.subtitle}</p>
+        </div>
+      </div>
+
+      {/* Stats grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {data.stats.map((s, i) => (
+          <div key={i} className="stat-card">
+            <div className="w-12 h-12 rounded-2xl bg-rose-gold/10 flex items-center justify-center text-xl mb-4">{s.icon}</div>
+            <div className="font-playfair text-2xl font-bold text-brown">{s.value}</div>
+            <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Skeleton chart row */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
+        <div className="card lg:col-span-2 shadow-sm">
+          <div className="p-6 border-b border-[var(--border)]">
+            <h3 className="text-lg font-bold text-brown font-playfair">Visualisasi Data</h3>
+          </div>
+          <div className="p-8 h-[260px] flex items-center justify-center">
+            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-rose-gold/20 to-rose-gold/5 border-4 border-rose-gold/30" />
+          </div>
+        </div>
+        <div className="card lg:col-span-3 shadow-sm">
+          <div className="p-6 border-b border-[var(--border)]">
+            <h3 className="text-lg font-bold text-brown font-playfair">Tren & Statistik</h3>
+          </div>
+          <div className="p-8 h-[260px] flex items-end gap-3">
+            {[60, 85, 45, 95, 70, 80, 55].map((h, i) => (
+              <div key={i} className="flex-1 rounded-t-lg bg-gradient-to-t from-rose-gold/40 to-rose-gold/10" style={{ height: `${h}%` }} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Skeleton table */}
+      <div className="card p-0 overflow-hidden shadow-sm">
+        <div className="p-6 border-b border-[var(--border)] flex items-center justify-between">
+          <h2 className="font-playfair text-xl font-bold text-brown">{data.tableTitle}</h2>
+          <span className="text-[10px] font-bold text-brown-muted uppercase tracking-widest">{data.tableRows} Item</span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-[var(--border)]">
+                {data.tableCols.map((col, i) => (
+                  <th key={i} className="p-4 text-xs text-rose-gold uppercase tracking-wider">{col}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {Array.from({ length: data.tableRows }).map((_, rowIdx) => (
+                <tr key={rowIdx} className="border-b border-[var(--border)]">
+                  {data.tableCols.map((_, colIdx) => (
+                    <td key={colIdx} className="p-4">
+                      <div className="h-3 rounded bg-[var(--ivory)]" style={{ width: `${50 + ((rowIdx * 13 + colIdx * 7) % 40)}%` }} />
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>

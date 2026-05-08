@@ -37,14 +37,24 @@ const LandingPria = () => {
       <LandingNav links={navLinks} />
 
       <section className="hero">
-        <div className="badge">Efisiensi & Presisi</div>
-        <p className="hero-eyebrow">Solusi cerdas calon suami modern</p>
+        <div className="badge">✦ Untuk Calon Suami yang Mau Pegang Kendali</div>
+        <p className="hero-eyebrow">Karena nikah itu bukan cuma urusan istri</p>
         <h1 className="hero-title">
-          Nikah Tanpa Boncos & <em>Stress Budget Berantakan.</em> Kontrol Semua Dalam Genggaman
+          Nikah Anti Boncos.<br />
+          <em>Budget Terkontrol</em> Sampai Hari H.
         </h1>
         <p className="hero-hook">
-          "Sebagai calon suami, Anda ingin memastikan semua biaya terukur dan persiapan berjalan lancar tanpa ada kejutan buruk di hari H. NIKAH RAPI adalah asisten digital pribadimu untuk kontrol total."
+          "Kamu yang bayar, kamu yang harus tau ke mana uangnya pergi.<br />
+          NIKAH RAPI kasih kamu visibility 100% atas budget, vendor, dan progress — langsung dari HP."
         </p>
+        <p className="hero-title-sub">
+          Tracking real-time · DP & pelunasan vendor terpantau · Bisa share dashboard ke pasangan
+        </p>
+        <div className="drama-tags">
+          <span className="drama-tag">💸 Budget Bocor Halus</span>
+          <span className="drama-tag">🤷 Gak Tau Vendor Udah Lunas</span>
+          <span className="drama-tag">📉 Tabungan Habis Sebelum H-1</span>
+        </div>
         
         <div className="product-showcase">
           <div className="browser-frame">
@@ -65,15 +75,19 @@ const LandingPria = () => {
             <div className="price-old"><s>Rp 299.000</s></div>
           </div>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '20px' }}>
-            <a href={checkoutUrl} className="btn-primary">💍 Dapatkan Harga Early Bird</a>
+            <a href={checkoutUrl} className="btn-primary">⚡ Ambil Kendali Budget Sekarang →</a>
             <button 
               onClick={() => window.location.href = '/demo'}
               className="btn-secondary"
             >
-              📊 Coba Simulasi
+              📊 Lihat Cara Kerjanya
             </button>
           </div>
-          <p className="cta-notes">✓ Lisensi seumur hidup ✓ Update gratis ✓ Akses instan</p>
+          <div className="cta-notes">
+            <div className="cta-note-item">✓ Sekali bayar, akses seumur hidup</div>
+            <div className="cta-note-item">✓ Garansi 7 hari uang kembali</div>
+            <div className="cta-note-item">✓ Akses dari HP saat meeting</div>
+          </div>
         </div>
       </section>
 

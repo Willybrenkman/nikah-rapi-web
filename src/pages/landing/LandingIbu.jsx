@@ -36,13 +36,17 @@ const LandingIbu = () => {
 
       {/* ══ HERO ══ */}
       <section className="hero">
-        <div className="badge">Hadiah Terbaik Untuk Anak Ibu</div>
-        <p className="hero-eyebrow">Pernikahan anak Ibu pantas dipersiapkan dengan sempurna</p>
+        <div className="badge">✦ Hadiah Pernikahan Paling Bermanfaat dari Ibu</div>
+        <p className="hero-eyebrow">Untuk Ibu yang ingin anak menikah dengan tenang, bukan kelelahan</p>
         <h1 className="hero-title">
-          Pastikan Pernikahan <em>Anak Ibu Sempurna</em><br />& Tanpa Drama Yang Menyakitkan
+          Bantu Anak Ibu Menikah <em>Tanpa Drama</em><br />— Tanpa Ibu Harus Ikut Kelelahan
         </h1>
         <p className="hero-hook">
-          "Ibu ingin yang terbaik untuk hari besar anak Ibu. Biarkan NIKAH RAPI membantu mengontrol setiap detail, agar Ibu bisa fokus menikmati momen bahagia tanpa pusing urusan teknis."
+          "Ibu sudah kasih banyak hal sepanjang hidup anak. Sekarang kasih satu lagi:<br />
+          ketenangan saat dia siapkan hari paling penting dalam hidupnya. Cukup 1 web app, semua persiapan rapi terkontrol."
+        </p>
+        <p className="hero-title-sub">
+          Bisa diakses Ibu dari rumah · Anak yang isi data · Ibu bisa pantau dari HP
         </p>
         
         <div className="product-showcase">
@@ -79,15 +83,15 @@ const LandingIbu = () => {
             <div className="price-save">HEMAT 63%</div>
           </div>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '20px' }}>
-            <a href={checkoutUrl} className="btn-primary">💍 Hadiahkan Untuk Anak Ibu</a>
+            <a href={checkoutUrl} className="btn-primary">💝 Hadiahkan untuk Anak Ibu →</a>
             <button onClick={() => navigate('/demo')} className="btn-secondary">
-              👁️ Lihat Simulasi App
+              👁️ Lihat Tampilan App
             </button>
           </div>
           <div className="cta-notes">
-            <div className="cta-note-item">✓ Bisa diakses Ibu & Anak</div>
-            <div className="cta-note-item">✓ Data aman di Cloud</div>
-            <div className="cta-note-item">✓ Langsung pakai</div>
+            <div className="cta-note-item">✓ Akses Ibu & anak sekaligus</div>
+            <div className="cta-note-item">✓ Sederhana, tidak ribet</div>
+            <div className="cta-note-item">✓ Garansi 7 hari</div>
           </div>
         </div>
       </section>
@@ -179,9 +183,9 @@ const LandingIbu = () => {
         <h2 className="section-title reveal">Ibu Lain Sudah <em>Merasakan Manfaatnya</em></h2>
         <div className="testi-photo-grid">
           {[
-            { emoji: '👩', bg: 'linear-gradient(135deg,#C9A96E,#8B5E6A)', city: 'Surabaya', text: '"Anak saya kerja di Jakarta, saya di Surabaya. Sejak pakai NIKAH RAPI, semua list seserahan dan keperluan akad bisa saya pantau dari rumah. Tinggal bagi tugas, semua tercatat rapi."', name: 'Bunda Sri W.', role: 'Ibu Calon Pengantin · Okt 2026' },
-            { emoji: '🌸', bg: 'linear-gradient(135deg,#E8C4B8,#C4857A)', city: 'Yogyakarta', text: '"Saya senang sekali ada aplikasi ini. Budget pernikahan anak saya jadi terkontrol, dan saya bisa bantu awasi tanpa harus ikut campur berlebihan. Terima kasih NIKAH RAPI!"', name: 'Ibu Siti H.', role: 'Ibu Calon Pengantin · Des 2026' },
-            { emoji: '💐', bg: 'linear-gradient(135deg,#8B5E6A,#C9A96E)', city: 'Bekasi', text: '"Awalnya skeptis, tapi ternyata gampang banget dipakainya. Sekarang saya dan anak saya bisa koordinasi persiapan nikah tanpa harus telpon-telponan tiap malam."', name: 'Mama Linda', role: 'Ibu Calon Pengantin · Aug 2026' }
+            { emoji: '👩', bg: 'linear-gradient(135deg,#C9A96E,#8B5E6A)', city: 'Surabaya', text: '"Anak saya kerja di Jakarta, saya di Surabaya. Sejak pakai NIKAH RAPI, semua list seserahan dan keperluan akad bisa saya pantau dari rumah. Tinggal bagi tugas, semua tercatat rapi."', name: 'Bunda Sri W.', role: 'Ibu Calon Pengantin · Okt 2025' },
+            { emoji: '🌸', bg: 'linear-gradient(135deg,#E8C4B8,#C4857A)', city: 'Yogyakarta', text: '"Saya senang sekali ada aplikasi ini. Budget pernikahan anak saya jadi terkontrol, dan saya bisa bantu awasi tanpa harus ikut campur berlebihan. Terima kasih NIKAH RAPI!"', name: 'Ibu Siti H.', role: 'Ibu Calon Pengantin · Des 2025' },
+            { emoji: '💐', bg: 'linear-gradient(135deg,#8B5E6A,#C9A96E)', city: 'Bekasi', text: '"Awalnya skeptis, tapi ternyata gampang banget dipakainya. Sekarang saya dan anak saya bisa koordinasi persiapan nikah tanpa harus telpon-telponan tiap malam."', name: 'Mama Linda', role: 'Ibu Calon Pengantin · Agu 2025' }
           ].map((t, i) => (
             <div key={i} className="testi-photo-card reveal">
               <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>

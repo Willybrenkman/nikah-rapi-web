@@ -36,21 +36,22 @@ const LandingKarir = () => {
 
       {/* ══ HERO ══ */}
       <section className="hero">
-        <div className="badge">Untuk Wanita Karir yang Mau Nikah</div>
-        <p className="hero-eyebrow">Kerja 9-to-5, rapat back-to-back — tapi persiapan nikah tidak bisa nunggu</p>
+        <div className="badge">✦ Wedding Planner untuk Wanita Sibuk</div>
+        <p className="hero-eyebrow">Kerja sampai larut, weekend isinya rapat keluarga — kapan ngurus nikahnya?</p>
         <h1 className="hero-title">
-          Kerja Full Time.<br /><em>Persiapan Nikah</em> Tetap<br />Zero Chaos, Zero Panik.
+          Atur Pernikahanmu <em>di Sela Kerja</em><br />— 15 Menit Sehari, Cukup.
         </h1>
         <p className="hero-hook">
-          "Kamu berhak punya pernikahan yang indah — tanpa harus mengorbankan performa kerja atau tidur malammu untuk ngurusin semuanya sendirian."
+          "Kamu nggak perlu cuti seminggu cuma buat ngurus seserahan.<br />
+          NIKAH RAPI bantu kamu cicil persiapan saat lunch break, commute, atau jeda meeting — semua tersinkronisasi otomatis."
         </p>
         <p className="hero-title-sub">
-          Semua persiapan pernikahan — terkontrol rapi dalam 1 platform. Cukup isi datanya saat lunch break, sistem yang bekerja.
+          Cicil 15 menit sehari · Auto-sync dengan pasangan · Akses dari HP & laptop kerja
         </p>
         <div className="drama-tags">
-          <span className="drama-tag">⏰ Deadline Menumpuk</span>
-          <span className="drama-tag">📱 Data Tersebar</span>
-          <span className="drama-tag">😤 Koordinasi Pasangan Susah</span>
+          <span className="drama-tag">⏰ Gak Sempat Riset Vendor</span>
+          <span className="drama-tag">😩 Lupa Ada Deadline DP</span>
+          <span className="drama-tag">📱 Chat WA Pasangan Hilang Semua</span>
         </div>
 
         <div className="product-showcase">
@@ -87,15 +88,15 @@ const LandingKarir = () => {
             <div className="price-save">HEMAT 63%</div>
           </div>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '20px' }}>
-            <a href={checkoutUrl} className="btn-primary">⚡ Dapatkan NIKAH RAPI Sekarang</a>
+            <a href={checkoutUrl} className="btn-primary">⚡ Hemat Waktumu, Mulai Sekarang →</a>
             <button onClick={() => navigate('/demo')} className="btn-secondary">
-              👁️ Coba Simulasi App
+              👁️ Coba 2 Menit Gratis
             </button>
           </div>
           <div className="cta-notes">
+            <div className="cta-note-item">✓ Bisa diakses dari HP saat meeting</div>
             <div className="cta-note-item">✓ Garansi 7 hari</div>
-            <div className="cta-note-item">✓ Akses instan via WA</div>
-            <div className="cta-note-item">✓ Bisa dari HP saat di kantor</div>
+            <div className="cta-note-item">✓ Sekali bayar, seumur hidup</div>
           </div>
         </div>
 
@@ -197,9 +198,9 @@ const LandingKarir = () => {
         <h2 className="section-title reveal">Mereka Berhasil <em>Nikah Tanpa Resign</em></h2>
         <div className="testi-photo-grid">
           {[
-            { emoji: '💼', bg: 'linear-gradient(135deg,#7A8C7E,#8B5E6A)', city: 'Tangerang', text: '"Kerja kantoran 9-to-5, gak ada waktu duduk depan laptop buat planning. Untungnya NIKAH RAPI bisa diakses dari HP. Update vendor pas lunch break, ceklis seserahan saat di taksi."', name: 'Maya S.', role: 'Marketing Manager · Des 2026' },
-            { emoji: '👩‍💻', bg: 'linear-gradient(135deg,#E8C4B8,#8B5E6A)', city: 'Jakarta', text: '"Saya remote worker, suami di kantor. NIKAH RAPI bikin kami bisa update persiapan masing-masing tanpa harus video call tiap malam. Dashboard-nya jelas banget, progress keliatan semua."', name: 'Dina K.', role: 'Software Engineer · Sept 2026' },
-            { emoji: '🌸', bg: 'linear-gradient(135deg,#C9A96E,#C4857A)', city: 'Bandung', text: '"Awalnya mau hire WO karena gak punya waktu. Tapi setelah coba NIKAH RAPI, ternyata bisa self-planned! Hematnya lumayan banget. Budget lebih terkontrol, dan gak perlu ambil cuti banyak."', name: 'Rina A.', role: 'Akuntan · Nov 2026' }
+            { emoji: '💼', bg: 'linear-gradient(135deg,#7A8C7E,#8B5E6A)', city: 'Tangerang', text: '"Kerja kantoran 9-to-5, gak ada waktu duduk depan laptop buat planning. Untungnya NIKAH RAPI bisa diakses dari HP. Update vendor pas lunch break, ceklis seserahan saat di taksi."', name: 'Maya S.', role: 'Marketing Manager · Des 2025' },
+            { emoji: '👩‍💻', bg: 'linear-gradient(135deg,#E8C4B8,#8B5E6A)', city: 'Jakarta', text: '"Saya remote worker, suami di kantor. NIKAH RAPI bikin kami bisa update persiapan masing-masing tanpa harus video call tiap malam. Dashboard-nya jelas banget, progress keliatan semua."', name: 'Dina K.', role: 'Software Engineer · Sept 2025' },
+            { emoji: '🌸', bg: 'linear-gradient(135deg,#C9A96E,#C4857A)', city: 'Bandung', text: '"Awalnya mau hire WO karena gak punya waktu. Tapi setelah coba NIKAH RAPI, ternyata bisa self-planned! Hematnya lumayan banget. Budget lebih terkontrol, dan gak perlu ambil cuti banyak."', name: 'Rina A.', role: 'Akuntan · Nov 2025' }
           ].map((t, i) => (
             <div key={i} className="testi-photo-card reveal">
               <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>

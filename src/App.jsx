@@ -33,6 +33,7 @@ import MUABusana from './pages/MUABusana'
 // Landing pages
 import LandingMain from './pages/landing/LandingMain'
 import LandingIbu from './pages/landing/LandingIbu'
+import LandingPria from './pages/landing/LandingPria'
 import LandingKarir from './pages/landing/LandingKarir'
 import Demo from './pages/Demo'
 import FotoVideo from './pages/FotoVideo'
@@ -108,7 +109,7 @@ export default function App() {
         {/* ── Public ── */}
         <Route path="/" element={<LandingMain />} />
         <Route path="/untuk-ibu" element={<LandingIbu />} />
-        <Route path="/untuk-pria" element={<Navigate to="/" replace />} />
+        <Route path="/untuk-pria" element={<LandingPria />} />
         <Route path="/untuk-karir" element={<LandingKarir />} />
         <Route path="/demo" element={<Demo />} />
         <Route path="/login" element={<Login />} />

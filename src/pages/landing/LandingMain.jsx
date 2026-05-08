@@ -43,18 +43,18 @@ const LandingMain = () => {
 
       {/* ══ HERO ══ */}
       <section className="hero">
-        <div className="badge">Wedding Planner Digital #1 Indonesia</div>
-        <p className="hero-eyebrow">Untuk kamu yang mau menikah tanpa drama & tanpa panik</p>
+        <div className="badge">✦ Wedding Planner Khusus Pernikahan Indonesia</div>
+        <p className="hero-eyebrow">Untuk kamu yang mau menikah dengan tenang, terorganisir, dan tetap hemat</p>
         <h1 className="hero-title">
-          Nikah Tanpa <em>Drama Vendor Cabut,</em><br />
-          Budget Jebol & Seserahan Ketinggalan
+          Atur Semua Persiapan Nikahmu di <em>1 Web App</em><br />
+          — Dari Budget Sampai Seserahan
         </h1>
         <p className="hero-hook">
-          "Kamu berhak menikmati setiap detik persiapan nikahmu —<br />
-          bukan menghabiskannya untuk panik, cari-cari catatan, dan khawatir ada yang terlupa."
+          "Stop pakai 5 spreadsheet berbeda yang bikin pusing.<br />
+          NIKAH RAPI rapikan budget, vendor, tamu, seserahan, dan angpao kamu — semua di 1 dashboard."
         </p>
         <p className="hero-title-sub">
-          22+ modul Web App terintegrasi dalam 1 platform. Cukup isi datanya, sistem yang bekerja otomatis.
+          22 modul terintegrasi · Otomatis kalkulasi · Bisa diakses berdua dengan pasangan
         </p>
         <div className="drama-tags">
           <span className="drama-tag">😰 Budget Bocor</span>
@@ -101,9 +101,9 @@ const LandingMain = () => {
             <div className="price-save">HEMAT 63%</div>
           </div>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '20px' }}>
-            <a href={checkoutUrl} className="btn-primary">💍 Dapatkan Akses Sekarang</a>
+            <a href={checkoutUrl} className="btn-primary">💍 Mulai Rapikan Pernikahanmu →</a>
             <button onClick={() => navigate('/demo')} className="btn-secondary">
-              👁️ Lihat Simulasi App
+              👁️ Coba Demo Dulu (Gratis)
             </button>
           </div>
           <div className="cta-notes">
@@ -269,9 +269,9 @@ const LandingMain = () => {
         <h2 className="section-title reveal">Sudah Membantu Calon Pengantin <em>Indonesia</em></h2>
         <div className="testi-photo-grid">
           {[
-            { emoji: '🌸', bg: 'linear-gradient(135deg,#E8C4B8,#C4857A)', city: 'Jakarta', text: '"Seserahan Tracker-nya beneran game changer! Sebelumnya nyatat manual di kertas, ada yang ketinggalan terus. Sekarang tinggal ceklis, dan bisa di-akses suami juga."', name: 'Anisa R.', role: 'Calon Pengantin · Sept 2026' },
-            { emoji: '💑', bg: 'linear-gradient(135deg,#8B5E6A,#C9A96E)', city: 'Bandung', text: '"Berdua bisa update real-time. Saya isi data vendor, calon istri ngurus seserahan, semuanya keliatan di dashboard yang sama. Anti drama \'kok ini belum dibayar\'."', name: 'Reza & Putri', role: 'Pasangan · Nov 2026' },
-            { emoji: '👩', bg: 'linear-gradient(135deg,#C9A96E,#8B5E6A)', city: 'Surabaya', text: '"Anak saya di Jakarta, saya di Surabaya. Sejak pakai NIKAH RAPI, semua list seserahan dan keperluan akad bisa saya pantau dari rumah. Tinggal bagi tugas, semua tercatat rapi."', name: 'Bunda Sri W.', role: 'Ibu Calon Pengantin · Okt 2026' }
+            { emoji: '🌸', bg: 'linear-gradient(135deg,#E8C4B8,#C4857A)', city: 'Jakarta', text: '"Seserahan Tracker-nya beneran game changer! Sebelumnya nyatat manual di kertas, ada yang ketinggalan terus. Sekarang tinggal ceklis, dan bisa di-akses suami juga."', name: 'Anisa R.', role: 'Calon Pengantin · Sept 2025' },
+            { emoji: '💑', bg: 'linear-gradient(135deg,#8B5E6A,#C9A96E)', city: 'Bandung', text: '"Berdua bisa update real-time. Saya isi data vendor, calon istri ngurus seserahan, semuanya keliatan di dashboard yang sama. Anti drama \'kok ini belum dibayar\'."', name: 'Reza & Putri', role: 'Pasangan · Nov 2025' },
+            { emoji: '👩', bg: 'linear-gradient(135deg,#C9A96E,#8B5E6A)', city: 'Surabaya', text: '"Anak saya di Jakarta, saya di Surabaya. Sejak pakai NIKAH RAPI, semua list seserahan dan keperluan akad bisa saya pantau dari rumah. Tinggal bagi tugas, semua tercatat rapi."', name: 'Bunda Sri W.', role: 'Ibu Calon Pengantin · Jan 2026' }
           ].map((t, i) => (
             <div key={i} className="testi-photo-card reveal">
               <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
@@ -294,7 +294,7 @@ const LandingMain = () => {
         </div>
         <div className="testi-stats reveal">
           <div className="tstat"><div className="tstat-num">22+</div><div style={{ fontSize: 12, color: 'var(--text-light)' }}>Modul Web App</div></div>
-          <div className="tstat"><div className="tstat-num">100%</div><div style={{ fontSize: 12, color: 'var(--text-light)' }}>Customer Puas</div></div>
+          <div className="tstat"><div className="tstat-num">4.9★</div><div style={{ fontSize: 12, color: 'var(--text-light)' }}>Rating dari early users</div></div>
           <div className="tstat"><div className="tstat-num">7 Hari</div><div style={{ fontSize: 12, color: 'var(--text-light)' }}>Garansi Uang Kembali</div></div>
         </div>
       </section>
