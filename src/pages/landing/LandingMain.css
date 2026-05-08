@@ -14,7 +14,7 @@
   --text-light: #8C7A6E;
 }
 
-/* ══ STICKY CTA ══ */
+/* â•â• STICKY CTA â•â• */
 .landing-container .sticky-cta {
   position: fixed;
   top: 0;
@@ -49,7 +49,7 @@
   background: var(--brown);
 }
 
-/* ══ HERO ══ */
+/* â•â• HERO â•â• */
 .landing-container .hero {
   min-height: 100vh;
   background: var(--warm-white);
@@ -104,7 +104,7 @@
 }
 
 .landing-container .badge::before {
-  content: '✦';
+  content: 'âœ¦';
   color: var(--gold);
 }
 
@@ -175,7 +175,7 @@
   font-weight: 400;
 }
 
-/* ══ PRODUCT MOCKUP ══ */
+/* â•â• PRODUCT MOCKUP â•â• */
 .landing-container .product-showcase {
   position: relative;
   width: 100%;
@@ -481,7 +481,7 @@
   font-size: 14px;
 }
 
-/* ══ VIDEO SECTION ══ */
+/* â•â• VIDEO SECTION â•â• */
 .landing-container .video-section {
   background: var(--cream);
   padding: 100px 80px;
@@ -591,7 +591,7 @@
   font-weight: 400;
 }
 
-/* ══ DRAMA SECTION ══ */
+/* â•â• DRAMA SECTION â•â• */
 .landing-container .drama-section {
   background: var(--cream);
   padding: 100px 80px;
@@ -680,7 +680,7 @@
   line-height: 1.6;
 }
 
-/* ══ SOLUTION ══ */
+/* â•â• SOLUTION â•â• */
 .landing-container .solution-section {
   background: var(--mauve);
   padding: 100px 80px;
@@ -788,7 +788,7 @@
   font-weight: 500;
 }
 
-/* ══ DIFF ══ */
+/* â•â• DIFF â•â• */
 .landing-container .diff-section {
   background: var(--warm-white);
   padding: 100px 80px;
@@ -854,7 +854,7 @@
   color: var(--mauve);
 }
 
-/* ══ SHEETS ══ */
+/* â•â• SHEETS â•â• */
 .landing-container .sheets-section {
   background: var(--warm-white);
   padding: 100px 80px;
@@ -910,7 +910,7 @@
   border-color: var(--blush-deep);
 }
 
-/* ══ TESTIMONI ══ */
+/* â•â• TESTIMONI â•â• */
 .landing-container .testi-section {
   background: var(--cream);
   padding: 100px 80px;
@@ -1016,7 +1016,7 @@
   margin-bottom: 8px;
 }
 
-/* ══ PRICING ══ */
+/* â•â• PRICING â•â• */
 .landing-container .pricing-section {
   background: var(--warm-white);
   padding: 100px 80px;
@@ -1118,7 +1118,7 @@
 }
 
 .landing-container .include-list li::before {
-  content: '✓';
+  content: 'âœ“';
   width: 20px;
   height: 20px;
   background: var(--blush);
@@ -1163,7 +1163,7 @@
   margin-bottom: 6px;
 }
 
-/* ══ FAQ ══ */
+/* â•â• FAQ â•â• */
 .landing-container .faq-section {
   background: var(--cream);
   padding: 100px 80px;
@@ -1204,7 +1204,7 @@
   padding-top: 16px;
 }
 
-/* ══ FINAL CTA ══ */
+/* â•â• FINAL CTA â•â• */
 .landing-container .final-cta {
   background: linear-gradient(135deg, var(--brown) 0%, var(--mauve) 100%);
   padding: 100px 80px;
@@ -1222,7 +1222,7 @@
   margin-right: auto;
 }
 
-/* ══ ANIMATIONS ══ */
+/* â•â• ANIMATIONS â•â• */
 @keyframes fadeDown {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -1249,58 +1249,223 @@
   transform: translateY(0);
 }
 
-/* ══ RESPONSIVE ══ */
+/* â•â• RESPONSIVE â•â• */
+
+/* â”€â”€ Tablet (1024px) â”€â”€ */
 @media (max-width: 1024px) {
   .landing-container .sheets-grid { grid-template-columns: repeat(3, 1fr); }
   .landing-container .testi-photo-grid { grid-template-columns: repeat(2, 1fr); }
-  .landing-container .drama-grid, .landing-container .video-features { grid-template-columns: repeat(2, 1fr); }
-  .landing-container .solution-inner { gap: 50px; }
+  .landing-container .drama-grid,
+  .landing-container .video-features { grid-template-columns: repeat(2, 1fr); }
+  .landing-container .solution-inner { gap: 40px; }
+
   .landing-container .video-section,
   .landing-container .drama-section,
   .landing-container .solution-section,
   .landing-container .diff-section,
+  .landing-container .sheets-section,
   .landing-container .testi-section,
   .landing-container .pricing-section,
   .landing-container .faq-section,
   .landing-container .final-cta { padding: 80px 40px; }
 }
 
+/* â”€â”€ Mobile (768px) â”€â”€ */
 @media (max-width: 768px) {
-  .landing-container .hero { padding: 70px 20px 50px; }
-  .landing-container .drama-grid, .landing-container .video-features {
-    display: flex;
-    flex-direction: column;
+  /* Hero */
+  .landing-container .hero { padding: 60px 20px 40px; min-height: auto; }
+  .landing-container .hero-title { font-size: clamp(28px, 7vw, 42px); }
+  .landing-container .hero-eyebrow { font-size: 11px; letter-spacing: 1px; }
+  .landing-container .hero-hook { font-size: 15px; line-height: 1.7; }
+  .landing-container .hero-title-sub { font-size: 12px; }
+  .landing-container .badge { font-size: 10px; padding: 6px 14px; letter-spacing: 1px; }
+
+  /* Hero CTA */
+  .landing-container .hero-cta-block { margin-top: 32px; }
+  .landing-container .hero-cta-block > div[style] { 
+    flex-direction: column !important; 
+    width: 100% !important;
+    gap: 12px !important;
   }
-  .landing-container .testi-photo-grid, .landing-container .solution-inner {
-    grid-template-columns: 1fr;
+  .landing-container .price-display { flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .landing-container .price-new { font-size: 42px; }
+  .landing-container .cta-notes { 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 8px; 
   }
+  .landing-container .social-proof-bar { 
+    flex-wrap: wrap; 
+    justify-content: center; 
+    font-size: 12px; 
+    gap: 6px;
+  }
+
+  /* Drama tags */
+  .landing-container .drama-tags { gap: 6px; margin-bottom: 24px; }
+  .landing-container .drama-tag { font-size: 11px; padding: 5px 10px; }
+
+  /* Product showcase */
+  .landing-container .float-badge-top,
+  .landing-container .float-badge-bot { display: none; }
+  .landing-container .preview-stage { min-height: auto; }
+  .landing-container .browser-dot { width: 8px; height: 8px; }
+  .landing-container .browser-bar { padding: 8px 12px; }
+  .landing-container .browser-url { font-size: 10px; }
+
+  /* Sections padding */
   .landing-container .video-section,
   .landing-container .drama-section,
   .landing-container .solution-section,
   .landing-container .diff-section,
+  .landing-container .sheets-section,
   .landing-container .testi-section,
   .landing-container .pricing-section,
   .landing-container .faq-section,
-  .landing-container .final-cta { padding: 60px 24px; }
-  .landing-container footer { 
-    padding: 32px 24px !important; 
-    flex-direction: column !important; 
+  .landing-container .final-cta { padding: 60px 20px; }
+
+  /* Section titles */
+  .landing-container .section-title { margin-bottom: 40px; }
+
+  /* Drama */
+  .landing-container .drama-grid,
+  .landing-container .video-features {
+    display: flex;
+    flex-direction: column;
+  }
+  .landing-container .drama-card { padding: 24px 20px; }
+  .landing-container .drama-closer { font-size: 18px; }
+
+  /* Solution */
+  .landing-container .solution-inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .landing-container .solution-left .section-title { text-align: center; }
+  .landing-container .solution-left .section-eyebrow { text-align: center; }
+  .landing-container .solution-left p { text-align: center; }
+  .landing-container .solution-left .btn-secondary { 
+    display: flex; 
+    justify-content: center; 
+    margin: 0 auto;
+  }
+  .landing-container .feat-card { padding: 16px 18px; }
+
+  /* Diff table */
+  .landing-container .diff-table { font-size: 12px; }
+  .landing-container .diff-table thead th,
+  .landing-container .diff-table tbody td { padding: 10px 8px; font-size: 11px; }
+  .landing-container .diff-table-wrap { overflow-x: auto; }
+
+  /* Testi */
+  .landing-container .testi-photo-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
+  .landing-container .testi-stats { grid-template-columns: 1fr; }
+  .landing-container .tstat-num { font-size: 36px; }
+  .landing-container .tstat { padding: 20px 16px; }
+
+  /* Pricing */
+  .landing-container .pricing-card { padding: 36px 20px; }
+  .landing-container .price-big { font-size: 56px; }
+  .landing-container .pricing-card-badge { font-size: 10px; padding: 6px 16px; letter-spacing: 1px; }
+  .landing-container .include-list li { font-size: 13px; padding: 10px 0; }
+  .landing-container .urgency-note { font-size: 12px; }
+
+  /* FAQ */
+  .landing-container .faq-q { font-size: 17px; }
+  .landing-container .faq-a { font-size: 13px; }
+  .landing-container .faq-arrow { font-size: 20px; flex-shrink: 0; margin-left: 12px; }
+
+  /* Final CTA */
+  .landing-container .final-cta p { font-size: 14px; margin-bottom: 32px; }
+
+  /* Footer */
+  .landing-container footer {
+    padding: 32px 20px !important;
+    flex-direction: column !important;
     text-align: center !important;
     gap: 12px !important;
   }
-  .landing-container .pricing-card { padding: 40px 24px; }
-  .landing-container .price-big { font-size: 60px; }
-  .landing-container .float-badge-top, .landing-container .float-badge-bot { display: none; }
-  .landing-container .hero-title { font-size: clamp(30px, 7vw, 46px); }
-  .landing-container .cta-notes { flex-wrap: wrap; justify-content: center; }
-  .landing-container .diff-table { font-size: 12px; }
-  .landing-container .diff-table thead th, .landing-container .diff-table tbody td { padding: 10px 12px; }
-  .landing-container .testi-stats { grid-template-columns: 1fr; }
+
+  /* Buttons */
+  .landing-container .btn-primary { 
+    padding: 18px 28px; 
+    font-size: 13px;
+    width: 100%;
+    justify-content: center;
+  }
+  .landing-container .btn-secondary { 
+    padding: 16px 24px;
+    font-size: 13px;
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Video */
+  .landing-container .video-play-btn { width: 60px; height: 60px; }
+  .landing-container .video-badge-tag { font-size: 11px; padding: 5px 14px; }
+
+  /* Sheets grid */
+  .landing-container .sheets-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .landing-container .sheet-card { padding: 14px 12px; }
+  .landing-container .sheet-num { font-size: 22px; }
+  .landing-container .sheet-name { font-size: 11px; }
+  .landing-container .sheet-desc { font-size: 10px; }
 }
 
+/* â”€â”€ Small Mobile (480px) â”€â”€ */
 @media (max-width: 480px) {
-  .landing-container .pricing-card { padding: 32px 20px; }
-  .landing-container .price-big { font-size: 52px; }
-  .landing-container .btn-primary { padding: 18px 32px; width: 100%; justify-content: center; }
-  .landing-container .sheets-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .landing-container .hero { padding: 50px 16px 36px; }
+  .landing-container .hero-title { font-size: clamp(24px, 8vw, 34px); }
+  .landing-container .hero-hook { font-size: 14px; }
+  .landing-container .badge { font-size: 9px; padding: 5px 12px; margin-bottom: 20px; }
+
+  .landing-container .pricing-card { padding: 28px 16px; }
+  .landing-container .price-big { font-size: 48px; }
+  .landing-container .price-big sup { font-size: 18px; }
+
+  .landing-container .btn-primary { padding: 16px 20px; font-size: 12px; letter-spacing: 1px; }
+  .landing-container .btn-secondary { padding: 14px 20px; font-size: 12px; letter-spacing: 1px; }
+
+  .landing-container .sheets-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  .landing-container .section-title { margin-bottom: 32px; font-size: clamp(24px, 6vw, 36px); }
+
+  .landing-container .video-section,
+  .landing-container .drama-section,
+  .landing-container .solution-section,
+  .landing-container .diff-section,
+  .landing-container .sheets-section,
+  .landing-container .testi-section,
+  .landing-container .pricing-section,
+  .landing-container .faq-section,
+  .landing-container .final-cta { padding: 48px 16px; }
+
+  .landing-container .drama-card { padding: 20px 16px; }
+  .landing-container .drama-card h3 { font-size: 17px; }
+  .landing-container .drama-card p { font-size: 12px; }
+  .landing-container .drama-scenario { font-size: 11px; }
+  .landing-container .drama-closer { font-size: 16px; }
+
+  .landing-container .feat-card { padding: 14px 14px; gap: 12px; }
+  .landing-container .feat-text h4 { font-size: 15px; }
+  .landing-container .feat-text p { font-size: 12px; }
+  .landing-container .feat-icon { font-size: 24px; }
+
+  .landing-container .faq-q { font-size: 15px; }
+  .landing-container .faq-a { font-size: 12px; }
+
+  .landing-container .testi-photo-content { padding: 20px 16px; }
+  .landing-container .testi-photo-text { font-size: 13px; }
+  .landing-container .testi-photo-name { font-size: 16px; }
+
+  .landing-container .include-list li { font-size: 12px; gap: 8px; }
+  .landing-container .urgency-note { font-size: 11px; }
+
+  .landing-container .diff-table thead th,
+  .landing-container .diff-table tbody td { padding: 8px 6px; font-size: 10px; }
+
+  .landing-container .vf-card { padding: 16px 14px; gap: 10px; }
+  .landing-container .vf-text h4 { font-size: 14px; }
+  .landing-container .vf-text p { font-size: 11px; }
 }

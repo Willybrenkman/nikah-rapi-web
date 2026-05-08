@@ -200,12 +200,58 @@
   color: white;
 }
 
+/* ══ RESPONSIVE ══ */
+
+/* ── Tablet (1024px) ── */
 @media (max-width: 1024px) {
-  .landing-container .drama-grid, .landing-container .video-features { grid-template-columns: repeat(2, 1fr); }
+  .landing-container .drama-grid,
+  .landing-container .video-features { grid-template-columns: repeat(2, 1fr); }
+  .landing-container .hero,
+  .landing-container .video-section,
+  .landing-container .drama-section,
+  .landing-container .solution-section,
+  .landing-container .diff-section,
+  .landing-container .testi-section,
+  .landing-container .pricing-section,
+  .landing-container .faq-section,
+  .landing-container .final-cta { padding: 80px 40px; }
 }
 
+/* ── Mobile (768px) ── */
 @media (max-width: 768px) {
-  .landing-container .drama-grid, .landing-container .video-features {
-    grid-template-columns: 1fr;
+  .landing-container .hero { padding: 60px 20px 40px; min-height: auto; }
+  .landing-container .hero-title { font-size: clamp(28px, 7vw, 42px); }
+  .landing-container .badge { font-size: 10px; padding: 6px 14px; letter-spacing: 1px; }
+
+  .landing-container .drama-grid,
+  .landing-container .video-features {
+    display: flex;
+    flex-direction: column;
   }
+  .landing-container .drama-card { padding: 24px 20px; }
+  
+  .landing-container .btn-primary { 
+    padding: 18px 28px; 
+    font-size: 13px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .landing-container .video-section,
+  .landing-container .drama-section,
+  .landing-container .solution-section,
+  .landing-container .diff-section,
+  .landing-container .testi-section,
+  .landing-container .pricing-section,
+  .landing-container .faq-section,
+  .landing-container .final-cta { padding: 60px 20px; }
+}
+
+/* ── Small Mobile (480px) ── */
+@media (max-width: 480px) {
+  .landing-container .hero { padding: 50px 16px 36px; }
+  .landing-container .hero-title { font-size: clamp(24px, 8vw, 34px); }
+  .landing-container .badge { font-size: 9px; padding: 5px 12px; }
+  
+  .landing-container .btn-primary { padding: 16px 20px; font-size: 12px; }
 }
