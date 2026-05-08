@@ -114,7 +114,7 @@ export default function Panduan() {
                     <h3 className="font-playfair text-lg font-bold text-brown mb-2">Sudah Siap Memulai?</h3>
                     <p className="text-sm text-brown-muted">Kembali ke Dashboard untuk melanjutkan perencanaan pernikahan impianmu.</p>
                 </div>
-                <button onClick={() => navigate('/')} className="btn-rose px-8 py-3 whitespace-nowrap shadow-lg shadow-rose-gold/20">
+                <button onClick={() => navigate('/dashboard')} className="btn-rose px-8 py-3 whitespace-nowrap shadow-lg shadow-rose-gold/20">
                     Ke Dashboard 🚀
                 </button>
             </div>

@@ -67,7 +67,7 @@ function CodeGuard({ children }) {
     </div>
   )
   if (!user) return <Navigate to="/login" replace />
-  if (hasAccess) return <Navigate to="/" replace />
+  if (hasAccess) return <Navigate to="/dashboard" replace />
   return children
 }
 
