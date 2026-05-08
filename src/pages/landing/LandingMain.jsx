@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LandingNav from '../../components/landing/LandingNav';
+import LandingDemoPreview from '../../components/landing/LandingDemoPreview';
 import './LandingMain.css';
 
 const LandingMain = () => {
@@ -222,6 +223,9 @@ const LandingMain = () => {
           </div>
         </div>
       </section>
+
+      {/* ══ DEMO PREVIEW ══ */}
+      <LandingDemoPreview navigate={navigate} />
 
       {/* ══ DIFF ══ */}
       <section className="diff-section">
