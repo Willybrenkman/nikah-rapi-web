@@ -1,84 +1,32 @@
 // src/pages/AuthCallback.jsx
-import { useEffect, useState } from 'react'
+// ✅ STRATEGI: Karena supabase client punya detectSessionInUrl:true,
+// Supabase OTOMATIS exchange code/hash dari URL saat client init.
+// Kita TIDAK BOLEH manual exchangeCodeForSession() — itu akan bentrok.
+// Pendekatan: tunggu onAuthStateChange(SIGNED_IN) yang pasti fire
+// setelah Supabase selesai proses token.
+
+import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
 export default function AuthCallback() {
     const navigate = useNavigate()
-    const [status, setStatus] = useState('loading') // loading | success | error
+    const [status, setStatus] = useState('loading')
     const [userData, setUserData] = useState(null)
+    const handledRef = useRef(false) // Mencegah double-handling
 
     useEffect(() => {
         let mounted = true
-        let timeoutId = null
+        let safetyTimeout = null
 
-        const handleCallback = async () => {
+        // ── Fungsi untuk handle setelah session tersedia ──
+        const handlePostAuth = async (user) => {
+            if (!mounted || handledRef.current) return
+            handledRef.current = true
+
             try {
-                // ── STEP 1: Coba exchange code (PKCE flow) jika ada di URL ──
-                const params = new URLSearchParams(window.location.search)
-                const code = params.get('code')
+                setUserData(user)
 
-                if (code) {
-                    const { data, error: exchErr } = await supabase.auth.exchangeCodeForSession(code)
-                    if (exchErr || !data?.session) {
-                        console.error('Exchange code error:', exchErr)
-                        if (mounted) setStatus('error')
-                        return
-                    }
-                    // Code exchange berhasil, session sudah tersimpan
-                    if (mounted) {
-                        setUserData(data.session.user)
-                        await handlePostAuth(data.session.user, mounted)
-                    }
-                    return
-                }
-
-                // ── STEP 2: Untuk magic link (hash fragment), tunggu Supabase proses token ──
-                // Supabase detectSessionInUrl:true akan parse hash secara async.
-                // Kita HARUS menunggu event SIGNED_IN, bukan langsung getSession().
-
-                // Cek dulu apakah sudah ada session (mungkin token sudah diproses)
-                const { data: { session } } = await supabase.auth.getSession()
-
-                if (session?.user) {
-                    if (mounted) {
-                        setUserData(session.user)
-                        await handlePostAuth(session.user, mounted)
-                    }
-                    return
-                }
-
-                // Belum ada session — tunggu onAuthStateChange SIGNED_IN
-                // (terjadi saat Supabase selesai parse hash fragment)
-                const { data: { subscription } } = supabase.auth.onAuthStateChange(
-                    async (event, newSession) => {
-                        if (!mounted) return
-
-                        if (event === 'SIGNED_IN' && newSession?.user) {
-                            subscription.unsubscribe()
-                            clearTimeout(timeoutId)
-                            setUserData(newSession.user)
-                            await handlePostAuth(newSession.user, mounted)
-                        }
-                    }
-                )
-
-                // Safety timeout — jika setelah 10 detik tidak ada SIGNED_IN event
-                timeoutId = setTimeout(() => {
-                    if (mounted) {
-                        subscription.unsubscribe()
-                        setStatus('error')
-                    }
-                }, 10000)
-
-            } catch (err) {
-                console.error('AuthCallback error:', err)
-                if (mounted) setStatus('error')
-            }
-        }
-
-        const handlePostAuth = async (user, isMounted) => {
-            try {
                 // Cek apakah sudah punya wedding profile
                 const { data: profile } = await supabase
                     .from('wedding_profiles')
@@ -86,36 +34,69 @@ export default function AuthCallback() {
                     .eq('user_id', user.id)
                     .single()
 
-                if (!isMounted) return
+                if (!mounted) return
 
                 setStatus('success')
 
-                // ✅ FIX: Redirect ke /dashboard (bukan /) karena / = LandingMain
+                // Redirect ke dashboard (jika ada profil) atau onboarding
                 const destination = profile ? '/dashboard' : '/onboarding'
 
                 setTimeout(() => {
-                    if (isMounted) {
+                    if (mounted) {
                         navigate(destination, { replace: true })
                     }
                 }, 3500)
             } catch (err) {
                 console.error('handlePostAuth error:', err)
-                if (isMounted) {
-                    // Tetap sukses meskipun profile check gagal
-                    // User sudah login, biarkan Guard handle redirect
+                if (mounted) {
+                    // Tetap anggap sukses — user sudah login
                     setStatus('success')
                     setTimeout(() => {
-                        if (isMounted) navigate('/dashboard', { replace: true })
+                        if (mounted) navigate('/dashboard', { replace: true })
                     }, 3500)
                 }
             }
         }
 
-        handleCallback()
+        // ── LANGKAH 1: Pasang listener DULU sebelum cek session ──
+        // Ini menangkap SIGNED_IN event dari detectSessionInUrl
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+            (event, session) => {
+                if (!mounted || handledRef.current) return
+
+                if (event === 'SIGNED_IN' && session?.user) {
+                    clearTimeout(safetyTimeout)
+                    handlePostAuth(session.user)
+                }
+            }
+        )
+
+        // ── LANGKAH 2: Cek apakah session SUDAH ada ──
+        // (Mungkin detectSessionInUrl sudah selesai sebelum listener terpasang)
+        const checkExistingSession = async () => {
+            if (handledRef.current) return
+
+            const { data: { session } } = await supabase.auth.getSession()
+            if (session?.user && mounted && !handledRef.current) {
+                clearTimeout(safetyTimeout)
+                handlePostAuth(session.user)
+            }
+        }
+
+        checkExistingSession()
+
+        // ── LANGKAH 3: Safety timeout 15 detik ──
+        safetyTimeout = setTimeout(() => {
+            if (mounted && !handledRef.current) {
+                handledRef.current = true
+                setStatus('error')
+            }
+        }, 15000)
 
         return () => {
             mounted = false
-            if (timeoutId) clearTimeout(timeoutId)
+            subscription.unsubscribe()
+            clearTimeout(safetyTimeout)
         }
     }, [navigate])
 
@@ -155,7 +136,7 @@ export default function AuthCallback() {
         <div className="min-h-screen flex items-center justify-center bg-ivory relative overflow-hidden">
             <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_20%,rgba(201,149,108,0.08)_0%,transparent_50%),radial-gradient(circle_at_80%_80%,rgba(232,196,184,0.12)_0%,transparent_50%)]" />
 
-            {/* Confetti dots replacement with CSS shapes */}
+            {/* Confetti dots */}
             <div className="absolute inset-0 pointer-events-none">
                 {[...Array(12)].map((_, i) => (
                     <div key={i}
