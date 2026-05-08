@@ -85,9 +85,9 @@ const LandingIbu = () => {
 
         <div className="hero-cta-block">
           <div className="price-display">
-            <div className="price-new"><sup style={{fontSize:'22px'}}>Rp</sup>99.000</div>
+            <div className="price-new"><sup style={{fontSize:'22px'}}>Rp</sup>129.000</div>
             <div className="price-old"><s>Rp 299.000</s></div>
-            <div className="price-save">HEMAT 63%</div>
+            <div className="price-save">HEMAT 57%</div>
           </div>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '20px' }}>
             <a 
@@ -234,9 +234,9 @@ const LandingIbu = () => {
         <h2 className="section-title reveal">Berikan NIKAH RAPI Sekarang</h2>
         <div className="pricing-card reveal">
           <div className="pricing-card-badge">✦ Akses Premium Seumur Hidup</div>
-          <div className="price-hero"><div className="price-big"><sup>Rp</sup>99.000</div></div>
+          <div className="price-hero"><div className="price-big"><sup>Rp</sup>129.000</div></div>
           <div className="price-was-p"><s>Rp 299.000</s></div>
-          <div className="price-save-badge">🔥 Hemat 63% — Harga Promo Terbatas!</div>
+          <div className="price-save-badge">🔥 Hemat 57% — Harga Promo Terbatas!</div>
           <ul className="include-list">
             <li>Aplikasi Web NIKAH RAPI — 22+ modul lengkap & terintegrasi</li>
             <li>Seserahan Tracker eksklusif — pantau dari HP Ibu!</li>
@@ -254,13 +254,13 @@ const LandingIbu = () => {
                 window.fbq('track', 'ViewContent', { 
                   content_name: 'Nikah Rapi Ibu Package', 
                   content_category: 'Wedding Planner',
-                  value: 99000, 
+                  value: 129000, 
                   currency: 'IDR' 
                 });
               }
             }}
           >
-            💍 Hadiahkan Sekarang — Rp 99.000
+            💍 Hadiahkan Sekarang — Rp 129.000
           </a>
           <p className="urgency-note">⏰ Harga segera naik ke Rp 299.000 · Garansi 7 hari · Akses langsung via WA</p>
         </div>
