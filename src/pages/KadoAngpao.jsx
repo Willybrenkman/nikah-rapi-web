@@ -242,7 +242,7 @@ export default function KadoAngpao() {
                     <table>
                         <thead>
                             <tr>
-                                <th className="th w-16 text-center">No</th>
+                                <th className="th w-16 text-center hide-on-mobile">No</th>
                                 <th className="th">Nama Lengkap Pemberi</th>
                                 <th className="th">Hubungan</th>
                                 <th className="th">Jenis</th>
@@ -257,15 +257,15 @@ export default function KadoAngpao() {
                                 <tr><td colSpan={8} className="td text-center py-32 text-brown-muted italic font-medium">Belum ada data kado atau angpao yang tercatat. Mari mulai rekap momen berbagi kalian!</td></tr>
                             ) : displayed.map((item, i) => (
                                 <tr key={item.id} className="tr group transition-all hover:bg-ivory/10">
-                                    <td className="td text-center text-[10px] text-brown-muted/60 font-black tracking-widest">{String(i + 1).padStart(2, '0')}</td>
-                                    <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors">{item.nama}</td>
-                                    <td className="td">
+                                    <td className="td text-center text-[10px] text-brown-muted/60 font-black tracking-widest hide-on-mobile" data-label="No">{String(i + 1).padStart(2, '0')}</td>
+                                    <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors" data-label="Nama Lengkap Pemberi">{item.nama}</td>
+                                    <td className="td" data-label="Hubungan">
                                         <span className="text-[10px] font-black text-brown-muted uppercase tracking-[0.1em] italic">{item.hubungan}</span>
                                     </td>
-                                    <td className="td">
+                                    <td className="td" data-label="Jenis">
                                         <span className={`badge ${jenisBadge[item.jenis] || 'badge-grey'} text-[9px] font-black uppercase tracking-tighter px-3 shadow-sm`}>{item.jenis}</span>
                                     </td>
-                                    <td className="td">
+                                    <td className="td" data-label="Nominal / Detail Kado">
                                         {item.jenis !== 'Kado' ? (
                                             <div className="text-[11px] font-black text-brown bg-sage/5 px-2 py-1 rounded-lg border border-sage/10 w-fit">{rp(item.nominal)}</div>
                                         ) : (
@@ -280,10 +280,10 @@ export default function KadoAngpao() {
                                             </div>
                                         )}
                                     </td>
-                                    <td className="td">
+                                    <td className="td" data-label="Sesi Acara">
                                         <span className="badge-rose text-[9px] px-3 py-1 uppercase font-black tracking-tighter opacity-80 shadow-sm">{item.sesi}</span>
                                     </td>
-                                    <td className="td text-center">
+                                    <td className="td text-center" data-label="Follow Up">
                                         <button onClick={() => toggleUcapkan(item)} className="hover:scale-110 transition-all active:scale-95">
                                             {item.sudah_ucapkan ? (
                                                 <span className="badge badge-green flex items-center gap-1.5 text-[9px] font-black px-4 py-1.5 shadow-sm uppercase tracking-tighter">✅ Selesai</span>
@@ -292,7 +292,7 @@ export default function KadoAngpao() {
                                             )}
                                         </button>
                                     </td>
-                                    <td className="td text-right pr-8">
+                                    <td className="td td-actions text-right pr-8" data-label="Aksi">
                                         <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                                             <button className="btn-sm-edit shadow-sm" onClick={() => openEdit(item)}>Edit</button>
                                             <button className="btn-sm-danger p-1 shadow-sm" onClick={() => handleDelete(item.id)}>✕</button>

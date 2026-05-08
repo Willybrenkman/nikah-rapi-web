@@ -213,43 +213,43 @@ export default function MUABusana() {
                     <div className="p-6 border-b border-border flex justify-between items-center bg-ivory/5">
                         <h2 className="font-playfair text-xl font-bold text-brown">Timeline Agenda Rias</h2>
                     </div>
-                    <div className="overflow-x-auto">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th className="th">Tgl & Waktu</th>
-                                    <th className="th">Agenda Kegiatan</th>
-                                    <th className="th">Status</th>
-                                    <th className="th text-right">Aksi</th>
+                <div className="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th className="th">Tgl & Waktu</th>
+                                <th className="th">Agenda Kegiatan</th>
+                                <th className="th">Status</th>
+                                <th className="th text-right pr-8">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {jadwal.length === 0 ? (
+                                <tr><td colSpan={4} className="td text-center py-24 text-brown-muted italic">Belum ada jadwal fitting atau trial.</td></tr>
+                            ) : jadwal.map(j => (
+                                <tr key={j.id} className="tr group transition-all hover:bg-ivory/10">
+                                    <td className="td" data-label="Tgl & Waktu">
+                                        <div className="text-xs font-bold text-brown">
+                                            {j.tanggal ? new Date(j.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '—'}
+                                        </div>
+                                        <div className="text-[10px] text-brown-muted italic font-bold">{j.waktu || '—'}</div>
+                                    </td>
+                                    <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors" data-label="Agenda Kegiatan">{j.agenda}</td>
+                                    <td className="td" data-label="Status">
+                                        <span className={`badge ${statusBadge[j.status] || 'badge-grey'} text-[9px] font-black uppercase tracking-tighter px-3 shadow-sm`}>
+                                            {j.status}
+                                        </span>
+                                    </td>
+                                    <td className="td td-actions text-right pr-8" data-label="Aksi">
+                                        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                                            <button className="btn-sm-edit shadow-sm" onClick={() => openEditJ(j)}>Edit</button>
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {jadwal.length === 0 ? (
-                                    <tr><td colSpan={4} className="td text-center py-24 text-brown-muted italic">Belum ada jadwal fitting atau trial.</td></tr>
-                                ) : jadwal.map(j => (
-                                    <tr key={j.id} className="tr group">
-                                        <td className="td">
-                                            <div className="text-xs font-bold text-brown">
-                                                {j.tanggal ? new Date(j.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '—'}
-                                            </div>
-                                            <div className="text-[10px] text-brown-muted italic">{j.waktu || '—'}</div>
-                                        </td>
-                                        <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors">{j.agenda}</td>
-                                        <td className="td">
-                                            <span className={`badge ${statusBadge[j.status] || 'badge-grey'} text-[9px]`}>
-                                                {j.status}
-                                            </span>
-                                        </td>
-                                        <td className="td text-right">
-                                            <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button className="btn-sm-edit" onClick={() => openEditJ(j)}>Edit</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
                 </div>
             </div>
 

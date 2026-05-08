@@ -343,16 +343,18 @@ export default function Dashboard() {
                                     }
                                     const badge = sisa <= 14 ? 'badge-red' : sisa <= 30 ? 'badge-yellow' : 'badge-green'
                                     return (
-                                        <tr key={v.id} className="tr hover:bg-ivory/10 group">
-                                            <td className="td font-bold text-rose-gold">{v.nama}</td>
-                                            <td className="td"><span className="text-[10px] font-bold text-brown-muted bg-ivory/10 px-2 py-0.5 rounded-md">{v.kategori}</span></td>
-                                            <td className="td text-brown-muted text-xs font-medium">
+                                        <tr key={v.id} className="tr group transition-all hover:bg-ivory/10">
+                                            <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors" data-label="Vendor">{v.nama}</td>
+                                            <td className="td" data-label="Kategori">
+                                                <span className="text-[9px] font-black uppercase tracking-tighter text-rose-gold bg-rose-gold/5 px-2.5 py-1 rounded-lg border border-rose-gold/10 shadow-sm">{v.kategori}</span>
+                                            </td>
+                                            <td className="td text-brown-muted text-[11px] font-bold italic" data-label="Deadline">
                                                 {v.deadline_pelunasan ? new Date(v.deadline_pelunasan).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '—'}
                                             </td>
-                                            <td className="td">
+                                            <td className="td" data-label="Status">
                                                 {sisa !== null ? (
-                                                    <span className={`badge ${badge} shadow-sm`}>{sisa <= 0 ? 'Hari Ini / Lewat' : `${sisa} hr lagi`}</span>
-                                                ) : <span className="text-brown-muted opacity-30 text-[10px]">TBA</span>}
+                                                    <span className={`badge ${badge} shadow-sm text-[9px] font-black uppercase px-3`}>{sisa <= 0 ? 'Hari Ini / Lewat' : `${sisa} hr lagi`}</span>
+                                                ) : <span className="text-brown-muted opacity-30 text-[9px] font-bold">TBA</span>}
                                             </td>
                                         </tr>
                                     )

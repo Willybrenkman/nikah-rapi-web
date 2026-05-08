@@ -215,7 +215,7 @@ export default function FotoVideo() {
                                 <th className="th">Deskripsi Shot / Momen Penting</th>
                                 <th className="th">Prioritas</th>
                                 <th className="th">Status</th>
-                                <th className="th text-right">Aksi</th>
+                                <th className="th text-right pr-8">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -223,24 +223,24 @@ export default function FotoVideo() {
                                 <tr><td colSpan={5} className="td text-center py-24 text-brown-muted italic">Belum ada daftar bidikan yang wajib diambil.</td></tr>
                             ) : shots.map(s => (
                                 <tr key={s.id} className="tr group">
-                                    <td className="td">
-                                        <span className="badge-rose text-[9px] px-2.5 py-1 uppercase font-bold tracking-tighter opacity-80">{s.sesi}</span>
+                                    <td className="td" data-label="Sesi Acara">
+                                        <span className="badge-rose text-[9px] px-2.5 py-1 uppercase font-bold tracking-tighter opacity-80 shadow-sm">{s.sesi}</span>
                                     </td>
-                                    <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors">{s.deskripsi}</td>
-                                    <td className="td">
-                                        <span className={`badge ${priorityBadge[s.priority] || 'badge-grey'} text-[9px]`}>
+                                    <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors" data-label="Deskripsi Shot / Momen Penting">{s.deskripsi}</td>
+                                    <td className="td" data-label="Prioritas">
+                                        <span className={`badge ${priorityBadge[s.priority] || 'badge-grey'} text-[9px] font-black uppercase tracking-tighter px-3 shadow-sm`}>
                                             {s.priority}
                                         </span>
                                     </td>
-                                    <td className="td">
-                                        <span className={`badge ${statusBadge[s.status] || 'badge-grey'} text-[9px]`}>
+                                    <td className="td" data-label="Status">
+                                        <span className={`badge ${statusBadge[s.status] || 'badge-grey'} text-[9px] font-black uppercase tracking-tighter px-3 shadow-sm`}>
                                             {s.status === 'Done' ? 'Selesai' : s.status}
                                         </span>
                                     </td>
-                                    <td className="td text-right">
-                                        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button className="btn-sm-edit" onClick={() => openEditShot(s)}>Edit</button>
-                                            <button className="btn-sm-danger p-1" onClick={() => deleteShot(s.id)}>✕</button>
+                                    <td className="td td-actions text-right pr-8" data-label="Aksi">
+                                        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                                            <button className="btn-sm-edit shadow-sm" onClick={() => openEditShot(s)}>Edit</button>
+                                            <button className="btn-sm-danger p-1 shadow-sm" onClick={() => deleteShot(s.id)}>✕</button>
                                         </div>
                                     </td>
                                 </tr>

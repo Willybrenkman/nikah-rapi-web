@@ -74,29 +74,29 @@ export default function ActivityLogs() {
                             </thead>
                             <tbody className="divide-y divide-border">
                                 {logs.map(log => (
-                                    <tr key={log.id} className="hover:bg-ivory/10 transition-colors">
-                                        <td className="py-4 px-6 align-top">
+                                    <tr key={log.id} className="tr hover:bg-ivory/10 transition-colors">
+                                        <td className="td py-4 px-6 align-top" data-label="Waktu">
                                             <div className="font-black text-brown text-xs">{getTime(log.created_at)}</div>
                                             <div className="text-[10px] text-brown-muted">{getDate(log.created_at)}</div>
                                         </td>
-                                        <td className="py-4 px-6 align-top">
-                                            <div className="flex items-center gap-2">
+                                        <td className="td py-4 px-6 align-top" data-label="User">
+                                            <div className="flex items-center gap-2 justify-end md:justify-start">
                                                 <div className="w-6 h-6 rounded-full bg-rose-gold/20 flex items-center justify-center text-[10px] font-bold text-rose-dark">
                                                     {log.user_email?.substring(0, 2).toUpperCase() || 'U'}
                                                 </div>
                                                 <span className="text-[11px] font-bold text-brown truncate max-w-[120px]">{log.user_email || 'System'}</span>
                                             </div>
                                         </td>
-                                        <td className="py-4 px-6 align-top">
-                                            <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-wider ${
-                                                log.action.includes('Tambah') ? 'bg-sage/10 text-sage' : 
-                                                log.action.includes('Hapus') ? 'bg-danger/10 text-danger' : 
-                                                'bg-blue-500/10 text-blue-600'
+                                        <td className="td py-4 px-6 align-top" data-label="Aksi">
+                                            <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest shadow-sm ${
+                                                log.action.includes('Tambah') ? 'badge-green' : 
+                                                log.action.includes('Hapus') ? 'badge-red' : 
+                                                'badge-blue'
                                             }`}>
                                                 {log.action}
                                             </span>
                                         </td>
-                                        <td className="py-4 px-6 text-xs text-brown-muted font-medium leading-relaxed">
+                                        <td className="td py-4 px-6 text-[11px] text-brown-muted font-bold leading-relaxed italic" data-label="Detail Perubahan">
                                             {log.details}
                                         </td>
                                     </tr>

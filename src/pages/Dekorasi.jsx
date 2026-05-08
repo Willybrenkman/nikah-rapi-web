@@ -189,30 +189,30 @@ export default function Dekorasi() {
                                     <th className="th">Area Lokasi</th>
                                     <th className="th">Est. Biaya</th>
                                     <th className="th">Status</th>
-                                    <th className="th text-right">Aksi</th>
+                                    <th className="th text-right pr-8">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {items.length === 0 ? (
                                     <tr><td colSpan={5} className="td text-center py-24 text-brown-muted italic">Belum ada rincian item dekorasi yang ditambahkan.</td></tr>
                                 ) : items.map(item => (
-                                    <tr key={item.id} className="tr group">
-                                        <td className="td">
+                                    <tr key={item.id} className="tr group transition-all hover:bg-ivory/10">
+                                        <td className="td" data-label="Nama Item">
                                             <div className="font-bold text-brown group-hover:text-rose-gold transition-colors">{item.nama}</div>
                                         </td>
-                                        <td className="td">
-                                            <span className="badge-rose text-[9px] px-2.5 py-1 uppercase font-bold tracking-tighter opacity-80">{item.area}</span>
+                                        <td className="td" data-label="Area Lokasi">
+                                            <span className="badge-rose text-[9px] px-2.5 py-1 uppercase font-bold tracking-tighter opacity-80 shadow-sm">{item.area}</span>
                                         </td>
-                                        <td className="td text-xs font-bold text-brown">{rp(item.estimasi)}</td>
-                                        <td className="td">
-                                            <span className={`badge ${statusBadge[item.status] || 'badge-grey'} text-[9px]`}>
+                                        <td className="td text-xs font-bold text-brown" data-label="Est. Biaya">{rp(item.estimasi)}</td>
+                                        <td className="td" data-label="Status">
+                                            <span className={`badge ${statusBadge[item.status] || 'badge-grey'} text-[9px] font-black uppercase tracking-tighter px-3 shadow-sm`}>
                                                 {item.status}
                                             </span>
                                         </td>
-                                        <td className="td text-right">
-                                            <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button className="btn-sm-edit" onClick={() => openEdit(item)}>Edit</button>
-                                                <button className="btn-sm-danger p-1" onClick={() => handleDelete(item.id)}>✕</button>
+                                        <td className="td td-actions text-right pr-8" data-label="Aksi">
+                                            <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                                                <button className="btn-sm-edit shadow-sm" onClick={() => openEdit(item)}>Edit</button>
+                                                <button className="btn-sm-danger p-1 shadow-sm" onClick={() => handleDelete(item.id)}>✕</button>
                                             </div>
                                         </td>
                                     </tr>

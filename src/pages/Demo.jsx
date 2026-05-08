@@ -303,25 +303,27 @@ const DemoDashboard = () => {
                   <h3 className="text-lg font-bold text-brown font-playfair">Deadline Vendor Terdekat</h3>
               </div>
               <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
-                      <thead>
-                          <tr className="border-b border-[var(--border)] bg-ivory/5">
-                              <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Vendor</th>
-                              <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Kategori</th>
-                              <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Deadline</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          {vendors.map((v, i) => (
-                              <tr key={v.id} className="border-b border-[var(--border)] hover:bg-ivory/5">
-                                  <td className="p-4 font-bold text-rose-gold">{v.nama}</td>
-                                  <td className="p-4 text-xs text-brown-muted">{v.kategori}</td>
-                                  <td className="p-4 text-xs font-medium text-brown-muted">14 Hari Lagi</td>
-                              </tr>
-                          ))}
-                      </tbody>
-                  </table>
-              </div>
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="border-b border-[var(--border)] bg-ivory/5">
+                                <th className="th text-rose-gold">Vendor</th>
+                                <th className="th text-rose-gold">Kategori</th>
+                                <th className="th text-rose-gold">Deadline</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {vendors.map((v, i) => (
+                                <tr key={v.id} className="tr group transition-all hover:bg-ivory/5">
+                                    <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors" data-label="Vendor">{v.nama}</td>
+                                    <td className="td" data-label="Kategori">
+                                        <span className="text-[9px] font-black uppercase tracking-tighter text-rose-gold bg-rose-gold/5 px-2.5 py-1 rounded-lg border border-rose-gold/10 shadow-sm">{v.kategori}</span>
+                                    </td>
+                                    <td className="td text-brown-muted text-[11px] font-bold italic" data-label="Deadline">14 Hari Lagi</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
           </div>
       </div>
     </div>
@@ -424,13 +426,13 @@ const DemoBudget = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-[var(--border)]">
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider w-12 text-center">No</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Kategori</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Estimasi</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Aktual</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Selisih</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Progres</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Status</th>
+                <th className="th hide-on-mobile text-center">No</th>
+                <th className="th">Kategori</th>
+                <th className="th">Estimasi</th>
+                <th className="th">Aktual</th>
+                <th className="th">Selisih</th>
+                <th className="th">Progres</th>
+                <th className="th">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -440,29 +442,29 @@ const DemoBudget = () => {
                 const badge = item.jumlah_aktual === 0 ? 'bg-[#9B8070]/10 text-[#9B8070]' : pct >= 100 ? 'bg-[#8BAF8B]/15 text-[#5C7361]' : 'bg-[#D4756B]/10 text-[#D4756B]';
                 const blabel = item.jumlah_aktual === 0 ? 'Belum Bayar' : pct >= 100 ? 'Lunas' : 'Bayar Sebagian';
                 return (
-                  <tr key={item.id} className="border-b border-[var(--border)] hover:bg-[var(--ivory)]/5 transition-colors">
-                    <td className="p-4 text-center text-[10px] text-brown-muted font-bold">{String(i + 1).padStart(2, '0')}</td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-[var(--ivory)]/50 flex items-center justify-center text-xl">{item.icon}</div>
-                        <span className="font-bold text-brown">{item.kategori}</span>
+                  <tr key={item.id} className="tr group transition-all hover:bg-[var(--ivory)]/5">
+                    <td className="td hide-on-mobile text-center text-[10px] text-brown-muted font-bold" data-label="No">{String(i + 1).padStart(2, '0')}</td>
+                    <td className="td" data-label="Kategori">
+                      <div className="flex items-center gap-3 justify-end md:justify-start">
+                        <div className="w-10 h-10 rounded-xl bg-[var(--ivory)]/50 flex items-center justify-center text-xl shadow-inner">{item.icon}</div>
+                        <span className="font-bold text-brown group-hover:text-rose-gold transition-colors">{item.kategori}</span>
                       </div>
                     </td>
-                    <td className="p-4 text-[11px] font-bold text-brown-muted">{rp(item.jumlah_estimasi)}</td>
-                    <td className="p-4 text-[11px] font-bold text-brown">{rp(item.jumlah_aktual)}</td>
-                    <td className={`p-4 text-[11px] font-bold ${sel >= 0 ? 'text-[#8BAF8B]' : 'text-[#D4756B]'}`}>
+                    <td className="td text-[11px] font-bold text-brown-muted" data-label="Estimasi">{rp(item.jumlah_estimasi)}</td>
+                    <td className="td text-[11px] font-bold text-brown" data-label="Aktual">{rp(item.jumlah_aktual)}</td>
+                    <td className={`td text-[11px] font-bold ${sel >= 0 ? 'text-sage' : 'text-danger'}`} data-label="Selisih">
                       {sel >= 0 ? '+' : ''}{rp(Math.abs(sel))}
                     </td>
-                    <td className="p-4 min-w-[140px]">
-                      <div className="flex items-center gap-3">
-                        <div className="flex-1 h-2 bg-[var(--ivory)] rounded-full overflow-hidden">
-                          <div className="progress-fill h-full rounded-full" style={{ width: `${pct}%` }} />
+                    <td className="td min-w-[140px]" data-label="Progres">
+                      <div className="flex items-center gap-3 justify-end md:justify-start">
+                        <div className="flex-1 h-2 bg-[var(--ivory)] rounded-full overflow-hidden shadow-inner max-w-[100px] md:max-w-none">
+                          <div className="progress-fill h-full rounded-full shadow-sm" style={{ width: `${pct}%` }} />
                         </div>
                         <span className="text-[10px] font-bold text-brown-muted">{pct}%</span>
                       </div>
                     </td>
-                    <td className="p-4">
-                      <span className={`${badge} text-[9px] font-bold uppercase tracking-tight px-3 py-1.5 rounded-full`}>{blabel}</span>
+                    <td className="td" data-label="Status">
+                      <span className={`${badge} text-[9px] font-black uppercase tracking-tighter px-3 py-1.5 rounded-lg shadow-sm`}>{blabel}</span>
                     </td>
                   </tr>
                 );
@@ -557,33 +559,33 @@ const DemoSeserahan = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-[var(--border)]">
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider w-12 text-center">No</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Nama Item</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Kategori</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Estimasi</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Aktual</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Toko</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Status</th>
+                <th className="th hide-on-mobile text-center">No</th>
+                <th className="th">Nama Item</th>
+                <th className="th">Kategori</th>
+                <th className="th">Estimasi</th>
+                <th className="th">Aktual</th>
+                <th className="th">Toko</th>
+                <th className="th">Status</th>
               </tr>
             </thead>
             <tbody>
               {items.map((item, i) => (
-                <tr key={item.id} className="border-b border-[var(--border)] hover:bg-[var(--ivory)]/5 transition-colors">
-                  <td className="p-4 text-center text-[10px] text-brown-muted font-bold">{String(i + 1).padStart(2, '0')}</td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-[var(--ivory)]/50 flex items-center justify-center text-xl">{item.icon}</div>
-                      <span className="font-bold text-brown">{item.nama}</span>
+                <tr key={item.id} className="tr group transition-all hover:bg-[var(--ivory)]/5">
+                  <td className="td hide-on-mobile text-center text-[10px] text-brown-muted font-bold" data-label="No">{String(i + 1).padStart(2, '0')}</td>
+                  <td className="td" data-label="Nama Item">
+                    <div className="flex items-center gap-3 justify-end md:justify-start">
+                      <div className="w-10 h-10 rounded-xl bg-[var(--ivory)]/50 flex items-center justify-center text-xl shadow-inner">{item.icon}</div>
+                      <span className="font-bold text-brown group-hover:text-rose-gold transition-colors">{item.nama}</span>
                     </div>
                   </td>
-                  <td className="p-4">
-                    <span className="bg-rose-gold/10 text-rose-gold text-[9px] font-bold uppercase px-3 py-1 rounded-full">{item.kategori}</span>
+                  <td className="td" data-label="Kategori">
+                    <span className="bg-rose-gold/5 text-rose-gold text-[9px] font-black uppercase px-3 py-1.5 rounded-lg border border-rose-gold/10 shadow-sm">{item.kategori}</span>
                   </td>
-                  <td className="p-4 text-[11px] font-bold text-brown-muted">{rp(item.estimasi)}</td>
-                  <td className="p-4 text-[11px] font-bold text-brown">{item.aktual ? rp(item.aktual) : <span className="text-[9px] text-brown-muted/40 italic uppercase">Menunggu...</span>}</td>
-                  <td className="p-4 text-[10px] font-bold text-brown-muted">{item.tempat_beli}</td>
-                  <td className="p-4">
-                    <span className={`${badgeMap[item.status]} text-[9px] font-bold uppercase tracking-tight px-3 py-1.5 rounded-full`}>{labelMap[item.status]}</span>
+                  <td className="td text-[11px] font-bold text-brown-muted" data-label="Estimasi">{rp(item.estimasi)}</td>
+                  <td className="td text-[11px] font-bold text-brown" data-label="Aktual">{item.aktual ? rp(item.aktual) : <span className="text-[9px] text-brown-muted/40 italic uppercase">Menunggu...</span>}</td>
+                  <td className="td text-[10px] font-bold text-brown-muted italic" data-label="Toko">{item.tempat_beli}</td>
+                  <td className="td" data-label="Status">
+                    <span className={`${badgeMap[item.status]} text-[9px] font-black uppercase tracking-tighter px-3 py-1.5 rounded-lg shadow-sm`}>{labelMap[item.status]}</span>
                   </td>
                 </tr>
               ))}
@@ -715,33 +717,33 @@ const DemoKadoAngpao = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-[var(--border)]">
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider w-12 text-center">No</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Nama Pemberi</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Hubungan</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Tipe</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Nominal Angpao</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Kado</th>
-                <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Status</th>
+                <th className="th hide-on-mobile text-center">No</th>
+                <th className="th">Nama Pemberi</th>
+                <th className="th">Hubungan</th>
+                <th className="th">Tipe</th>
+                <th className="th">Nominal Angpao</th>
+                <th className="th">Kado</th>
+                <th className="th">Status</th>
               </tr>
             </thead>
             <tbody>
               {entries.map((e, i) => (
-                <tr key={e.id} className="border-b border-[var(--border)] hover:bg-[var(--ivory)]/5 transition-colors">
-                  <td className="p-4 text-center text-[10px] text-brown-muted font-bold">{String(i + 1).padStart(2, '0')}</td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-[var(--ivory)]/50 flex items-center justify-center text-xl">{e.icon}</div>
-                      <span className="font-bold text-brown">{e.nama}</span>
+                <tr key={e.id} className="tr group transition-all hover:bg-[var(--ivory)]/5">
+                  <td className="td hide-on-mobile text-center text-[10px] text-brown-muted font-bold" data-label="No">{String(i + 1).padStart(2, '0')}</td>
+                  <td className="td" data-label="Nama Pemberi">
+                    <div className="flex items-center gap-3 justify-end md:justify-start">
+                      <div className="w-10 h-10 rounded-xl bg-[var(--ivory)]/50 flex items-center justify-center text-xl shadow-inner">{e.icon}</div>
+                      <span className="font-bold text-brown group-hover:text-rose-gold transition-colors">{e.nama}</span>
                     </div>
                   </td>
-                  <td className="p-4 text-[11px] font-bold text-brown-muted">{e.hubungan}</td>
-                  <td className="p-4">
-                    <span className="bg-rose-gold/10 text-rose-gold text-[9px] font-bold uppercase px-3 py-1 rounded-full">{e.tipe}</span>
+                  <td className="td text-[11px] font-bold text-brown-muted italic" data-label="Hubungan">{e.hubungan}</td>
+                  <td className="td" data-label="Tipe">
+                    <span className="bg-rose-gold/5 text-rose-gold text-[9px] font-black uppercase px-3 py-1.5 rounded-lg border border-rose-gold/10 shadow-sm">{e.tipe}</span>
                   </td>
-                  <td className="p-4 text-[11px] font-bold text-brown">{e.nominal > 0 ? rp(e.nominal) : <span className="text-[9px] text-brown-muted/40 italic">—</span>}</td>
-                  <td className="p-4 text-[10px] font-bold text-brown-muted">{e.kado === '-' ? <span className="text-[9px] text-brown-muted/40 italic">—</span> : e.kado}</td>
-                  <td className="p-4">
-                    <span className={`${badgeMap[e.status]} text-[9px] font-bold uppercase tracking-tight px-3 py-1.5 rounded-full`}>{labelMap[e.status]}</span>
+                  <td className="td text-[11px] font-bold text-brown" data-label="Nominal Angpao">{e.nominal > 0 ? rp(e.nominal) : <span className="text-[9px] text-brown-muted/40 italic">—</span>}</td>
+                  <td className="td text-[10px] font-bold text-brown-muted" data-label="Kado">{e.kado === '-' ? <span className="text-[9px] text-brown-muted/40 italic">—</span> : e.kado}</td>
+                  <td className="td" data-label="Status">
+                    <span className={`${badgeMap[e.status]} text-[9px] font-black uppercase tracking-tighter px-3 py-1.5 rounded-lg shadow-sm`}>{labelMap[e.status]}</span>
                   </td>
                 </tr>
               ))}

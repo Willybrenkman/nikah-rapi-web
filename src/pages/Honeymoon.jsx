@@ -227,10 +227,10 @@ export default function Honeymoon() {
                             <table>
                                 <thead>
                                     <tr>
-                                        <th className="th w-20 text-center">Hari</th>
+                                        <th className="th w-20 text-center hide-on-mobile">Hari</th>
                                         <th className="th">Aktivitas & Lokasi</th>
                                         <th className="th">Biaya</th>
-                                        <th className="th text-right pr-6">Aksi</th>
+                                        <th className="th text-right pr-8">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -238,20 +238,20 @@ export default function Honeymoon() {
                                         <tr><td colSpan={4} className="td text-center py-20 text-brown-muted italic font-medium">Belum ada rincian itinerary harian.</td></tr>
                                     ) : itinerary.map(i => (
                                         <tr key={i.id} className="tr group transition-all hover:bg-ivory/10">
-                                            <td className="td text-center">
+                                            <td className="td text-center hide-on-mobile" data-label="Hari">
                                                 <span className="inline-block text-[10px] font-black text-rose-gold bg-rose-gold/5 px-2 py-1 rounded-lg border border-rose-gold/10">{i.hari}</span>
                                             </td>
-                                            <td className="td">
+                                            <td className="td" data-label="Aktivitas & Lokasi">
                                                 <div className="font-bold text-brown group-hover:text-rose-gold transition-colors">{i.aktivitas}</div>
-                                                <div className="text-[10px] text-brown-muted font-medium italic mt-0.5 flex items-center gap-1.5">
+                                                <div className="text-[10px] text-brown-muted font-medium italic mt-0.5 flex items-center gap-1.5 justify-end md:justify-start">
                                                     <span className="text-rose-gold">📍</span> {i.lokasi || 'Lokasi belum ditentukan'}
                                                 </div>
                                             </td>
-                                            <td className="td font-black text-brown text-xs">{rp(i.estimasi_biaya)}</td>
-                                            <td className="td text-right pr-6">
-                                                <div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-all">
+                                            <td className="td font-black text-brown text-xs" data-label="Biaya">{rp(i.estimasi_biaya)}</td>
+                                            <td className="td td-actions text-right pr-8" data-label="Aksi">
+                                                <div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                                                     <button className="btn-sm-edit shadow-sm" onClick={() => openEditI(i)}>Edit</button>
-                                                    <button className="btn-sm-delete shadow-sm" onClick={() => deleteIti(i.id)}>Hapus</button>
+                                                    <button className="btn-sm-delete shadow-sm" onClick={() => handleDeleteItinerary(i.id)}>Hapus</button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -274,7 +274,7 @@ export default function Honeymoon() {
                                         <th className="th">Item Booking</th>
                                         <th className="th">Harga</th>
                                         <th className="th">Status</th>
-                                        <th className="th text-right pr-6">Aksi</th>
+                                        <th className="th text-right pr-8">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -282,20 +282,20 @@ export default function Honeymoon() {
                                         <tr><td colSpan={4} className="td text-center py-20 text-brown-muted italic font-medium">Belum ada data pemesanan yang tercatat.</td></tr>
                                     ) : booking.map(b => (
                                         <tr key={b.id} className="tr group transition-all hover:bg-ivory/10">
-                                            <td className="td">
+                                            <td className="td" data-label="Item Booking">
                                                 <div className="font-bold text-brown group-hover:text-rose-gold transition-colors">{b.item}</div>
                                                 <div className="text-[10px] text-brown-muted font-medium italic mt-0.5">{b.detail || '—'}</div>
                                             </td>
-                                            <td className="td font-black text-brown text-xs">{rp(b.harga)}</td>
-                                            <td className="td">
+                                            <td className="td font-black text-brown text-xs" data-label="Harga">{rp(b.harga)}</td>
+                                            <td className="td" data-label="Status">
                                                 <span className={`badge ${statusBadge[b.status] || 'badge-grey'} text-[9px] font-black uppercase tracking-widest px-3 py-1 shadow-sm`}>
                                                     {b.status === 'Confirmed' ? '✅ Terkonfirmasi' : b.status === 'Pending' ? '⏳ Menunggu' : '❌ Belum'}
                                                 </span>
                                             </td>
-                                            <td className="td text-right pr-6">
-                                                <div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-all">
+                                            <td className="td td-actions text-right pr-8" data-label="Aksi">
+                                                <div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                                                     <button className="btn-sm-edit shadow-sm" onClick={() => openEditB(b)}>Edit</button>
-                                                    <button className="btn-sm-delete shadow-sm" onClick={() => deleteBook(b.id)}>Hapus</button>
+                                                    <button className="btn-sm-delete shadow-sm" onClick={() => handleDeleteBooking(b.id)}>Hapus</button>
                                                 </div>
                                             </td>
                                         </tr>

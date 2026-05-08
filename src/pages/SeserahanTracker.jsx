@@ -199,7 +199,7 @@ export default function SeserahanTracker() {
                     <table>
                         <thead>
                             <tr>
-                                <th className="th w-16 text-center">No</th>
+                                <th className="th w-16 text-center hide-on-mobile">No</th>
                                 <th className="th">Nama Item / Barang</th>
                                 <th className="th">Kategori</th>
                                 <th className="th">Estimasi Harga</th>
@@ -214,8 +214,8 @@ export default function SeserahanTracker() {
                                 <tr><td colSpan={8} className="td text-center py-32 text-brown-muted italic font-medium">Belum ada item hantaran di kategori ini. Yuk, mulai data persiapan seserahanmu!</td></tr>
                             ) : displayed.map((item, i) => (
                                 <tr key={item.id} className="tr group transition-all hover:bg-ivory/10">
-                                    <td className="td text-center text-[10px] text-brown-muted/60 font-black tracking-widest">{String(i + 1).padStart(2, '0')}</td>
-                                    <td className="td">
+                                    <td className="td text-center text-[10px] text-brown-muted/60 font-black tracking-widest hide-on-mobile" data-label="No">{String(i + 1).padStart(2, '0')}</td>
+                                    <td className="td" data-label="Nama Item / Barang">
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 rounded-2xl bg-ivory flex items-center justify-center text-xl shadow-inner-white border border-ivory/50 group-hover:bg-rose-gold/10 group-hover:scale-110 transition-all duration-500">
                                                 {getCatIcon(item.kategori)}
@@ -223,21 +223,21 @@ export default function SeserahanTracker() {
                                             <span className="font-bold text-brown group-hover:text-rose-gold transition-colors">{item.nama}</span>
                                         </div>
                                     </td>
-                                    <td className="td">
+                                    <td className="td" data-label="Kategori">
                                         <span className="badge-rose text-[9px] px-3 py-1 uppercase font-black tracking-tighter shadow-sm opacity-90">
                                             {item.kategori}
                                         </span>
                                     </td>
-                                    <td className="td text-[10px] font-bold text-brown-muted italic">{rp(item.estimasi)}</td>
-                                    <td className="td">
+                                    <td className="td text-[10px] font-bold text-brown-muted italic" data-label="Estimasi Harga">{rp(item.estimasi)}</td>
+                                    <td className="td" data-label="Harga Aktual">
                                         {item.aktual ? (
                                             <span className="inline-block text-[11px] font-black text-brown bg-sage/5 px-3 py-1.5 rounded-xl border border-sage/10 shadow-sm">{rp(item.aktual)}</span>
                                         ) : (
                                             <span className="text-[9px] text-brown-muted/40 font-black uppercase tracking-[0.15em] italic">Menunggu...</span>
                                         )}
                                     </td>
-                                    <td className="td">
-                                        <div className="flex items-center gap-2 text-[10px] font-bold italic text-brown-muted uppercase tracking-tighter">
+                                    <td className="td" data-label="Tempat Beli">
+                                        <div className="flex items-center gap-2 text-[10px] font-bold italic text-brown-muted uppercase tracking-tighter justify-end md:justify-start">
                                             {item.tempat_beli ? (
                                                 <>
                                                     <span className="w-1.5 h-1.5 bg-rose-gold/40 rounded-full shadow-sm" />
@@ -246,12 +246,12 @@ export default function SeserahanTracker() {
                                             ) : <span className="opacity-30 tracking-widest">—</span>}
                                         </div>
                                     </td>
-                                    <td className="td">
+                                    <td className="td" data-label="Status">
                                         <span className={`badge ${badgeMap[item.status] || 'badge-grey'} text-[9px] font-black uppercase tracking-tighter px-4 py-1.5 shadow-sm`}>
                                             {item.status === 'Sudah Kemas' ? '✨ Siap' : item.status === 'Sudah Beli' ? '🛒 Dibeli' : '📦 Belum'}
                                         </span>
                                     </td>
-                                    <td className="td text-right pr-8">
+                                    <td className="td td-actions text-right pr-8" data-label="Aksi">
                                         <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                                             <button className="btn-sm-edit shadow-sm" onClick={() => openEdit(item)}>Edit</button>
                                             <button className="btn-sm-danger p-1 shadow-sm" onClick={() => handleDelete(item.id)}>✕</button>

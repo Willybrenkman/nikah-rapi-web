@@ -202,25 +202,25 @@ export default function Undangan() {
                                 {items.length === 0 ? (
                                     <tr><td colSpan={6} className="td text-center py-24 text-brown-muted italic">Belum ada vendor undangan yang ditambahkan.</td></tr>
                                 ) : items.map(item => (
-                                    <tr key={item.id} className="tr group">
-                                        <td className="td">
+                                    <tr key={item.id} className="tr group transition-all hover:bg-ivory/10">
+                                        <td className="td" data-label="Nama Vendor">
                                             <div className="font-bold text-brown group-hover:text-rose-gold transition-colors">{item.nama_vendor}</div>
                                         </td>
-                                        <td className="td">
-                                            <span className="badge-rose text-[9px] px-2 py-0.5 rounded uppercase font-bold tracking-tighter opacity-70">{item.layanan || 'Undangan'}</span>
+                                        <td className="td" data-label="Layanan">
+                                            <span className="badge-rose text-[9px] px-2.5 py-1 rounded-lg uppercase font-black tracking-tighter opacity-80 shadow-sm">{item.layanan || 'Undangan'}</span>
                                         </td>
-                                        <td className="td text-xs font-bold text-brown">{rp(item.harga)}</td>
-                                        <td className="td">
-                                            <span className={`badge ${badgePay[item.status_bayar] || 'badge-grey'} text-[9px] font-black uppercase`}>
+                                        <td className="td text-xs font-bold text-brown" data-label="Biaya">{rp(item.harga)}</td>
+                                        <td className="td" data-label="Pembayaran">
+                                            <span className={`badge ${badgePay[item.status_bayar] || 'badge-grey'} text-[9px] font-black uppercase tracking-tighter px-3 shadow-sm`}>
                                                 {item.status_bayar}
                                             </span>
                                         </td>
-                                        <td className="td">
-                                            <span className={`badge ${badgeWork[item.status_kerja] || 'badge-grey'} text-[9px] font-black uppercase`}>
+                                        <td className="td" data-label="Produksi">
+                                            <span className={`badge ${badgeWork[item.status_kerja] || 'badge-grey'} text-[9px] font-black uppercase tracking-tighter px-3 shadow-sm`}>
                                                 {item.status_kerja === 'In Progress' ? 'Diproses' : item.status_kerja}
                                             </span>
                                         </td>
-                                        <td className="td text-right pr-8">
+                                        <td className="td td-actions text-right pr-8" data-label="Aksi">
                                             <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                                                 <button className="btn-sm-edit shadow-sm" onClick={() => openEdit(item)}>Edit</button>
                                                 <button className="btn-sm-danger p-1 shadow-sm" onClick={() => handleDelete(item.id)}>✕</button>

@@ -238,7 +238,7 @@ export default function Souvenir() {
                         <table>
                             <thead>
                                 <tr>
-                                    <th className="th w-12 text-center">#</th>
+                                    <th className="th w-12 text-center hide-on-mobile">#</th>
                                     <th className="th">Nama Vendor</th>
                                     <th className="th">PIC & Kontak</th>
                                     <th className="th">Jenis Souvenir</th>
@@ -266,32 +266,32 @@ export default function Souvenir() {
                                     </tr>
                                 ) : vendors.map((v, idx) => (
                                     <tr key={v.id} className="tr group transition-all hover:bg-ivory/10">
-                                        <td className="td text-center text-[10px] text-brown-muted/60 font-black">{String(idx + 1).padStart(2, '0')}</td>
-                                        <td className="td">
+                                        <td className="td text-center text-[10px] text-brown-muted/60 font-black hide-on-mobile" data-label="#">{String(idx + 1).padStart(2, '0')}</td>
+                                        <td className="td" data-label="Nama Vendor">
                                             <div className="font-bold text-brown group-hover:text-rose-gold transition-colors">{v.nama_vendor}</div>
                                         </td>
-                                        <td className="td">
+                                        <td className="td" data-label="PIC & Kontak">
                                             <div className="text-sm font-bold text-brown">{v.pic_nama || '-'}</div>
                                             <div className="text-[10px] text-brown-muted">{v.pic_hp || '-'}</div>
                                         </td>
-                                        <td className="td">
+                                        <td className="td" data-label="Jenis Souvenir">
                                             <span className="inline-block bg-ivory/50 text-brown px-3 py-1 rounded-xl border border-border text-xs font-bold">
                                                 🎁 {v.jenis_souvenir || '-'}
                                             </span>
                                         </td>
-                                        <td className="td text-center font-black text-brown">{v.total_dipesan} <span className="text-[9px] text-brown-muted">pcs</span></td>
-                                        <td className="td text-right font-bold text-brown">{rp(v.harga_satuan)}</td>
-                                        <td className="td text-right font-black text-rose-gold">{rp((v.total_dipesan || 0) * (v.harga_satuan || 0))}</td>
-                                        <td className="td text-center text-xs text-brown-muted font-medium">
+                                        <td className="td text-center font-black text-brown" data-label="Qty">{v.total_dipesan} <span className="text-[9px] text-brown-muted">pcs</span></td>
+                                        <td className="td text-right font-bold text-brown" data-label="Harga Satuan">{rp(v.harga_satuan)}</td>
+                                        <td className="td text-right font-black text-rose-gold" data-label="Total Biaya">{rp((v.total_dipesan || 0) * (v.harga_satuan || 0))}</td>
+                                        <td className="td text-center text-xs text-brown-muted font-medium" data-label="Deadline">
                                             {v.deadline_ambil ? new Date(v.deadline_ambil).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-'}
                                         </td>
-                                        <td className="td text-center">
+                                        <td className="td text-center" data-label="Status Bayar">
                                             <span className={`badge text-[9px] font-black uppercase tracking-widest px-4 py-1.5 shadow-sm ${v.status_bayar === 'Lunas' ? 'badge-green' : v.status_bayar === 'DP 50%' ? 'badge-blue' : 'badge-red'}`}>
                                                 {v.status_bayar}
                                             </span>
                                         </td>
-                                        <td className="td text-right pr-8">
-                                            <div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-all">
+                                        <td className="td td-actions text-right pr-8" data-label="Aksi">
+                                            <div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                                                 <button className="btn-sm-edit shadow-sm" onClick={() => openEditVendor(v)}>Edit</button>
                                                 <button className="btn-sm-delete shadow-sm" onClick={() => deleteVendor(v.id)}>Hapus</button>
                                             </div>
@@ -341,7 +341,7 @@ export default function Souvenir() {
                         <table>
                             <thead>
                                 <tr>
-                                    <th className="th w-16 text-center">#</th>
+                                    <th className="th w-16 text-center hide-on-mobile">#</th>
                                     <th className="th">Kategori Penerima</th>
                                     <th className="th text-center">Target Jumlah</th>
                                     <th className="th text-center">Telah Diberikan</th>
@@ -356,16 +356,16 @@ export default function Souvenir() {
                                     const pct = d.jumlah > 0 ? Math.min(100, Math.round((d.sudah_distribusi || 0) / d.jumlah * 100)) : 0
                                     return (
                                         <tr key={d.id} className="tr group transition-all hover:bg-ivory/10">
-                                            <td className="td text-center text-[10px] text-brown-muted/60 font-black tracking-widest">{String(idx + 1).padStart(2, '0')}</td>
-                                            <td className="td">
+                                            <td className="td text-center text-[10px] text-brown-muted/60 font-black tracking-widest hide-on-mobile" data-label="#">{String(idx + 1).padStart(2, '0')}</td>
+                                            <td className="td" data-label="Kategori Penerima">
                                                 <div className="font-bold text-brown group-hover:text-rose-gold transition-colors">{d.kategori}</div>
                                                 <div className="text-[9px] text-brown-muted italic font-bold uppercase tracking-tighter mt-0.5">Sesi: {(d.kategori || '').includes('Akad') ? 'Akad Nikah' : 'Resepsi'}</div>
                                             </td>
-                                            <td className="td text-center font-black text-brown">{d.jumlah} <span className="text-[9px] text-brown-muted ml-0.5 opacity-50">Pcs</span></td>
-                                            <td className="td text-center">
+                                            <td className="td text-center font-black text-brown" data-label="Target Jumlah">{d.jumlah} <span className="text-[9px] text-brown-muted ml-0.5 opacity-50">Pcs</span></td>
+                                            <td className="td text-center" data-label="Telah Diberikan">
                                                 <span className="inline-block bg-sage/5 text-sage px-3 py-1.5 rounded-xl border border-sage/10 font-black shadow-sm text-xs">{d.sudah_distribusi || 0}</span>
                                             </td>
-                                            <td className="td min-w-[220px]">
+                                            <td className="td min-w-[220px]" data-label="Progres Distribusi">
                                                 <div className="flex items-center gap-4">
                                                     <div className="progress-track flex-1 h-3 bg-ivory shadow-inner rounded-full p-0.5 border border-border/50">
                                                         <div className={`progress-fill h-full rounded-full transition-all duration-1000 relative overflow-hidden ${pct === 100 ? 'bg-sage' : ''}`} style={{ width: `${pct}%` }}>
@@ -375,8 +375,8 @@ export default function Souvenir() {
                                                     <span className="text-[10px] font-black text-brown-muted w-10 text-right">{pct}%</span>
                                                 </div>
                                             </td>
-                                            <td className="td text-right pr-8">
-                                                <div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-all">
+                                            <td className="td td-actions text-right pr-8" data-label="Aksi">
+                                                <div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                                                     <button className="btn-sm-edit shadow-sm" onClick={() => openEditD(d)}>Edit</button>
                                                     <button className="btn-sm-delete shadow-sm" onClick={() => deleteDistribusi(d.id)}>Hapus</button>
                                                 </div>

@@ -244,33 +244,33 @@ export default function Katering() {
                                     <th className="th">Kategori</th>
                                     <th className="th">Sistem Penyajian</th>
                                     <th className="th">Status</th>
-                                    <th className="th text-right">Aksi</th>
+                                    <th className="th text-right pr-8">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {menus.length === 0 ? (
                                     <tr><td colSpan={5} className="td text-center py-24 text-brown-muted italic">Belum ada menu yang didaftarkan.</td></tr>
                                 ) : menus.map(m => (
-                                    <tr key={m.id} className="tr group">
-                                        <td className="td">
-                                            <div className="flex items-center gap-2">
+                                    <tr key={m.id} className="tr group transition-all hover:bg-ivory/10">
+                                        <td className="td" data-label="Menu">
+                                            <div className="flex items-center gap-2 justify-end md:justify-start">
                                                 <span className="text-lg">{m.jenis === 'Makanan' ? '🍲' : m.jenis === 'Minuman' ? '🍹' : m.jenis === 'Dessert' ? '🍰' : '🍿'}</span>
                                                 <span className="font-bold text-brown group-hover:text-rose-gold transition-colors">{m.nama_menu}</span>
                                             </div>
                                         </td>
-                                        <td className="td">
-                                            <span className="badge-rose text-[9px] px-2.5 py-1 uppercase font-bold tracking-tighter opacity-80">{m.jenis}</span>
+                                        <td className="td" data-label="Kategori">
+                                            <span className="badge-rose text-[9px] px-2.5 py-1 uppercase font-bold tracking-tighter opacity-80 shadow-sm">{m.jenis}</span>
                                         </td>
-                                        <td className="td text-[10px] font-medium text-brown-muted italic">{m.sistem}</td>
-                                        <td className="td">
-                                            <span className={`badge ${m.ada ? 'badge-green' : 'badge-grey'} text-[9px]`}>
+                                        <td className="td text-[10px] font-bold text-brown-muted italic" data-label="Sistem Penyajian">{m.sistem}</td>
+                                        <td className="td" data-label="Status">
+                                            <span className={`badge ${m.ada ? 'badge-green' : 'badge-grey'} text-[9px] font-black uppercase tracking-tighter px-3 shadow-sm`}>
                                                 {m.ada ? '✓ Tersedia' : 'Pending'}
                                             </span>
                                         </td>
-                                        <td className="td text-right">
-                                            <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button className="btn-sm-edit" onClick={() => openEditMenu(m)}>Edit</button>
-                                                <button className="btn-sm-danger p-1" onClick={() => deleteMenu(m.id)}>✕</button>
+                                        <td className="td td-actions text-right pr-8" data-label="Aksi">
+                                            <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                                                <button className="btn-sm-edit shadow-sm" onClick={() => openEditMenu(m)}>Edit</button>
+                                                <button className="btn-sm-danger p-1 shadow-sm" onClick={() => deleteMenu(m.id)}>✕</button>
                                             </div>
                                         </td>
                                     </tr>
