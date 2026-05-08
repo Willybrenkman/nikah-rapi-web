@@ -26,7 +26,20 @@ const Demo = () => {
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState('Dashboard Utama');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showBottomCTA, setShowBottomCTA] = useState(false);
   const checkoutUrl = "https://entrepreneurai.myscalev.com/checkout-page";
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > window.innerHeight * 0.3) {
+        setShowBottomCTA(true);
+      } else {
+        setShowBottomCTA(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const menus = [
     { num: '01', icon: '📊', label: 'Dashboard Utama', locked: false },
@@ -97,17 +110,26 @@ const Demo = () => {
           {/* Topbar */}
           <header className="topbar">
             <div className="flex items-center gap-4">
-              <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brown-muted)" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
+              <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 text-brown">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
               </button>
-              <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 20, color: 'var(--brown)' }}>{activeMenu}</h1>
+              <div className="flex items-center gap-2">
+                <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 20, color: 'var(--brown)' }}>{activeMenu}</h1>
+                <span className="lg:hidden text-[9px] bg-rose-gold/20 text-rose-gold px-2 py-0.5 rounded-full font-bold border border-rose-gold/30">
+                  DEMO
+                </span>
+              </div>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-[10px] bg-rose-gold/20 text-rose-gold px-3 py-1 rounded-full font-bold border border-rose-gold/30 hidden sm:block">
+              <span className="text-[10px] bg-rose-gold/20 text-rose-gold px-3 py-1 rounded-full font-bold border border-rose-gold/30 hidden lg:block">
                 PREVIEW MODE
               </span>
-              <button onClick={() => navigate('/')} className="text-xs font-bold text-brown-muted hover:text-rose-gold transition-colors border border-border px-3 py-1.5 rounded-lg">
-                ← Kembali
+              <button 
+                onClick={() => navigate('/')} 
+                className="flex items-center justify-center text-brown-muted hover:text-rose-gold transition-colors border border-border w-9 h-9 md:w-auto md:h-auto md:px-3 md:py-1.5 rounded-full md:rounded-lg"
+              >
+                <span className="hidden md:inline text-xs font-bold">← Kembali</span>
+                <span className="md:hidden">←</span>
               </button>
             </div>
           </header>
@@ -124,20 +146,44 @@ const Demo = () => {
             </div>
 
             {isLocked && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-                <div className="card shadow-2xl text-center max-w-sm mx-4 transform animate-fade-up">
-                  <div className="text-4xl mb-4">🔒</div>
-                  <h3 className="text-xl font-playfair font-bold text-brown mb-2">Fitur Terkunci</h3>
-                  <p className="text-sm text-brown-muted mb-6 leading-relaxed">
+              <div className="absolute inset-0 flex flex-col items-center justify-center z-10 demo-locked-overlay">
+                <div className="card shadow-2xl text-center max-w-sm mx-4 transform animate-fade-up border-rose-gold/20 p-8 md:p-10">
+                  <div className="text-6xl mb-6">🔒</div>
+                  <h3 className="text-2xl font-playfair font-bold text-brown mb-3">Fitur Terkunci</h3>
+                  <p className="text-sm text-brown-muted mb-8 leading-relaxed">
                     Fitur <strong>{activeMenu}</strong> hanya tersedia di NIKAH RAPI Versi Premium. Dapatkan akses ke 22+ modul lengkap sekarang!
                   </p>
-                  <a href={checkoutUrl} className="inline-block bg-rose-gold text-black px-6 py-3 rounded-lg font-bold hover:bg-rose-dark transition-colors shadow-lg shadow-rose-gold/20">
+                  <a 
+                    href={checkoutUrl} 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="demo-pulse-button block w-full bg-rose-gold text-black px-6 py-4 rounded-xl font-bold text-[15px] hover:bg-rose-dark transition-colors shadow-xl shadow-rose-gold/30"
+                  >
                     Klaim Akses Premium
                   </a>
                 </div>
               </div>
             )}
           </main>
+
+          {/* Floating Bottom CTA (Mobile Only) */}
+          {!isLocked && showBottomCTA && (
+            <div className="fixed bottom-0 left-0 right-0 z-[60] lg:hidden demo-bottom-cta">
+              <div className="bg-white border-t border-border p-3 px-4 flex items-center justify-between shadow-[0_-4px-20px_rgba(44,24,16,0.08)]">
+                <div className="flex-1 mr-4">
+                  <p className="text-[12px] font-medium text-brown leading-tight">💍 Suka demonya? Dapatkan akses penuh sekarang!</p>
+                </div>
+                <a 
+                  href={checkoutUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-rose-gold text-black text-xs font-bold px-6 py-2.5 rounded-lg whitespace-nowrap shadow-lg shadow-rose-gold/20"
+                >
+                  BELI
+                </a>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -303,7 +349,7 @@ const DemoDashboard = () => {
                   <h3 className="text-lg font-bold text-brown font-playfair">Deadline Vendor Terdekat</h3>
               </div>
               <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-left border-collapse demo-table-mobile">
                         <thead>
                             <tr className="border-b border-[var(--border)] bg-ivory/5">
                                 <th className="th text-rose-gold">Vendor</th>
@@ -313,12 +359,28 @@ const DemoDashboard = () => {
                         </thead>
                         <tbody>
                             {vendors.map((v, i) => (
-                                <tr key={v.id} className="tr group transition-all hover:bg-ivory/5">
-                                    <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors" data-label="Vendor">{v.nama}</td>
-                                    <td className="td" data-label="Kategori">
+                                <tr key={v.id} className="tr group transition-all hover:bg-ivory/5 demo-mobile-card demo-stagger-2">
+                                    {/* Mobile Card Header */}
+                                    <div className="lg:hidden demo-card-header">
+                                      <div className="demo-card-icon">🤝</div>
+                                      <div className="demo-card-title">{v.nama}</div>
+                                    </div>
+
+                                    <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors demo-hide-mobile" data-label="Vendor">{v.nama}</td>
+                                    
+                                    <div className="demo-field-row lg:hidden">
+                                      <span className="demo-field-label">Kategori</span>
+                                      <span className="demo-field-value">{v.kategori}</span>
+                                    </div>
+                                    <td className="td demo-hide-mobile" data-label="Kategori">
                                         <span className="text-[9px] font-black uppercase tracking-tighter text-rose-gold bg-rose-gold/5 px-2.5 py-1 rounded-lg border border-rose-gold/10 shadow-sm">{v.kategori}</span>
                                     </td>
-                                    <td className="td text-brown-muted text-[11px] font-bold italic" data-label="Deadline">14 Hari Lagi</td>
+
+                                    <div className="demo-field-row lg:hidden">
+                                      <span className="demo-field-label">Deadline</span>
+                                      <span className="demo-field-value text-danger font-bold italic">14 Hari Lagi</span>
+                                    </div>
+                                    <td className="td text-brown-muted text-[11px] font-bold italic demo-hide-mobile" data-label="Deadline">14 Hari Lagi</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -423,7 +485,7 @@ const DemoBudget = () => {
           <span className="text-[10px] font-bold text-brown-muted uppercase tracking-widest">{items.length} Kategori</span>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse demo-table-mobile">
             <thead>
               <tr className="border-b border-[var(--border)]">
                 <th className="th hide-on-mobile text-center">No</th>
@@ -442,20 +504,53 @@ const DemoBudget = () => {
                 const badge = item.jumlah_aktual === 0 ? 'bg-[#9B8070]/10 text-[#9B8070]' : pct >= 100 ? 'bg-[#8BAF8B]/15 text-[#5C7361]' : 'bg-[#D4756B]/10 text-[#D4756B]';
                 const blabel = item.jumlah_aktual === 0 ? 'Belum Bayar' : pct >= 100 ? 'Lunas' : 'Bayar Sebagian';
                 return (
-                  <tr key={item.id} className="tr group transition-all hover:bg-[var(--ivory)]/5">
+                  <tr key={item.id} className="tr group transition-all hover:bg-[var(--ivory)]/5 demo-mobile-card demo-stagger-3">
+                    {/* Mobile Card Header */}
+                    <div className="lg:hidden demo-card-header">
+                      <div className="demo-card-icon">{item.icon}</div>
+                      <div className="demo-card-title">{item.kategori}</div>
+                    </div>
+
                     <td className="td hide-on-mobile text-center text-[10px] text-brown-muted font-bold" data-label="No">{String(i + 1).padStart(2, '0')}</td>
-                    <td className="td" data-label="Kategori">
+                    <td className="td demo-hide-mobile" data-label="Kategori">
                       <div className="flex items-center gap-3 justify-end md:justify-start">
                         <div className="w-10 h-10 rounded-xl bg-[var(--ivory)]/50 flex items-center justify-center text-xl shadow-inner">{item.icon}</div>
                         <span className="font-bold text-brown group-hover:text-rose-gold transition-colors">{item.kategori}</span>
                       </div>
                     </td>
-                    <td className="td text-[11px] font-bold text-brown-muted" data-label="Estimasi">{rp(item.jumlah_estimasi)}</td>
-                    <td className="td text-[11px] font-bold text-brown" data-label="Aktual">{rp(item.jumlah_aktual)}</td>
-                    <td className={`td text-[11px] font-bold ${sel >= 0 ? 'text-sage' : 'text-danger'}`} data-label="Selisih">
+
+                    <div className="demo-field-row lg:hidden">
+                      <span className="demo-field-label">Estimasi</span>
+                      <span className="demo-field-value">{rp(item.jumlah_estimasi)}</span>
+                    </div>
+                    <td className="td text-[11px] font-bold text-brown-muted demo-hide-mobile" data-label="Estimasi">{rp(item.jumlah_estimasi)}</td>
+
+                    <div className="demo-field-row lg:hidden">
+                      <span className="demo-field-label">Aktual</span>
+                      <span className="demo-featured-value">{rp(item.jumlah_aktual)}</span>
+                    </div>
+                    <td className="td text-[11px] font-bold text-brown demo-hide-mobile" data-label="Aktual">{rp(item.jumlah_aktual)}</td>
+
+                    <div className="demo-field-row lg:hidden">
+                      <span className="demo-field-label">Selisih</span>
+                      <span className={`demo-field-value font-bold ${sel >= 0 ? 'text-sage' : 'text-danger'}`}>
+                        {sel >= 0 ? '+' : ''}{rp(Math.abs(sel))}
+                      </span>
+                    </div>
+                    <td className={`td text-[11px] font-bold demo-hide-mobile ${sel >= 0 ? 'text-sage' : 'text-danger'}`} data-label="Selisih">
                       {sel >= 0 ? '+' : ''}{rp(Math.abs(sel))}
                     </td>
-                    <td className="td min-w-[140px]" data-label="Progres">
+
+                    <div className="demo-field-row lg:hidden">
+                      <span className="demo-field-label">Progres</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-20 h-1.5 bg-ivory rounded-full overflow-hidden">
+                          <div className="bg-rose-gold h-full" style={{ width: `${pct}%` }} />
+                        </div>
+                        <span className="text-[10px] font-bold text-brown-muted">{pct}%</span>
+                      </div>
+                    </div>
+                    <td className="td min-w-[140px] demo-hide-mobile" data-label="Progres">
                       <div className="flex items-center gap-3 justify-end md:justify-start">
                         <div className="flex-1 h-2 bg-[var(--ivory)] rounded-full overflow-hidden shadow-inner max-w-[100px] md:max-w-none">
                           <div className="progress-fill h-full rounded-full shadow-sm" style={{ width: `${pct}%` }} />
@@ -463,7 +558,11 @@ const DemoBudget = () => {
                         <span className="text-[10px] font-bold text-brown-muted">{pct}%</span>
                       </div>
                     </td>
-                    <td className="td" data-label="Status">
+
+                    <div className="demo-status-bar lg:hidden">
+                      <span className={`${badge} text-[9px] font-black uppercase tracking-tighter px-4 py-1.5 rounded-lg shadow-sm`}>{blabel}</span>
+                    </div>
+                    <td className="td demo-hide-mobile" data-label="Status">
                       <span className={`${badge} text-[9px] font-black uppercase tracking-tighter px-3 py-1.5 rounded-lg shadow-sm`}>{blabel}</span>
                     </td>
                   </tr>
@@ -556,7 +655,7 @@ const DemoSeserahan = () => {
           <span className="text-[10px] font-bold text-brown-muted uppercase tracking-widest">{items.length} Item</span>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse demo-table-mobile">
             <thead>
               <tr className="border-b border-[var(--border)]">
                 <th className="th hide-on-mobile text-center">No</th>
@@ -570,21 +669,51 @@ const DemoSeserahan = () => {
             </thead>
             <tbody>
               {items.map((item, i) => (
-                <tr key={item.id} className="tr group transition-all hover:bg-[var(--ivory)]/5">
+                <tr key={item.id} className="tr group transition-all hover:bg-[var(--ivory)]/5 demo-mobile-card demo-stagger-2">
+                  {/* Mobile Card Header */}
+                  <div className="lg:hidden demo-card-header">
+                    <div className="demo-card-icon">{item.icon}</div>
+                    <div className="demo-card-title">{item.nama}</div>
+                  </div>
+
                   <td className="td hide-on-mobile text-center text-[10px] text-brown-muted font-bold" data-label="No">{String(i + 1).padStart(2, '0')}</td>
-                  <td className="td" data-label="Nama Item">
+                  <td className="td demo-hide-mobile" data-label="Nama Item">
                     <div className="flex items-center gap-3 justify-end md:justify-start">
                       <div className="w-10 h-10 rounded-xl bg-[var(--ivory)]/50 flex items-center justify-center text-xl shadow-inner">{item.icon}</div>
                       <span className="font-bold text-brown group-hover:text-rose-gold transition-colors">{item.nama}</span>
                     </div>
                   </td>
-                  <td className="td" data-label="Kategori">
+
+                  <div className="demo-field-row lg:hidden">
+                    <span className="demo-field-label">Kategori</span>
+                    <span className="demo-field-value">{item.kategori}</span>
+                  </div>
+                  <td className="td demo-hide-mobile" data-label="Kategori">
                     <span className="bg-rose-gold/5 text-rose-gold text-[9px] font-black uppercase px-3 py-1.5 rounded-lg border border-rose-gold/10 shadow-sm">{item.kategori}</span>
                   </td>
-                  <td className="td text-[11px] font-bold text-brown-muted" data-label="Estimasi">{rp(item.estimasi)}</td>
-                  <td className="td text-[11px] font-bold text-brown" data-label="Aktual">{item.aktual ? rp(item.aktual) : <span className="text-[9px] text-brown-muted/40 italic uppercase">Menunggu...</span>}</td>
-                  <td className="td text-[10px] font-bold text-brown-muted italic" data-label="Toko">{item.tempat_beli}</td>
-                  <td className="td" data-label="Status">
+
+                  <div className="demo-field-row lg:hidden">
+                    <span className="demo-field-label">Estimasi</span>
+                    <span className="demo-field-value">{rp(item.estimasi)}</span>
+                  </div>
+                  <td className="td text-[11px] font-bold text-brown-muted demo-hide-mobile" data-label="Estimasi">{rp(item.estimasi)}</td>
+
+                  <div className="demo-field-row lg:hidden">
+                    <span className="demo-field-label">Aktual</span>
+                    <span className="demo-featured-value">{item.aktual ? rp(item.aktual) : '—'}</span>
+                  </div>
+                  <td className="td text-[11px] font-bold text-brown demo-hide-mobile" data-label="Aktual">{item.aktual ? rp(item.aktual) : <span className="text-[9px] text-brown-muted/40 italic uppercase">Menunggu...</span>}</td>
+
+                  <div className="demo-field-row lg:hidden">
+                    <span className="demo-field-label">Toko</span>
+                    <span className="demo-field-value italic">{item.tempat_beli}</span>
+                  </div>
+                  <td className="td text-[10px] font-bold text-brown-muted italic demo-hide-mobile" data-label="Toko">{item.tempat_beli}</td>
+
+                  <div className="demo-status-bar lg:hidden">
+                    <span className={`${badgeMap[item.status]} text-[9px] font-black uppercase tracking-tighter px-4 py-1.5 rounded-lg shadow-sm`}>{labelMap[item.status]}</span>
+                  </div>
+                  <td className="td demo-hide-mobile" data-label="Status">
                     <span className={`${badgeMap[item.status]} text-[9px] font-black uppercase tracking-tighter px-3 py-1.5 rounded-lg shadow-sm`}>{labelMap[item.status]}</span>
                   </td>
                 </tr>
@@ -714,7 +843,7 @@ const DemoKadoAngpao = () => {
           <span className="text-[10px] font-bold text-brown-muted uppercase tracking-widest">{entries.length} Pemberi</span>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse demo-table-mobile">
             <thead>
               <tr className="border-b border-[var(--border)]">
                 <th className="th hide-on-mobile text-center">No</th>
@@ -728,21 +857,51 @@ const DemoKadoAngpao = () => {
             </thead>
             <tbody>
               {entries.map((e, i) => (
-                <tr key={e.id} className="tr group transition-all hover:bg-[var(--ivory)]/5">
+                <tr key={e.id} className="tr group transition-all hover:bg-[var(--ivory)]/5 demo-mobile-card demo-stagger-4">
+                  {/* Mobile Card Header */}
+                  <div className="lg:hidden demo-card-header">
+                    <div className="demo-card-icon">{e.icon}</div>
+                    <div className="demo-card-title">{e.nama}</div>
+                  </div>
+
                   <td className="td hide-on-mobile text-center text-[10px] text-brown-muted font-bold" data-label="No">{String(i + 1).padStart(2, '0')}</td>
-                  <td className="td" data-label="Nama Pemberi">
+                  <td className="td demo-hide-mobile" data-label="Nama Pemberi">
                     <div className="flex items-center gap-3 justify-end md:justify-start">
                       <div className="w-10 h-10 rounded-xl bg-[var(--ivory)]/50 flex items-center justify-center text-xl shadow-inner">{e.icon}</div>
                       <span className="font-bold text-brown group-hover:text-rose-gold transition-colors">{e.nama}</span>
                     </div>
                   </td>
-                  <td className="td text-[11px] font-bold text-brown-muted italic" data-label="Hubungan">{e.hubungan}</td>
-                  <td className="td" data-label="Tipe">
+
+                  <div className="demo-field-row lg:hidden">
+                    <span className="demo-field-label">Hubungan</span>
+                    <span className="demo-field-value italic">{e.hubungan}</span>
+                  </div>
+                  <td className="td text-[11px] font-bold text-brown-muted italic demo-hide-mobile" data-label="Hubungan">{e.hubungan}</td>
+
+                  <div className="demo-field-row lg:hidden">
+                    <span className="demo-field-label">Tipe</span>
+                    <span className="demo-field-value">{e.tipe}</span>
+                  </div>
+                  <td className="td demo-hide-mobile" data-label="Tipe">
                     <span className="bg-rose-gold/5 text-rose-gold text-[9px] font-black uppercase px-3 py-1.5 rounded-lg border border-rose-gold/10 shadow-sm">{e.tipe}</span>
                   </td>
-                  <td className="td text-[11px] font-bold text-brown" data-label="Nominal Angpao">{e.nominal > 0 ? rp(e.nominal) : <span className="text-[9px] text-brown-muted/40 italic">—</span>}</td>
-                  <td className="td text-[10px] font-bold text-brown-muted" data-label="Kado">{e.kado === '-' ? <span className="text-[9px] text-brown-muted/40 italic">—</span> : e.kado}</td>
-                  <td className="td" data-label="Status">
+
+                  <div className="demo-field-row lg:hidden">
+                    <span className="demo-field-label">Nominal</span>
+                    <span className="demo-featured-value">{e.nominal > 0 ? rp(e.nominal) : '—'}</span>
+                  </div>
+                  <td className="td text-[11px] font-bold text-brown demo-hide-mobile" data-label="Nominal Angpao">{e.nominal > 0 ? rp(e.nominal) : <span className="text-[9px] text-brown-muted/40 italic">—</span>}</td>
+
+                  <div className="demo-field-row lg:hidden">
+                    <span className="demo-field-label">Kado</span>
+                    <span className="demo-field-value truncate max-w-[150px]">{e.kado === '-' ? '—' : e.kado}</span>
+                  </div>
+                  <td className="td text-[10px] font-bold text-brown-muted demo-hide-mobile" data-label="Kado">{e.kado === '-' ? <span className="text-[9px] text-brown-muted/40 italic">—</span> : e.kado}</td>
+
+                  <div className="demo-status-bar lg:hidden">
+                    <span className={`${badgeMap[e.status]} text-[9px] font-black uppercase tracking-tighter px-4 py-1.5 rounded-lg shadow-sm`}>{labelMap[e.status]}</span>
+                  </div>
+                  <td className="td demo-hide-mobile" data-label="Status">
                     <span className={`${badgeMap[e.status]} text-[9px] font-black uppercase tracking-tighter px-3 py-1.5 rounded-lg shadow-sm`}>{labelMap[e.status]}</span>
                   </td>
                 </tr>
@@ -883,66 +1042,37 @@ const DemoLockedPlaceholder = ({ menuLabel }) => {
         </div>
       </div>
 
-      {/* Stats grid */}
+      {/* Stats grid with skeleton pulse */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {data.stats.map((s, i) => (
-          <div key={i} className="stat-card">
-            <div className="w-12 h-12 rounded-2xl bg-rose-gold/10 flex items-center justify-center text-xl mb-4">{s.icon}</div>
-            <div className="font-playfair text-2xl font-bold text-brown">{s.value}</div>
+          <div key={i} className="stat-card opacity-60">
+            <div className="w-12 h-12 rounded-2xl bg-rose-gold/10 flex items-center justify-center text-xl mb-4 grayscale">{s.icon}</div>
+            <div className="font-playfair text-2xl font-bold text-brown/40 bg-ivory h-8 w-24 rounded animate-pulse mb-2"></div>
             <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">{s.label}</div>
           </div>
         ))}
       </div>
 
-      {/* Skeleton chart row */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
-        <div className="card lg:col-span-2 shadow-sm">
-          <div className="p-6 border-b border-[var(--border)]">
-            <h3 className="text-lg font-bold text-brown font-playfair">Visualisasi Data</h3>
-          </div>
-          <div className="p-8 h-[260px] flex items-center justify-center">
-            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-rose-gold/20 to-rose-gold/5 border-4 border-rose-gold/30" />
-          </div>
+      {/* Skeleton table card */}
+      <div className="card p-0 overflow-hidden shadow-sm opacity-50 grayscale">
+        <div className="p-6 border-b border-[var(--border)] flex items-center justify-between bg-ivory/20">
+          <h2 className="font-playfair text-xl font-bold text-brown/50">{data.tableTitle}</h2>
+          <div className="h-4 w-20 bg-ivory rounded animate-pulse"></div>
         </div>
-        <div className="card lg:col-span-3 shadow-sm">
-          <div className="p-6 border-b border-[var(--border)]">
-            <h3 className="text-lg font-bold text-brown font-playfair">Tren & Statistik</h3>
-          </div>
-          <div className="p-8 h-[260px] flex items-end gap-3">
-            {[60, 85, 45, 95, 70, 80, 55].map((h, i) => (
-              <div key={i} className="flex-1 rounded-t-lg bg-gradient-to-t from-rose-gold/40 to-rose-gold/10" style={{ height: `${h}%` }} />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Skeleton table */}
-      <div className="card p-0 overflow-hidden shadow-sm">
-        <div className="p-6 border-b border-[var(--border)] flex items-center justify-between">
-          <h2 className="font-playfair text-xl font-bold text-brown">{data.tableTitle}</h2>
-          <span className="text-[10px] font-bold text-brown-muted uppercase tracking-widest">{data.tableRows} Item</span>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-[var(--border)]">
-                {data.tableCols.map((col, i) => (
-                  <th key={i} className="p-4 text-xs text-rose-gold uppercase tracking-wider">{col}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {Array.from({ length: data.tableRows }).map((_, rowIdx) => (
-                <tr key={rowIdx} className="border-b border-[var(--border)]">
-                  {data.tableCols.map((_, colIdx) => (
-                    <td key={colIdx} className="p-4">
-                      <div className="h-3 rounded bg-[var(--ivory)]" style={{ width: `${50 + ((rowIdx * 13 + colIdx * 7) % 40)}%` }} />
-                    </td>
-                  ))}
-                </tr>
+        <div className="overflow-x-auto p-4">
+           {/* Mock Table UI */}
+           <div className="space-y-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-4 p-4 border-b border-border/50">
+                   <div className="w-10 h-10 rounded-xl bg-ivory animate-pulse" />
+                   <div className="flex-1 space-y-2">
+                      <div className="h-3 bg-ivory rounded w-1/3 animate-pulse" />
+                      <div className="h-2 bg-ivory rounded w-1/4 animate-pulse" />
+                   </div>
+                   <div className="w-20 h-6 bg-ivory rounded-full animate-pulse" />
+                </div>
               ))}
-            </tbody>
-          </table>
+           </div>
         </div>
       </div>
     </div>
