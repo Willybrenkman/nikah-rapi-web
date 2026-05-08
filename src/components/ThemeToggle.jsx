@@ -5,13 +5,15 @@ export default function ThemeToggle() {
   const [isDark, setIsDark] = useState(false)
 
   useEffect(() => {
-    // Check local storage or system preference
+    // ✅ Hanya pakai dark jika user sudah eksplisit pilih dark
     const saved = localStorage.getItem('theme')
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
     
-    if (saved === 'dark' || (!saved && prefersDark)) {
+    if (saved === 'dark') {
       setIsDark(true)
       document.documentElement.classList.add('dark')
+    } else {
+      // Default: light mode
+      document.documentElement.classList.remove('dark')
     }
   }, [])
 
