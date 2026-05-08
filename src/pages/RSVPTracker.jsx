@@ -105,7 +105,7 @@ export default function RSVPTracker() {
                     <table>
                         <thead>
                             <tr>
-                                <th className="th w-16 text-center">No</th>
+                                <th className="th w-16 text-center hide-on-mobile">No</th>
                                 <th className="th">Nama Tamu</th>
                                 <th className="th">Status RSVP</th>
                                 <th className="th text-center">Pax</th>
@@ -123,17 +123,17 @@ export default function RSVPTracker() {
                                 const st = item.status_rsvp || 'belum'
                                 return (
                                     <tr key={item.id} className="tr group hover:bg-ivory/10 transition-colors">
-                                        <td className="td text-center text-[10px] text-brown-muted font-black tracking-widest">{String(i + 1).padStart(2, '0')}</td>
-                                        <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors">{item.nama}</td>
-                                        <td className="td">
+                                        <td className="td text-center text-[10px] text-brown-muted font-black tracking-widest hide-on-mobile" data-label="No">{String(i + 1).padStart(2, '0')}</td>
+                                        <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors" data-label="Nama Tamu">{item.nama}</td>
+                                        <td className="td" data-label="Status RSVP">
                                             <span className={`badge ${statusBadge[st] || 'badge-grey'} text-[9px] font-black uppercase tracking-tighter`}>
                                                 {statusLabel[st] || st}
                                             </span>
                                         </td>
-                                        <td className="td text-center font-black text-brown-muted text-xs">{st === 'hadir' ? (item.jumlah_orang || 1) : '—'}</td>
-                                        <td className="td text-[10px] font-bold text-brown-muted italic">{item.no_meja || 'TBA'}</td>
-                                        <td className="td">
-                                            <button onClick={() => toggleKupon(item)} className="transition-all hover:scale-105 active:scale-95 flex items-center gap-2 group/btn">
+                                        <td className="td text-center font-black text-brown-muted text-xs" data-label="Pax">{st === 'hadir' ? (item.jumlah_orang || 1) : '—'}</td>
+                                        <td className="td text-[10px] font-bold text-brown-muted italic" data-label="Meja">{item.no_meja || 'TBA'}</td>
+                                        <td className="td" data-label="Kupon Makan">
+                                            <button onClick={() => toggleKupon(item)} className="transition-all hover:scale-105 active:scale-95 flex items-center gap-2 group/btn justify-end md:justify-start">
                                                 {item.kupon_makan ? (
                                                     <span className="badge badge-green px-4 py-1 font-black uppercase text-[8px] shadow-sm">✓ Sudah</span>
                                                 ) : (
@@ -141,7 +141,7 @@ export default function RSVPTracker() {
                                                 )}
                                             </button>
                                         </td>
-                                        <td className="td text-right pr-8">
+                                        <td className="td td-actions text-right pr-8" data-label="Update Status">
                                             <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                                                 {['hadir', 'tidak', 'belum'].map(s => (
                                                     <button 

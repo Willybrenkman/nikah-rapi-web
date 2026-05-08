@@ -638,6 +638,96 @@ textarea:focus {
       grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     }
   }
+
+  /* 📱 MOBILE TABLE TO CARD LAYOUT 📱 */
+  @media (max-width: 767px) {
+    .overflow-x-auto {
+      overflow-x: visible !important;
+    }
+
+    .hide-on-mobile {
+      display: none !important;
+    }
+
+    table, thead, tbody, th, td, tr {
+      display: block;
+    }
+
+    thead {
+      display: none;
+    }
+
+    .tr {
+      background: #fff;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(44, 24, 16, 0.06);
+      border: 1px solid #F0E6DF;
+      position: relative;
+    }
+
+    .td {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0 !important;
+      border-bottom: 1px dashed rgba(155, 128, 112, 0.15) !important;
+      min-height: 36px;
+      text-align: right !important;
+      width: 100% !important;
+    }
+
+    .td:last-child {
+      border-bottom: none !important;
+    }
+
+    .td::before {
+      content: attr(data-label);
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #9B8070;
+      flex-shrink: 0;
+      margin-right: 12px;
+      text-align: left;
+    }
+
+    /* Special case for actions */
+    .td-actions {
+      display: block !important;
+      border-top: 1px solid #F0E6DF !important;
+      margin-top: 8px;
+      padding-top: 12px !important;
+      border-bottom: none !important;
+      text-align: right !important;
+    }
+
+    .td-actions::before {
+      display: none;
+    }
+
+    .td-actions > div {
+      justify-content: flex-end !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    /* Checklist special checkbox column */
+    .td-status-check {
+      display: flex;
+      justify-content: flex-start;
+      border-bottom: 1px solid #F0E6DF !important;
+      margin-bottom: 8px;
+      padding-bottom: 12px !important;
+    }
+
+    .td-status-check::before {
+      display: none;
+    }
+  }
 }
 
 .scrollbar-hide::-webkit-scrollbar {

@@ -136,7 +136,7 @@ export default function Checklist() {
                                 <tr><td colSpan={7} className="td text-center py-24 text-brown-muted italic font-medium">Belum ada tugas dalam kategori ini. Mari mulai buat daftar!</td></tr>
                             ) : displayed.map(item => (
                                 <tr key={item.id} className={`tr group transition-all ${item.is_done ? 'bg-ivory/10' : ''}`}>
-                                    <td className="td text-center">
+                                    <td className="td td-status-check text-center" data-label="Status">
                                         <div className="flex justify-center">
                                             <input 
                                                 type="checkbox" 
@@ -146,20 +146,20 @@ export default function Checklist() {
                                             />
                                         </div>
                                     </td>
-                                    <td className={`td transition-all duration-500 max-w-xs truncate ${item.is_done ? 'line-through text-brown-muted opacity-40 font-medium' : 'font-bold text-brown group-hover:text-rose-gold'}`}>
+                                    <td className={`td transition-all duration-500 max-w-xs truncate ${item.is_done ? 'line-through text-brown-muted opacity-40 font-medium' : 'font-bold text-brown group-hover:text-rose-gold'}`} data-label="Tugas / Aktivitas">
                                         {item.task}
                                     </td>
-                                    <td className="td">
+                                    <td className="td" data-label="Kategori">
                                         <span className="badge-rose text-[9px] px-2.5 py-0.5 rounded uppercase font-black tracking-tighter opacity-70">{item.kategori || 'Umum'}</span>
                                     </td>
-                                    <td className="td text-[10px] font-bold text-brown-muted italic">{item.deadline ? new Date(item.deadline).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '—'}</td>
-                                    <td className="td text-[10px] font-black text-brown/60 uppercase tracking-tighter">{item.pic || 'TBA'}</td>
-                                    <td className="td">
+                                    <td className="td text-[10px] font-bold text-brown-muted italic" data-label="Deadline">{item.deadline ? new Date(item.deadline).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '—'}</td>
+                                    <td className="td text-[10px] font-black text-brown/60 uppercase tracking-tighter" data-label="PIC">{item.pic || 'TBA'}</td>
+                                    <td className="td" data-label="Prioritas">
                                         <span className={`badge ${priorityBadge[item.priority] || 'badge-grey'} text-[9px] font-black uppercase tracking-tighter`}>
                                             {item.priority === 'High' ? 'Tinggi' : item.priority === 'Medium' ? 'Sedang' : 'Rendah'}
                                         </span>
                                     </td>
-                                    <td className="td text-right pr-8">
+                                    <td className="td td-actions text-right pr-8" data-label="Aksi">
                                         <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                                             <button className="btn-sm-edit shadow-sm" onClick={() => openEdit(item)}>Edit</button>
                                             <button className="btn-sm-danger p-1 shadow-sm" onClick={() => handleDelete(item.id)}>✕</button>

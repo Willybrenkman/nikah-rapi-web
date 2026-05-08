@@ -326,7 +326,7 @@ export default function GuestList() {
                             <table>
                                 <thead>
                                     <tr>
-                                        <th className="th w-16 text-center">No</th>
+                                        <th className="th w-16 text-center hide-on-mobile">No</th>
                                         <th className="th">Nama Lengkap</th>
                                         <th className="th">Kategori</th>
                                         <th className="th">WhatsApp / HP</th>
@@ -345,26 +345,26 @@ export default function GuestList() {
                                         </tr>
                                     ) : filtered.map((item, i) => (
                                         <tr key={item.id} className="tr group transition-all hover:bg-ivory/10">
-                                            <td className="td text-center text-[10px] text-brown-muted font-black tracking-widest">{String(i + 1).padStart(2, '0')}</td>
-                                            <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors">{item.nama}</td>
-                                            <td className="td">
+                                            <td className="td text-center text-[10px] text-brown-muted font-black tracking-widest hide-on-mobile" data-label="No">{String(i + 1).padStart(2, '0')}</td>
+                                            <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors" data-label="Nama Lengkap">{item.nama}</td>
+                                            <td className="td" data-label="Kategori">
                                                 <span className={`badge ${hubBadge[item.hubungan] || 'badge-grey'} text-[9px] font-black uppercase tracking-tighter`}>
                                                     {item.hubungan === 'VIP' ? '⭐⭐⭐ VIP' : item.hubungan}
                                                 </span>
                                             </td>
-                                            <td className="td text-[11px] font-medium text-brown-muted">{item.no_hp || '—'}</td>
-                                            <td className="td text-[11px] font-bold text-brown/70 italic uppercase tracking-tighter">{item.asal_kota || '—'}</td>
-                                            <td className="td text-center">
+                                            <td className="td text-[11px] font-medium text-brown-muted" data-label="WhatsApp / HP">{item.no_hp || '—'}</td>
+                                            <td className="td text-[11px] font-bold text-brown/70 italic uppercase tracking-tighter" data-label="Asal Kota">{item.asal_kota || '—'}</td>
+                                            <td className="td text-center" data-label="Pax">
                                                 <span className="badge-sage text-[10px] font-black min-w-[28px] py-1 inline-block shadow-sm">{item.jumlah_orang || 1} Pax</span>
                                             </td>
-                                            <td className="td">
+                                            <td className="td" data-label="No Meja">
                                                 {item.no_meja ? (
                                                     <span className="font-black text-brown text-[10px] bg-ivory border border-border/50 px-3 py-1 rounded-lg shadow-inner-white">MEJA {item.no_meja}</span>
                                                 ) : (
                                                     <span className="text-brown-muted/30 text-[10px] font-black tracking-widest">TBA</span>
                                                 )}
                                             </td>
-                                            <td className="td text-right pr-8">
+                                            <td className="td td-actions text-right pr-8" data-label="Aksi">
                                                 <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                                                     <button className="btn-sm-edit shadow-sm" onClick={() => openEdit(item)}>Edit</button>
                                                     <button className="btn-sm-danger p-1 shadow-sm" onClick={() => handleDelete(item)}>✕</button>

@@ -267,20 +267,20 @@ export default function VendorManager() {
                                 }
                                 return (
                                     <tr key={item.id} className="tr group transition-all hover:bg-ivory/10">
-                                        <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors">{item.nama}</td>
-                                        <td className="td">
+                                        <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors" data-label="Nama Vendor">{item.nama}</td>
+                                        <td className="td" data-label="Kategori">
                                             <span className="badge-rose text-[9px] px-3 py-1 font-black uppercase tracking-tighter shadow-sm">{item.kategori}</span>
                                         </td>
-                                        <td className="td">
+                                        <td className="td" data-label="PIC / Kontak">
                                             <div className="text-[11px] font-black text-brown uppercase tracking-tighter">{item.pic_nama || '—'}</div>
                                             <div className="text-[10px] text-brown-muted italic font-bold">{item.pic_hp || ''}</div>
                                         </td>
-                                        <td className="td text-[11px] font-bold text-brown-muted">{rp(item.total)}</td>
-                                        <td className="td text-[11px] font-black text-sage">{rp(item.dp)}</td>
-                                        <td className="td text-[11px] font-black text-danger bg-danger/5 px-2 rounded-lg">{rp(sisa)}</td>
-                                        <td className="td">
+                                        <td className="td text-[11px] font-bold text-brown-muted" data-label="Total Nilai">{rp(item.total)}</td>
+                                        <td className="td text-[11px] font-black text-sage" data-label="DP/Terbayar">{rp(item.dp)}</td>
+                                        <td className="td text-[11px] font-black text-danger bg-danger/5 px-2 rounded-lg" data-label="Sisa Tagihan">{rp(sisa)}</td>
+                                        <td className="td" data-label="Deadline Bayar">
                                             {item.deadline_pelunasan ? (
-                                                <div className="space-y-1.5">
+                                                <div className="space-y-1.5 flex flex-col items-end md:items-start">
                                                     <div className="text-[10px] text-brown font-black uppercase tracking-tighter">{new Date(item.deadline_pelunasan).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
                                                     {deadlineSisa !== null && (
                                                         <span className={`badge ${deadlineSisa <= 14 ? 'badge-red' : deadlineSisa <= 30 ? 'badge-yellow' : 'badge-green'} text-[8px] font-black uppercase px-2 py-0.5 shadow-sm block w-fit`}>
@@ -290,8 +290,8 @@ export default function VendorManager() {
                                                 </div>
                                             ) : <span className="text-brown-muted/30 text-[10px] font-black tracking-widest">TBA</span>}
                                         </td>
-                                        <td className="td">
-                                            <div className="flex items-center gap-2">
+                                        <td className="td" data-label="Kontrak">
+                                            <div className="flex items-center gap-2 justify-end md:justify-start">
                                                 <span className={`badge ${kb} text-[9px] font-black uppercase tracking-tighter px-3`}>
                                                     {item.status_kontrak === 'Sudah TTD' ? '✅ TTD' : '⏳ Draft'}
                                                 </span>
@@ -302,7 +302,7 @@ export default function VendorManager() {
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="td text-right pr-8">
+                                        <td className="td td-actions text-right pr-8" data-label="Aksi">
                                             <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                                                 <button className="btn-sm-edit shadow-sm" onClick={() => openEdit(item)}>Edit</button>
                                                 <button className="btn-sm-danger p-1 shadow-sm" onClick={() => handleDelete(item)}>✕</button>

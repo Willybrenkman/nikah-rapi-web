@@ -314,7 +314,7 @@ export default function BudgetPlanner() {
                         <table>
                             <thead>
                                 <tr>
-                                    <th className="th w-12 text-center">No</th>
+                                    <th className="th w-12 text-center hide-on-mobile">No</th>
                                     <th className="th">Kategori Anggaran</th>
                                     <th className="th">Dana Estimasi</th>
                                     <th className="th">Dana Aktual</th>
@@ -332,19 +332,19 @@ export default function BudgetPlanner() {
                                     const blabel = item.jumlah_aktual === 0 ? 'Belum Bayar' : pct >= 100 ? 'Lunas Total' : pct > 70 ? 'Hampir Lunas' : 'Bayar Sebagian'
                                     return (
                                         <tr key={item.id} className="tr group transition-all hover:bg-ivory/10">
-                                            <td className="td text-center text-[10px] text-brown-muted font-black tracking-widest">{String(i + 1).padStart(2, '0')}</td>
-                                            <td className="td">
+                                            <td className="td text-center text-[10px] text-brown-muted font-black tracking-widest hide-on-mobile" data-label="No">{String(i + 1).padStart(2, '0')}</td>
+                                            <td className="td" data-label="Kategori Anggaran">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-10 h-10 rounded-xl bg-ivory/50 flex items-center justify-center text-xl shadow-inner-white">{getIcon(item.tipe, item.kategori)}</div>
                                                     <span className="font-bold text-brown group-hover:text-rose-gold transition-colors">{item.kategori}</span>
                                                 </div>
                                             </td>
-                                            <td className="td text-[11px] font-bold text-brown-muted">{rp(item.jumlah_estimasi)}</td>
-                                            <td className="td text-[11px] font-black text-brown">{rp(item.jumlah_aktual)}</td>
-                                            <td className={`td text-[11px] font-black ${sel >= 0 ? 'text-sage bg-sage/5' : 'text-danger bg-danger/5'} px-3 rounded-lg`}>
+                                            <td className="td text-[11px] font-bold text-brown-muted" data-label="Dana Estimasi">{rp(item.jumlah_estimasi)}</td>
+                                            <td className="td text-[11px] font-black text-brown" data-label="Dana Aktual">{rp(item.jumlah_aktual)}</td>
+                                            <td className={`td text-[11px] font-black ${sel >= 0 ? 'text-sage bg-sage/5' : 'text-danger bg-danger/5'} px-3 rounded-lg`} data-label="Selisih/Efisiensi">
                                                 {sel >= 0 ? '+' : ''}{rp(Math.abs(sel))}
                                             </td>
-                                            <td className="td min-w-[140px]">
+                                            <td className="td min-w-[140px]" data-label="Progres Dana">
                                                 <div className="flex items-center gap-3">
                                                     <div className="flex-1 progress-track h-2 bg-ivory relative overflow-hidden rounded-full">
                                                         <div className="progress-fill shadow-sm h-full" style={{ width: `${pct}%` }} />
@@ -352,12 +352,12 @@ export default function BudgetPlanner() {
                                                     <span className="text-[10px] font-black text-brown-muted min-w-[2rem]">{pct}%</span>
                                                 </div>
                                             </td>
-                                            <td className="td">
+                                            <td className="td" data-label="Status Pembayaran">
                                                 <span className={`badge ${badge} text-[9px] font-black uppercase tracking-tighter`}>
                                                     {blabel}
                                                 </span>
                                             </td>
-                                            <td className="td text-right pr-8">
+                                            <td className="td td-actions text-right pr-8" data-label="Aksi">
                                                 <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                                                     <button className="btn-sm-edit shadow-sm flex items-center gap-1" onClick={() => openEdit(item)}>
                                                         <span>✏️</span> Edit
