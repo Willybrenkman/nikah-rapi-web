@@ -183,7 +183,7 @@ export default function Dashboard() {
                 <div className="stat-card hover:shadow-xl transition-all hover:-translate-y-1">
                     <div className="flex items-center justify-between mb-4">
                         <div className="w-12 h-12 rounded-2xl bg-[#C9956C20] flex items-center justify-center text-xl">💎</div>
-                        <button onClick={() => navigate('/budget')} className="text-[10px] font-bold text-rose-gold hover:underline">Kelola Budget →</button>
+                        <button onClick={() => navigate('/dashboard/budget')} className="text-[10px] font-bold text-rose-gold hover:underline">Kelola Budget →</button>
                     </div>
                     <div className="font-playfair text-3xl font-bold text-brown leading-tight">{rp(stats.totalBudget)}</div>
                     <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Total Anggaran</div>
@@ -192,7 +192,7 @@ export default function Dashboard() {
                 <div className="stat-card hover:shadow-xl transition-all hover:-translate-y-1">
                     <div className="flex items-center justify-between mb-4">
                         <div className="w-12 h-12 rounded-2xl bg-[#D4756B15] flex items-center justify-center text-xl">💸</div>
-                        <button onClick={() => navigate('/budget')} className="text-[10px] font-bold text-danger hover:underline">Input Bayar →</button>
+                        <button onClick={() => navigate('/dashboard/budget')} className="text-[10px] font-bold text-danger hover:underline">Input Bayar →</button>
                     </div>
                     <div className="font-playfair text-3xl font-bold text-brown leading-tight">{rp(stats.usedBudget)}</div>
                     <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Dana Terpakai</div>
@@ -202,7 +202,7 @@ export default function Dashboard() {
                 <div className="stat-card hover:shadow-xl transition-all hover:-translate-y-1">
                     <div className="flex items-center justify-between mb-4">
                         <div className="w-12 h-12 rounded-2xl bg-[#8BAF8B20] flex items-center justify-center text-xl">💌</div>
-                        <button onClick={() => navigate('/rsvp')} className="text-[10px] font-bold text-sage hover:underline">Lihat Tamu →</button>
+                        <button onClick={() => navigate('/dashboard/rsvp')} className="text-[10px] font-bold text-sage hover:underline">Lihat Tamu →</button>
                     </div>
                     <div className="font-playfair text-3xl font-bold text-brown leading-tight">{stats.tamuConfirm}</div>
                     <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Tamu Konfirmasi</div>
@@ -211,7 +211,7 @@ export default function Dashboard() {
                 <div className="stat-card hover:shadow-xl transition-all hover:-translate-y-1">
                     <div className="flex items-center justify-between mb-4">
                         <div className="w-12 h-12 rounded-2xl bg-[#E8C4B840] flex items-center justify-center text-xl">✨</div>
-                        <button onClick={() => navigate('/kado-angpao')} className="text-[10px] font-bold text-brown hover:underline">Data Angpao →</button>
+                        <button onClick={() => navigate('/dashboard/kado-angpao')} className="text-[10px] font-bold text-brown hover:underline">Data Angpao →</button>
                     </div>
                     <div className="font-playfair text-3xl font-bold text-brown leading-tight">{rp(stats.totalAngpao)}</div>
                     <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Total Angpao</div>
@@ -271,7 +271,7 @@ export default function Dashboard() {
                                 title="Belum Ada Analisa"
                                 subtitle="Input data anggaranmu untuk melihat perbandingan estimasi dan realisasi."
                                 actionLabel="Input Budget"
-                                onAction={() => navigate('/budget')}
+                                onAction={() => navigate('/dashboard/budget')}
                             />
                         ) : (
                             <Bar data={{
@@ -321,7 +321,7 @@ export default function Dashboard() {
                 <div className="card lg:col-span-3 p-0 overflow-hidden">
                     <div className="p-6 border-b border-border flex items-center justify-between">
                         <h3 className="text-lg font-bold text-brown font-playfair">Deadline Vendor Terdekat</h3>
-                        <button className="text-rose-gold text-xs font-bold hover:underline" onClick={() => navigate('/vendors')}>Lihat Semua</button>
+                        <button className="text-rose-gold text-xs font-bold hover:underline" onClick={() => navigate('/dashboard/vendor')}>Lihat Semua</button>
                     </div>
                     <div className="overflow-x-auto">
                         <table>

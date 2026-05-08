@@ -61,13 +61,17 @@ export function WeddingProvider({ children }) {
     }
 
     try {
+      console.log('[useWedding] Fetching for user_id:', userId)
       const { data, error } = await supabase
         .from('wedding_profiles')
         .select('*')
         .eq('user_id', userId)
         .single()
 
+      console.log('[useWedding] Result:', { data: !!data, error: error?.message })
+
       if (error || !data) {
+        console.warn('[useWedding] No wedding profile found for user:', userId, error?.message)
         updateWedding(null)
       } else {
         updateWedding(data)
