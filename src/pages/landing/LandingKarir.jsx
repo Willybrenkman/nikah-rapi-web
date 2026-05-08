@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LandingNav from '../../components/landing/LandingNav';
 import LandingDemoPreview from '../../components/landing/LandingDemoPreview';
+import SEO from '../../components/SEO';
 import './LandingMain.css';
 import './LandingKarir.css';
 
@@ -32,6 +33,12 @@ const LandingKarir = () => {
 
   return (
     <div className="landing-container" style={{ paddingTop: '70px' }}>
+      <SEO
+        title="Wedding Planner untuk Wanita Karir | NIKAH RAPI — Nikah Rapi Tanpa Resign"
+        description="Sibuk kerja tapi tetap mau nikah rapi? Atur budget, vendor, seserahan, dan tamu undangan dari HP saat lunch break. 22+ modul otomatis. Rp 99.000 sekali bayar seumur hidup."
+        path="/untuk-karir"
+        keywords="wanita karir menikah, persiapan nikah sambil kerja, wedding planner wanita sibuk, atur pernikahan dari HP, wedding app indonesia, nikah tanpa ribet"
+      />
       <LandingNav links={navLinks} />
 
       {/* ══ HERO ══ */}

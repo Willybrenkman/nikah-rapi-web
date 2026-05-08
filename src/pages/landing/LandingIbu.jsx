@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LandingNav from '../../components/landing/LandingNav';
 import LandingDemoPreview from '../../components/landing/LandingDemoPreview';
+import SEO from '../../components/SEO';
 import './LandingMain.css';
 import './LandingIbu.css';
 
@@ -32,6 +33,12 @@ const LandingIbu = () => {
 
   return (
     <div className="landing-container" style={{ paddingTop: '70px' }}>
+      <SEO
+        title="Hadiah Pernikahan Terbaik dari Ibu | NIKAH RAPI — Wedding Planner Digital"
+        description="Bantu anak Ibu menikah tanpa drama. Pantau persiapan nikah dari HP: seserahan, budget, vendor, semua tercatat rapi. Hadiah paling bermanfaat untuk calon pengantin. Rp 99.000."
+        path="/untuk-ibu"
+        keywords="hadiah pernikahan anak, ibu calon pengantin, persiapan nikah anak, seserahan pernikahan, wedding planner untuk orang tua, koordinasi nikah jarak jauh"
+      />
       <LandingNav links={navLinks} />
 
       {/* ══ HERO ══ */}

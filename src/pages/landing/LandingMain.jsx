@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LandingNav from '../../components/landing/LandingNav';
 import LandingDemoPreview from '../../components/landing/LandingDemoPreview';
+import SEO from '../../components/SEO';
 import './LandingMain.css';
 
 const LandingMain = () => {
@@ -39,6 +40,12 @@ const LandingMain = () => {
 
   return (
     <div className="landing-container" style={{ paddingTop: '70px' }}>
+      <SEO
+        title="NIKAH RAPI — Wedding Planner Digital #1 Indonesia | Budget, Vendor, Seserahan"
+        description="Atur semua persiapan pernikahan di 1 Web App. Budget planner otomatis, seserahan tracker, vendor manager, kado & angpao tracker. 22+ modul terintegrasi. Rp 99.000 akses seumur hidup."
+        path="/"
+        keywords="wedding planner indonesia, persiapan nikah, budget pernikahan, seserahan tracker, vendor pernikahan, aplikasi nikah, wedding organizer digital"
+      />
       <LandingNav />
 
       {/* ══ HERO ══ */}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LandingNav from '../../components/landing/LandingNav';
 import LandingDemoPreview from '../../components/landing/LandingDemoPreview';
+import SEO from '../../components/SEO';
 import './LandingMain.css';
 import './LandingPria.css';
 
@@ -32,6 +33,12 @@ const LandingPria = () => {
 
   return (
     <div className="landing-container" style={{ paddingTop: '70px' }}>
+      <SEO
+        title="Nikah Anti Boncos — Budget Terkontrol Sampai Hari H | NIKAH RAPI untuk Pria"
+        description="Untuk calon suami yang mau pegang kendali. Pantau budget nikah, DP vendor, dan progress persiapan dari HP. 22+ modul terintegrasi. Rp 99.000 sekali bayar, akses seumur hidup."
+        path="/untuk-pria"
+        keywords="budget pernikahan pria, calon suami persiapan nikah, kontrol budget nikah, wedding planner untuk pria, vendor pernikahan tracking, nikah anti boncos"
+      />
       <LandingNav links={navLinks} />
 
       {/* ══ HERO ══ */}
