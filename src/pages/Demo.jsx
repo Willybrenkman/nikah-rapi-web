@@ -1,130 +1,337 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js';
+import { Doughnut, Bar } from 'react-chartjs-2';
+
+ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend);
+
+const rp = (n = 0) => n >= 1_000_000 ? `Rp ${(n / 1_000_000).toFixed(0)} Jt` : n >= 1_000 ? `Rp ${(n / 1_000).toFixed(0)} Rb` : `Rp ${n}`;
+
+function ProgressRow({ label, done, total, sage }) {
+    const pct = total > 0 ? Math.round(done / total * 100) : 0;
+    return (
+        <div className="mb-5 group">
+            <div className="flex justify-between text-xs mb-2">
+                <span className="text-brown-muted font-medium group-hover:text-brown transition-colors">{label}</span>
+                <span className="font-bold text-brown">{done}/{total} <span className="text-rose-gold ml-1">({pct}%)</span></span>
+            </div>
+            <div className="progress-track h-2 bg-ivory shadow-inner">
+                <div className={`progress-fill ${sage ? 'sage' : ''} shadow-sm`} style={{ width: `${pct}%` }} />
+            </div>
+        </div>
+    );
+}
 
 const Demo = () => {
   const navigate = useNavigate();
-  const [activeMenu, setActiveMenu] = useState('Dashboard');
+  const [activeMenu, setActiveMenu] = useState('Dashboard Utama');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const checkoutUrl = "https://entrepreneurai.myscalev.com/checkout-page";
 
   const menus = [
-    { name: 'Dashboard', icon: '🏠', locked: false },
-    { name: 'Budget Planner', icon: '💰', locked: false },
-    { name: 'Seserahan Tracker', icon: '💍', locked: false },
-    { name: 'Guest List', icon: '👥', locked: true },
-    { name: 'Vendor Manager', icon: '🏢', locked: true },
-    { name: 'Timeline Acara', icon: '📅', locked: true },
-    { name: 'Kado & Angpao', icon: '🎁', locked: true },
+    { num: '01', icon: '📊', label: 'Dashboard Utama', locked: false },
+    { num: '02', icon: '💰', label: 'Budget Planner', locked: false },
+    { num: '03', icon: '📦', label: 'Seserahan Tracker ✦', locked: false },
+    { num: '04', icon: '🎁', label: 'Kado & Angpao ✦', locked: true },
+    { num: '05', icon: '👥', label: 'Guest List', locked: true },
+    { num: '06', icon: '✉️', label: 'RSVP Tracker', locked: true },
+    { num: '07', icon: '🤝', label: 'Vendor Manager', locked: true },
+    { num: '08', icon: '📅', label: 'Timeline Acara', locked: true },
+    { num: '09', icon: '✅', label: 'Checklist Persiapan', locked: true },
+    { num: '10', icon: '🎨', label: 'Dekorasi & Tema', locked: true },
+    { num: '11', icon: '🍽️', label: 'Katering & Menu', locked: true },
   ];
 
   const handleMenuClick = (menu) => {
-    if (menu.locked) {
-      alert("Fitur ini hanya tersedia di NIKAH RAPI Versi Premium. Silakan klaim akses Anda untuk membuka semua fitur!");
-    } else {
-      setActiveMenu(menu.name);
-    }
+    setActiveMenu(menu.label);
+    setSidebarOpen(false);
   };
 
-  return (
-    <div style={{ display: 'flex', height: '100vh', background: '#0F172A', color: 'white', fontFamily: "'DM Sans', sans-serif" }}>
-      {/* Sidebar Simulasi */}
-      <div style={{ width: '260px', background: '#1E293B', padding: '24px', borderRight: '1px solid rgba(255,255,255,0.1)' }}>
-        <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#D4AF37', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span>💍</span> NIKAH RAPI <span style={{ fontSize: '10px', background: '#D4AF37', color: 'black', padding: '2px 6px', borderRadius: '4px' }}>DEMO</span>
-        </div>
-        
-        <nav>
-          {menus.map((menu) => (
-            <div 
-              key={menu.name}
-              onClick={() => handleMenuClick(menu)}
-              style={{ 
-                padding: '12px 16px', 
-                borderRadius: '8px', 
-                marginBottom: '8px', 
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                background: activeMenu === menu.name ? 'rgba(212, 175, 55, 0.1)' : 'transparent',
-                color: activeMenu === menu.name ? '#D4AF37' : '#94A3B8',
-                transition: 'all 0.2s'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span>{menu.icon}</span>
-                <span style={{ fontSize: '14px' }}>{menu.name}</span>
-              </div>
-              {menu.locked && <span style={{ fontSize: '12px' }}>🔒</span>}
-            </div>
-          ))}
-        </nav>
+  const isLocked = menus.find(m => m.label === activeMenu)?.locked;
 
-        <div style={{ marginTop: '40px', padding: '16px', background: 'rgba(212, 175, 55, 0.05)', borderRadius: '12px', border: '1px dashed #D4AF37' }}>
-          <p style={{ fontSize: '12px', color: '#CBD5E1', marginBottom: '12px', lineHeight: '1.5' }}>Suka dengan aplikasinya? Dapatkan akses penuh sekarang!</p>
-          <a 
-            href={checkoutUrl}
-            style={{ 
-              display: 'block', 
-              textAlign: 'center', 
-              background: '#D4AF37', 
-              color: 'black', 
-              padding: '10px', 
-              borderRadius: '6px', 
-              fontSize: '12px', 
-              fontWeight: 'bold', 
-              textDecoration: 'none' 
-            }}
-          >
-            Beli Versi Premium
-          </a>
+  return (
+    <div className="">
+      <div className="layout-wrapper" style={{ minHeight: '100vh' }}>
+        
+        {/* Mobile Overlay */}
+        {sidebarOpen && (
+          <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        )}
+
+        {/* Sidebar */}
+        <aside className={`sidebar lg:translate-x-0 ${sidebarOpen ? 'open' : ''}`}>
+          <div style={{ padding: '24px 20px 16px', borderBottom: '1px solid var(--border)', flexShrink: 0, position: 'relative' }}>
+            <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 20, color: 'var(--rose-gold)', fontWeight: 700 }}>
+              NIKAH RAPI <span className="text-[10px] bg-rose-gold text-black px-1.5 py-0.5 rounded ml-1 align-top">DEMO</span>
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--brown-muted)', marginTop: 2 }}>Jessica & Max</div>
+            <button onClick={() => setSidebarOpen(false)} className="lg:hidden absolute right-4 top-6 w-8 h-8 flex items-center justify-center rounded-lg bg-ivory/50 border border-border">✕</button>
+          </div>
+
+          <nav style={{ flex: 1, padding: '12px 0', overflowY: 'auto' }}>
+            {menus.map(item => (
+              <button
+                key={item.label}
+                onClick={() => handleMenuClick(item)}
+                className={`nav-item w-full text-left ${activeMenu === item.label ? 'active' : ''}`}
+                style={{ position: 'relative' }}
+              >
+                <span style={{ fontSize: 11, color: '#9B8070', opacity: .6, minWidth: 18 }}>{item.num}</span>
+                <span>{item.icon}</span>
+                <span>{item.label}</span>
+                {item.locked && <span className="absolute right-4 text-xs opacity-50">🔒</span>}
+              </button>
+            ))}
+          </nav>
+          
+          <div className="p-4 m-4 rounded-xl bg-rose-gold/10 border border-rose-gold/30 text-center">
+            <p className="text-[11px] text-brown-muted mb-3 leading-tight">Suka dengan aplikasinya?<br/>Dapatkan akses penuh sekarang!</p>
+            <a href={checkoutUrl} className="block bg-rose-gold text-black text-xs font-bold py-2 rounded-lg hover:bg-rose-dark transition-colors">
+              Beli Versi Premium
+            </a>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <div className="layout-main">
+          {/* Topbar */}
+          <header className="topbar">
+            <div className="flex items-center gap-4">
+              <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brown-muted)" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
+              </button>
+              <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 20, color: 'var(--brown)' }}>{activeMenu}</h1>
+            </div>
+            <div className="flex items-center gap-4">
+              <span className="text-[10px] bg-rose-gold/20 text-rose-gold px-3 py-1 rounded-full font-bold border border-rose-gold/30 hidden sm:block">
+                PREVIEW MODE
+              </span>
+              <button onClick={() => navigate('/')} className="text-xs font-bold text-brown-muted hover:text-rose-gold transition-colors border border-border px-3 py-1.5 rounded-lg">
+                Keluar Demo
+              </button>
+            </div>
+          </header>
+
+          {/* Body */}
+          <main className="main-content relative p-4 md:p-8">
+            <div className={isLocked ? "blur-[6px] opacity-60 pointer-events-none select-none transition-all duration-500" : ""}>
+              {activeMenu === 'Dashboard Utama' && <DemoDashboard />}
+              {activeMenu === 'Budget Planner' && (
+                <div className="animate-fade-in">
+                  <img src="/landing-assets/budget.png" alt="Budget Planner" className="rounded-xl shadow-sm border border-[#E8D5B0]/30 w-full" />
+                </div>
+              )}
+              {activeMenu === 'Seserahan Tracker ✦' && (
+                <div className="animate-fade-in">
+                  <img src="/landing-assets/seserahan.png" alt="Seserahan Tracker" className="rounded-xl shadow-sm border border-[#E8D5B0]/30 w-full" />
+                </div>
+              )}
+              {/* Fallback for locked menus to show something to blur over */}
+              {activeMenu !== 'Dashboard Utama' && activeMenu !== 'Budget Planner' && activeMenu !== 'Seserahan Tracker ✦' && (
+                 <DemoDashboard />
+              )}
+            </div>
+
+            {isLocked && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+                <div className="card shadow-2xl text-center max-w-sm mx-4 transform animate-fade-up">
+                  <div className="text-4xl mb-4">🔒</div>
+                  <h3 className="text-xl font-playfair font-bold text-brown mb-2">Fitur Terkunci</h3>
+                  <p className="text-sm text-brown-muted mb-6 leading-relaxed">
+                    Fitur <strong>{activeMenu}</strong> hanya tersedia di NIKAH RAPI Versi Premium. Dapatkan akses ke 22+ modul lengkap sekarang!
+                  </p>
+                  <a href={checkoutUrl} className="inline-block bg-rose-gold text-black px-6 py-3 rounded-lg font-bold hover:bg-rose-dark transition-colors shadow-lg shadow-rose-gold/20">
+                    Klaim Akses Premium
+                  </a>
+                </div>
+              </div>
+            )}
+          </main>
         </div>
       </div>
+    </div>
+  );
+};
 
-      {/* Main Content Area */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        {/* Header Area */}
-        <header style={{ height: '70px', background: '#1E293B', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-          <div style={{ fontSize: '18px', fontWeight: '500' }}>{activeMenu} (Simulasi Data)</div>
-          <button 
-            onClick={() => navigate('/')}
-            style={{ background: 'transparent', border: '1px solid #94A3B8', color: '#94A3B8', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer' }}
-          >
-            Kembali ke Landing Page
-          </button>
-        </header>
+// ==========================================
+// FAKE DASHBOARD COMPONENT (HARDCODED)
+// ==========================================
+const DemoDashboard = () => {
+  const stats = {
+    totalBudget: 95500000,
+    usedBudget: 50500000,
+    tamuConfirm: 3,
+    totalTamu: 5,
+    totalAngpao: 4000000,
+    angpaoPemberi: 4,
+    checklistDone: 8,
+    checklistTotal: 12
+  };
+  
+  const budgetItems = [
+    { kategori: 'Venue', jumlah_estimasi: 25000000, jumlah_aktual: 25000000 },
+    { kategori: 'Katering', jumlah_estimasi: 45000000, jumlah_aktual: 20000000 },
+    { kategori: 'MUA', jumlah_estimasi: 15000000, jumlah_aktual: 5000000 },
+    { kategori: 'Dekorasi', jumlah_estimasi: 10000000, jumlah_aktual: 0 },
+    { kategori: 'Undangan', jumlah_estimasi: 500000, jumlah_aktual: 500000 },
+  ];
 
-        {/* Content Preview */}
-        <main style={{ flex: 1, padding: '32px', overflowY: 'auto' }}>
-          <div style={{ background: '#1E293B', borderRadius: '16px', padding: '24px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-            <div style={{ marginBottom: '24px' }}>
-              <span style={{ fontSize: '12px', background: 'rgba(212, 175, 55, 0.1)', color: '#D4AF37', padding: '4px 12px', borderRadius: '100px', border: '1px solid rgba(212, 175, 55, 0.3)' }}>
-                PREVIEW MODE — DATA CONTOH
-              </span>
-            </div>
+  const vendors = [
+    { id: 1, nama: 'Grand Ballroom Hotel', kategori: 'Venue', deadline_pelunasan: new Date(Date.now() + 14 * 86400000).toISOString() },
+    { id: 2, nama: 'Catering Berkah', kategori: 'Katering', deadline_pelunasan: new Date(Date.now() + 30 * 86400000).toISOString() },
+    { id: 3, nama: 'Glow MUA', kategori: 'MUA', deadline_pelunasan: new Date(Date.now() + 7 * 86400000).toISOString() },
+  ];
 
-            {activeMenu === 'Dashboard' && (
-              <img src="/landing-assets/dashboard.png" alt="Dashboard Preview" style={{ width: '100%', borderRadius: '8px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }} />
-            )}
-            {activeMenu === 'Budget Planner' && (
-              <img src="/landing-assets/budget.png" alt="Budget Preview" style={{ width: '100%', borderRadius: '8px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }} />
-            )}
-            {activeMenu === 'Seserahan Tracker' && (
-              <img src="/landing-assets/seserahan.png" alt="Seserahan Preview" style={{ width: '100%', borderRadius: '8px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }} />
-            )}
+  const milestones = {
+    administrasi: { done: 3, total: 4 },
+    venue: { done: 2, total: 3 },
+    mua: { done: 1, total: 2 },
+    dokumentasi: { done: 2, total: 3 }
+  };
 
-            <div style={{ marginTop: '32px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '32px' }}>
-              <h3 style={{ color: '#D4AF37', marginBottom: '16px' }}>Ini Hanyalah Sebagian Kecil Dari Fitur Kami</h3>
-              <p style={{ color: '#94A3B8', fontSize: '14px', maxWidth: '600px', margin: '0 auto 24px', lineHeight: '1.6' }}>
-                Dalam versi Premium, Anda akan mendapatkan akses ke 22+ modul lengkap yang saling terintegrasi secara real-time. Data Anda tersimpan aman dan bisa diakses kapan saja.
-              </p>
-              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                <a href={checkoutUrl} style={{ background: '#D4AF37', color: 'black', padding: '14px 28px', borderRadius: '8px', fontWeight: 'bold', textDecoration: 'none' }}>
-                  Klaim Akses Premium Sekarang
-                </a>
+  const usedPct = Math.round(stats.usedBudget / stats.totalBudget * 100);
+
+  return (
+    <div className="animate-fade-in pb-12">
+      {/* ── GREETING ── */}
+      <div className="greeting-card relative overflow-hidden group mb-8 card">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-rose-gold/5 rounded-full -mr-32 -mt-32 blur-3xl" />
+          <div className="relative z-10 flex justify-between items-center">
+              <div>
+                  <h2 className="font-playfair text-3xl text-brown mb-2">
+                      Halo, <span className="font-bold text-rose-gold">Jessica</span> & <span className="font-bold text-rose-gold">Max</span>! ✨
+                  </h2>
+                  <p className="text-sm text-brown/70 max-w-md">Persiapan hari bahagia kamu sedang dalam pantauan. Mari wujudkan pernikahan impian bersama-sama!</p>
               </div>
-            </div>
+              <div className="relative z-10 backdrop-blur-md rounded-2xl px-8 py-4 text-center shrink-0 shadow-xl shadow-rose-gold/10 border border-brown/10 bg-[var(--countdown-bg)] hidden md:block">
+                  <div className="font-playfair text-4xl font-bold text-brown leading-tight mb-1">128</div>
+                  <div className="text-[10px] text-rose-gold font-bold uppercase tracking-[0.2em]">HARI LAGI</div>
+              </div>
           </div>
-        </main>
+      </div>
+
+      {/* ── STAT CARDS ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="stat-card hover:-translate-y-1 transition-transform">
+              <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#C9956C20] flex items-center justify-center text-xl">💎</div>
+              </div>
+              <div className="font-playfair text-3xl font-bold text-brown leading-tight">{rp(stats.totalBudget)}</div>
+              <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Total Anggaran</div>
+          </div>
+          <div className="stat-card hover:-translate-y-1 transition-transform">
+              <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#D4756B15] flex items-center justify-center text-xl">💸</div>
+              </div>
+              <div className="font-playfair text-3xl font-bold text-brown leading-tight">{rp(stats.usedBudget)}</div>
+              <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Dana Terpakai</div>
+              <div className="text-[10px] text-danger font-bold mt-1">{usedPct}% terealisasi</div>
+          </div>
+          <div className="stat-card hover:-translate-y-1 transition-transform">
+              <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#8BAF8B20] flex items-center justify-center text-xl">💌</div>
+              </div>
+              <div className="font-playfair text-3xl font-bold text-brown leading-tight">{stats.tamuConfirm}</div>
+              <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Tamu Konfirmasi</div>
+          </div>
+          <div className="stat-card hover:-translate-y-1 transition-transform">
+              <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#E8C4B840] flex items-center justify-center text-xl">✨</div>
+              </div>
+              <div className="font-playfair text-3xl font-bold text-brown leading-tight">{rp(stats.totalAngpao)}</div>
+              <div className="text-xs font-bold text-brown-muted mt-2 uppercase tracking-wider">Total Angpao</div>
+          </div>
+      </div>
+
+      {/* ── CHARTS ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          <div className="card lg:col-span-1">
+              <div className="p-6 border-b border-[var(--border)]">
+                  <h3 className="text-lg font-bold text-brown font-playfair">Status Finansial</h3>
+                  <p className="text-[10px] text-brown-muted uppercase tracking-widest mt-1">Kesehatan Anggaran</p>
+              </div>
+              <div className="p-8 flex flex-col items-center justify-center h-[280px]">
+                  <div className="relative w-40 h-40">
+                        <Doughnut data={{
+                          labels: ['Terpakai', 'Sisa'],
+                          datasets: [{ 
+                              data: [stats.usedBudget, Math.max(0, stats.totalBudget - stats.usedBudget)], 
+                              backgroundColor: ['#D4756B', '#8BAF8B20'], 
+                              borderWidth: 0,
+                              cutout: '85%'
+                          }]
+                      }} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }} />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <span className="text-2xl font-black text-brown">{usedPct}%</span>
+                          <span className="text-[8px] font-bold text-brown-muted uppercase tracking-widest">Terpakai</span>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <div className="card lg:col-span-2">
+              <div className="p-6 border-b border-[var(--border)] flex justify-between">
+                  <div>
+                      <h3 className="text-lg font-bold text-brown font-playfair">Analisa Pengeluaran</h3>
+                      <p className="text-[10px] text-brown-muted uppercase tracking-widest mt-1">Estimasi vs Aktual</p>
+                  </div>
+              </div>
+              <div className="p-4 sm:p-8 h-[280px]">
+                  <Bar data={{
+                      labels: budgetItems.map(i => i.kategori),
+                      datasets: [
+                          { label: 'Estimasi', data: budgetItems.map(i => i.jumlah_estimasi), backgroundColor: '#C9956C50', borderRadius: 6 },
+                          { label: 'Aktual', data: budgetItems.map(i => i.jumlah_aktual), backgroundColor: '#D4756BCC', borderRadius: 6 },
+                      ]
+                  }} options={{ 
+                      responsive: true, maintainAspectRatio: false, 
+                      plugins: { legend: { position: 'top', labels: { color: 'var(--brown-muted)' } } }, 
+                      scales: { 
+                          y: { grid: { color: 'rgba(201, 149, 108, 0.1)' }, ticks: { color: 'var(--brown-muted)' } }, 
+                          x: { grid: { display: false }, ticks: { color: 'var(--brown-muted)' } } 
+                      } 
+                  }} />
+              </div>
+          </div>
+      </div>
+      
+      {/* ── BOTTOM ROW ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          <div className="card lg:col-span-2">
+              <div className="p-6 border-b border-[var(--border)] mb-6">
+                  <h3 className="text-lg font-bold text-brown font-playfair">Progress Persiapan</h3>
+              </div>
+              <div className="px-6 pb-6">
+                  <ProgressRow label="Administrasi & KUA" done={milestones.administrasi.done} total={milestones.administrasi.total} sage />
+                  <ProgressRow label="Venue & Katering" done={milestones.venue.done} total={milestones.venue.total} />
+                  <ProgressRow label="MUA & Busana" done={milestones.mua.done} total={milestones.mua.total} sage />
+              </div>
+          </div>
+          <div className="card lg:col-span-3 p-0 overflow-hidden">
+              <div className="p-6 border-b border-[var(--border)]">
+                  <h3 className="text-lg font-bold text-brown font-playfair">Deadline Vendor Terdekat</h3>
+              </div>
+              <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                      <thead>
+                          <tr className="border-b border-[var(--border)] bg-ivory/5">
+                              <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Vendor</th>
+                              <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Kategori</th>
+                              <th className="p-4 text-xs text-rose-gold uppercase tracking-wider">Deadline</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {vendors.map((v, i) => (
+                              <tr key={v.id} className="border-b border-[var(--border)] hover:bg-ivory/5">
+                                  <td className="p-4 font-bold text-rose-gold">{v.nama}</td>
+                                  <td className="p-4 text-xs text-brown-muted">{v.kategori}</td>
+                                  <td className="p-4 text-xs font-medium text-brown-muted">14 Hari Lagi</td>
+                              </tr>
+                          ))}
+                      </tbody>
+                  </table>
+              </div>
+          </div>
       </div>
     </div>
   );

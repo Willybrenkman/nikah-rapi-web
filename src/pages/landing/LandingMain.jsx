@@ -1,61 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import LandingNav from '../../components/landing/LandingNav';
 import './LandingMain.css';
 
 const LandingMain = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('p-dash');
   const [openFaq, setOpenFaq] = useState(null);
+  const videoRef = useRef(null);
 
-  // Link Checkout Scalev
   const checkoutUrl = "https://entrepreneurai.myscalev.com/checkout-page";
 
-  // Intersection Observer for Scroll Reveal
   useEffect(() => {
-    const observerOptions = {
-      threshold: 0.1
-    };
-
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
+        if (entry.isIntersecting) entry.target.classList.add('visible');
       });
-    }, observerOptions);
+    }, { threshold: 0.1 });
 
     const revealElements = document.querySelectorAll('.reveal');
     revealElements.forEach(el => observer.observe(el));
-
-    return () => {
-      revealElements.forEach(el => observer.unobserve(el));
-    };
+    return () => revealElements.forEach(el => observer.unobserve(el));
   }, []);
 
-  const toggleFaq = (index) => {
-    setOpenFaq(openFaq === index ? null : index);
+  const toggleFaq = (index) => setOpenFaq(openFaq === index ? null : index);
+
+  const loadVideo = () => {
+    if (!videoRef.current) return;
+    const iframe = document.createElement('iframe');
+    iframe.src = 'https://www.youtube.com/embed/YPl7CuUqbUs?autoplay=1&mute=1&rel=0&modestbranding=1';
+    iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none;border-radius:16px;';
+    iframe.allow = 'autoplay; encrypted-media; fullscreen';
+    iframe.allowFullscreen = true;
+    videoRef.current.innerHTML = '';
+    videoRef.current.appendChild(iframe);
+    videoRef.current.style.cursor = 'default';
   };
 
-  const tabs = [
-    { id: 'p-dash', label: '🏠 Dashboard', img: 'dashboard.png' },
-    { id: 'p-ses', label: '💍 Seserahan ✦', img: 'seserahan.png' },
-    { id: 'p-kado', label: '🎁 Kado & Angpao ✦', img: 'kadoangpao.png' },
-    { id: 'p-budget', label: '💰 Budget', img: 'budget.png' },
-    { id: 'p-guest', label: '👥 Guest List', img: 'guestlist.png' },
-    { id: 'p-vendor', label: '🏢 Vendor', img: 'vendor.png' },
-  ];
-
   return (
-    <div className="landing-container">
-      {/* ══ STICKY CTA ══ */}
-      <a href={checkoutUrl} className="sticky-cta show">
-        💍 Dapatkan Sekarang — Rp 99.000
-      </a>
+    <div className="landing-container" style={{ paddingTop: '70px' }}>
+      <LandingNav />
 
       {/* ══ HERO ══ */}
       <section className="hero">
-        <div className="badge">Wedding Planner Premium</div>
-        <p className="hero-eyebrow">Untuk kamu yang mau nikah tanpa drama & panik</p>
+        <div className="badge">Wedding Planner Digital #1 Indonesia</div>
+        <p className="hero-eyebrow">Untuk kamu yang mau menikah tanpa drama & tanpa panik</p>
         <h1 className="hero-title">
           Nikah Tanpa <em>Drama Vendor Cabut,</em><br />
           Budget Jebol & Seserahan Ketinggalan
@@ -65,24 +53,13 @@ const LandingMain = () => {
           bukan menghabiskannya untuk panik, cari-cari catatan, dan khawatir ada yang terlupa."
         </p>
         <p className="hero-title-sub">
-          Semua persiapan pernikahan — terkontrol rapi dalam 1 platform. Cukup isi datanya, sistem yang bekerja.
+          22+ modul Web App terintegrasi dalam 1 platform. Cukup isi datanya, sistem yang bekerja otomatis.
         </p>
         <div className="drama-tags">
-          <span className="drama-tag">😰 Drama Budget Bocor</span>
-          <span className="drama-tag">📋 Drama Seserahan Kacau</span>
-          <span className="drama-tag">🏢 Drama Vendor Susah Ditracking</span>
-        </div>
-
-        <div className="preview-tabs">
-          {tabs.map(tab => (
-            <button 
-              key={tab.id}
-              className={`ptab ${activeTab === tab.id ? 'on' : ''}`}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              {tab.label}
-            </button>
-          ))}
+          <span className="drama-tag">😰 Budget Bocor</span>
+          <span className="drama-tag">📋 Seserahan Kacau</span>
+          <span className="drama-tag">🏢 Vendor Susah Ditrack</span>
+          <span className="drama-tag">🎁 Angpao Hilang Data</span>
         </div>
 
         <div className="product-showcase">
@@ -101,7 +78,6 @@ const LandingMain = () => {
               <div className="fb-val">12/15 item siap ✓</div>
             </div>
           </div>
-          
           <div className="browser-frame">
             <div className="browser-bar">
               <div className="browser-dots">
@@ -111,28 +87,9 @@ const LandingMain = () => {
               </div>
               <div className="browser-url">app.nikahrapi.online ✦</div>
             </div>
-            <div className="sheet-tabs-bar">
-              {tabs.map(tab => (
-                <button 
-                  key={tab.id}
-                  className={`stab ${activeTab === tab.id ? 'on' : ''} ${tab.id === 'p-kado' ? 'gold' : ''}`}
-                  onClick={() => setActiveTab(tab.id)}
-                >
-                  {tab.label}
-                </button>
-              ))}
+            <div className="preview-stage on">
+              <img src="/landing-assets/dashboard.png" alt="Dashboard NIKAH RAPI" width="900" height="500" />
             </div>
-            
-            {tabs.map(tab => (
-              <div key={tab.id} className={`preview-stage ${activeTab === tab.id ? 'on' : ''}`}>
-                <img 
-                  src={`/landing-assets/${tab.img}`} 
-                  alt={tab.label} 
-                  width="900" 
-                  height="500"
-                />
-              </div>
-            ))}
           </div>
         </div>
 
@@ -142,36 +99,15 @@ const LandingMain = () => {
             <div className="price-old"><s>Rp 299.000</s></div>
             <div className="price-save">HEMAT 63%</div>
           </div>
-          
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '20px' }}>
-            <a href={checkoutUrl} className="btn-primary">💍 Klaim Slot Early Bird Sekarang</a>
-            <button 
-              onClick={() => navigate('/demo')} 
-              className="btn-secondary"
-              style={{ background: 'rgba(139, 94, 106, 0.1)', border: '1px solid var(--mauve)', color: 'var(--mauve)', padding: '20px 40px' }}
-            >
+            <a href={checkoutUrl} className="btn-primary">💍 Dapatkan Akses Sekarang</a>
+            <button onClick={() => navigate('/demo')} className="btn-secondary">
               👁️ Lihat Simulasi App
             </button>
           </div>
-
-          <div style={{ background: 'linear-gradient(135deg,#fff8ec 0%,#ffe7d6 100%)', border: '1px solid #C9A96E', borderRadius: '16px', padding: '20px 24px', margin: '32px auto', maxWidth: '540px', textAlign: 'center', boxShadow: '0 8px 24px rgba(201,169,110,0.15)' }}>
-            <div style={{ fontSize: '11px', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#8B5E6A', fontWeight: '600', marginBottom: '8px' }}>
-              ⏰ Promo Early Bird Berakhir Saat Slot Habis
-            </div>
-            <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: '28px', color: '#5C3D2E', fontWeight: '600', marginBottom: '4px' }}>
-              Tersisa <span style={{ color: '#B85C00', fontWeight: '700' }}>10</span> dari 50 Slot
-            </div>
-            <div style={{ fontSize: '13px', color: '#6B5A4F', marginBottom: '12px' }}>
-              Harga akan naik ke <s>Rp 299.000</s> setelah slot habis
-            </div>
-            <div style={{ background: 'rgba(201,169,110,0.2)', height: '8px', borderRadius: '100px', overflow: 'hidden', marginTop: '12px' }}>
-              <div style={{ background: 'linear-gradient(90deg,#B85C00,#C9A96E)', height: '100%', width: '20%', transition: 'width 0.5s ease' }}></div>
-            </div>
-          </div>
-
           <div className="cta-notes">
             <div className="cta-note-item">✓ Garansi 7 hari</div>
-            <div className="cta-note-item">✓ Akses instan Web App</div>
+            <div className="cta-note-item">✓ Akses instan via WA</div>
             <div className="cta-note-item">✓ Tersimpan aman di Cloud</div>
           </div>
         </div>
@@ -184,19 +120,19 @@ const LandingMain = () => {
             <div className="sp-avatar" style={{ background: 'linear-gradient(135deg,#A8B8AC,#7A8C7E)' }}>🍃</div>
           </div>
           <div className="stars">★★★★★</div>
-          <span><strong>Tersisa 10 slot</strong> dari 50 Early Bird</span>
+          <span>Dipercaya pasangan Indonesia</span>
         </div>
       </section>
 
       {/* ══ VIDEO SECTION ══ */}
-      <section className="video-section">
+      <section className="video-section" id="cara-kerja">
         <p className="section-eyebrow reveal">✨ Intip Dulu Sebelum Beli</p>
         <h2 className="section-title reveal">Lihat <em>Cara Kerjanya</em></h2>
         <p className="video-sub reveal">
           Tidak perlu download aplikasi apapun. Akses langsung via browser, data otomatis tersinkronisasi secara real-time.
         </p>
         <div className="video-wrapper reveal">
-          <div className="video-placeholder">
+          <div className="video-placeholder" ref={videoRef} onClick={loadVideo}>
             <div className="video-play-btn">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
                 <polygon points="5,3 19,12 5,21" />
@@ -235,15 +171,15 @@ const LandingMain = () => {
       {/* ══ DRAMA ══ */}
       <section className="drama-section">
         <p className="section-eyebrow reveal">Cerita yang terlalu familiar...</p>
-        <h2 className="section-title reveal">Drama Menuju Pernikahan<br />yang <em>Bikin Capek Sebelum Hari H</em></h2>
+        <h2 className="section-title reveal">Drama Menuju Pernikahan <br />yang <em>Bikin Capek Sebelum Hari H</em></h2>
         <div className="drama-grid">
           {[
             { icon: '💰', title: 'Drama Budget Jebol', desc: 'Estimasi Rp 80jt, realisasi Rp 120jt. Pengeluaran kecil-kecil yang tidak tercatat akhirnya numpuk tanpa disadari.', scenario: '"Udah bayar DP katering, eh lupa dicatat. Sekarang gak tau sisa budget berapa."' },
             { icon: '💍', title: 'Drama Seserahan Ketinggalan', desc: 'Daftar seserahan ditulis di kertas, notes HP, chat WA — tersebar mana-mana. Hari H ada barang yang ketinggalan.', scenario: '"Sampai di lokasi baru sadar parfum seserahan ketinggalan di rumah. Panik!"' },
-            { icon: '🏢', title: 'Drama Vendor Tiba-tiba Cabut', desc: 'Vendor cancel H-7, nomor susah dihubungi, kontrak tidak jelas. Semua info vendor tersebar di berbagai chat WA.', scenario: '"WO tiba-tiba bilang ada double booking. Kontraknya mana? Sudah bayar berapa?"' },
+            { icon: '🏢', title: 'Drama Vendor Cabut', desc: 'Vendor cancel H-7, nomor susah dihubungi, kontrak tidak jelas. Semua info vendor tersebar di berbagai chat WA.', scenario: '"WO tiba-tiba bilang ada double booking. Kontraknya mana? Sudah bayar berapa?"' },
             { icon: '💄', title: 'Drama MUA Double Booking', desc: 'MUA impian ternyata sudah di-booking orang lain di tanggal yang sama. Baru ketahuan 2 minggu sebelum hari H.', scenario: '"Udah fitting 3x, eh MUA-nya bilang double booking. Cari pengganti mendadak."' },
-            { icon: '🎁', title: 'Drama Kado & Angpao Kacau', desc: 'Siapa yang kasih kado apa? Amplop dari siapa? Mau kirim ucapan terima kasih tapi datanya tidak ada sama sekali.', scenario: '"Mau WA ucapan terima kasih tapi lupa siapa yang kasih angpao berapa. Awkward."' },
-            { icon: '😫', title: 'Drama Tamu Melebihi Kapasitas', desc: 'Undangan 300 orang, kursi cuma 250. Konfirmasi hadir berantakan, catering kurang, meja tidak cukup.', scenario: '"Tamu yang konfirmasi hadir ternyata lebih dari kapasitas gedung. Chaos!"' }
+            { icon: '🎁', title: 'Drama Kado & Angpao Kacau', desc: 'Siapa yang kasih kado apa? Amplop dari siapa? Mau kirim ucapan terima kasih tapi datanya tidak ada.', scenario: '"Mau WA ucapan terima kasih tapi lupa siapa yang kasih angpao berapa. Awkward."' },
+            { icon: '😫', title: 'Drama Tamu Overload', desc: 'Undangan 300 orang, kursi cuma 250. Konfirmasi hadir berantakan, catering kurang, meja tidak cukup.', scenario: '"Tamu yang konfirmasi hadir ternyata lebih dari kapasitas gedung. Chaos!"' }
           ].map((item, i) => (
             <div key={i} className="drama-card reveal">
               <span className="drama-icon">{item.icon}</span>
@@ -257,16 +193,16 @@ const LandingMain = () => {
       </section>
 
       {/* ══ SOLUTION ══ */}
-      <section className="solution-section">
+      <section className="solution-section" id="fitur">
         <div className="solution-inner">
           <div className="solution-left">
-            <p className="section-eyebrow reveal">Solusi yang kamu butuhkan</p>
+            <p className="section-eyebrow reveal" style={{ color: 'var(--blush)' }}>Solusi yang kamu butuhkan</p>
             <h2 className="section-title reveal">Satu platform.<br />Semua drama<br />bisa dicegah.</h2>
             <p className="reveal">
               NIKAH RAPI dirancang khusus untuk calon pengantin Indonesia — 22+ modul Web App terintegrasi yang saling terhubung otomatis. 
-              Input sekali, semua terupdate. Tersinkronisasi cloud, aman, dan bisa diakses dari perangkat manapun.
+              Input sekali, semua terupdate. Tersinkronisasi cloud, aman, dan bisa diakses berdua dari perangkat manapun.
             </p>
-            <a href="#pricing" className="btn-secondary reveal">Lihat Harga & Paket →</a>
+            <a href="#pricing" className="btn-secondary reveal" style={{ background: 'white', color: 'var(--mauve)', border: 'none' }}>Lihat Harga & Paket →</a>
           </div>
           <div className="feature-cards">
             {[
@@ -323,6 +259,42 @@ const LandingMain = () => {
         </div>
       </section>
 
+      {/* ══ TESTIMONI ══ */}
+      <section className="testi-section">
+        <p className="section-eyebrow reveal">Cerita Mereka</p>
+        <h2 className="section-title reveal">Sudah Membantu Calon Pengantin <em>Indonesia</em></h2>
+        <div className="testi-photo-grid">
+          {[
+            { emoji: '🌸', bg: 'linear-gradient(135deg,#E8C4B8,#C4857A)', city: 'Jakarta', text: '"Seserahan Tracker-nya beneran game changer! Sebelumnya nyatat manual di kertas, ada yang ketinggalan terus. Sekarang tinggal ceklis, dan bisa di-akses suami juga."', name: 'Anisa R.', role: 'Calon Pengantin · Sept 2026' },
+            { emoji: '💑', bg: 'linear-gradient(135deg,#8B5E6A,#C9A96E)', city: 'Bandung', text: '"Berdua bisa update real-time. Saya isi data vendor, calon istri ngurus seserahan, semuanya keliatan di dashboard yang sama. Anti drama \'kok ini belum dibayar\'."', name: 'Reza & Putri', role: 'Pasangan · Nov 2026' },
+            { emoji: '👩', bg: 'linear-gradient(135deg,#C9A96E,#8B5E6A)', city: 'Surabaya', text: '"Anak saya di Jakarta, saya di Surabaya. Sejak pakai NIKAH RAPI, semua list seserahan dan keperluan akad bisa saya pantau dari rumah. Tinggal bagi tugas, semua tercatat rapi."', name: 'Bunda Sri W.', role: 'Ibu Calon Pengantin · Okt 2026' }
+          ].map((t, i) => (
+            <div key={i} className="testi-photo-card reveal">
+              <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                <div style={{ width: 88, height: 88, borderRadius: '50%', background: t.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 42, boxShadow: '0 8px 24px rgba(92,61,46,0.15)' }}>
+                  {t.emoji}
+                </div>
+                <div className="testi-photo-badge">📍 {t.city}</div>
+              </div>
+              <div className="testi-photo-content">
+                <div style={{ color: 'var(--gold)', marginBottom: 8, fontSize: 14 }}>★★★★★</div>
+                <p className="testi-photo-text">{t.text}</p>
+                <div>
+                  <div className="testi-photo-name">{t.name}</div>
+                  <div style={{ fontSize: 12, color: 'var(--text-light)', marginBottom: 6 }}>{t.role}</div>
+                  <div className="testi-photo-verified">✓ Verified Purchase</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="testi-stats reveal">
+          <div className="tstat"><div className="tstat-num">22+</div><div style={{ fontSize: 12, color: 'var(--text-light)' }}>Modul Web App</div></div>
+          <div className="tstat"><div className="tstat-num">100%</div><div style={{ fontSize: 12, color: 'var(--text-light)' }}>Customer Puas</div></div>
+          <div className="tstat"><div className="tstat-num">7 Hari</div><div style={{ fontSize: 12, color: 'var(--text-light)' }}>Garansi Uang Kembali</div></div>
+        </div>
+      </section>
+
       {/* ══ PRICING ══ */}
       <section className="pricing-section" id="pricing">
         <p className="section-eyebrow reveal">Investasi terkecil untuk pernikahan terbaik</p>
@@ -350,15 +322,17 @@ const LandingMain = () => {
       </section>
 
       {/* ══ FAQ ══ */}
-      <section className="faq-section">
+      <section className="faq-section" id="faq">
         <p className="section-eyebrow reveal">Pertanyaan yang sering ditanya</p>
         <h2 className="section-title reveal">FAQ</h2>
         <div className="faq-inner">
           {[
-            { q: 'Saya gaptek, bisa pakai tidak?', a: 'Tidak perlu jago teknologi! NIKAH RAPI dirancang agar tinggal isi data — semua kalkulasi dan dashboard berjalan otomatis.' },
-            { q: 'Bisa dibuka di HP atau hanya di laptop?', a: 'Bisa di keduanya! Cukup buka browser di HP atau laptop, login pakai email, dan langsung bisa akses.' },
-            { q: 'Setelah bayar, link akses dikirim ke mana?', a: 'Link akses dikirim langsung ke email kamu setelah pembayaran dikonfirmasi. Akses seumur hidup!' },
-            { q: 'Ada garansi uang kembali tidak?', a: 'Ada garansi 7 hari. Jika tidak sesuai deskripsi, hubungi kami untuk refund penuh.' }
+            { q: 'Saya gaptek, bisa pakai tidak?', a: 'Tidak perlu jago teknologi! NIKAH RAPI dirancang agar tinggal isi data — semua kalkulasi dan dashboard berjalan otomatis. Kalau kamu bisa ngetik di HP, kamu sudah bisa pakai NIKAH RAPI.' },
+            { q: 'Bisa dibuka di HP atau hanya di laptop?', a: 'Bisa di keduanya! Cukup buka browser di HP atau laptop, login pakai email, dan langsung bisa akses semua fitur. Tidak perlu install aplikasi tambahan.' },
+            { q: 'Setelah bayar, link akses dikirim ke mana?', a: 'Link akses dikirim langsung ke WhatsApp kamu setelah pembayaran dikonfirmasi. Akses seumur hidup!' },
+            { q: 'Ada garansi uang kembali tidak?', a: 'Ada garansi 7 hari. Jika tidak sesuai deskripsi, hubungi kami dan proses refund penuh tanpa pertanyaan berlebihan.' },
+            { q: 'Bisa untuk pernikahan adat apa saja?', a: 'Bisa untuk semua adat — Jawa, Sunda, Minang, Betawi, Modern, dan lainnya. Template kami fleksibel dan bisa disesuaikan.' },
+            { q: 'Apa bedanya dengan wedding planner lain?', a: 'NIKAH RAPI adalah satu-satunya Web App wedding planner yang punya Seserahan Tracker & Kado/Angpao Tracker — dua fitur yang paling dibutuhkan calon pengantin Indonesia tapi tidak ada di produk manapun.' }
           ].map((item, i) => (
             <div key={i} className={`faq-item reveal ${openFaq === i ? 'open' : ''}`} onClick={() => toggleFaq(i)}>
               <div className="faq-q">{item.q} <span className="faq-arrow">{openFaq === i ? '−' : '+'}</span></div>
@@ -370,17 +344,17 @@ const LandingMain = () => {
 
       {/* ══ FINAL CTA ══ */}
       <section className="final-cta">
-        <p className="section-eyebrow reveal">Sudah siap?</p>
-        <h2 className="section-title reveal">Mulai rencanakan pernikahanmu<br />dengan lebih <em style={{ color: '#E8D5B0' }}>tenang & rapi</em></h2>
-        <p className="reveal">Ratusan detail pernikahan dalam satu file. Supaya hari terbaikmu benar-benar terasa seperti hari terbaik.</p>
-        <a href={checkoutUrl} className="btn-secondary reveal" style={{ margin: '0 auto' }}>
+        <p className="section-eyebrow reveal" style={{ color: 'var(--blush)' }}>Sudah siap?</p>
+        <h2 className="section-title reveal" style={{ color: 'white' }}>Mulai rencanakan pernikahanmu<br />dengan lebih <em style={{ color: '#E8D5B0' }}>tenang & rapi</em></h2>
+        <p className="reveal">Ratusan detail pernikahan dalam satu platform. Supaya hari terbaikmu benar-benar terasa seperti hari terbaik.</p>
+        <a href={checkoutUrl} className="btn-secondary reveal" style={{ margin: '0 auto', background: 'white', color: 'var(--mauve)', border: 'none' }}>
           💍 Ambil Sekarang Sebelum Harga Naik
         </a>
       </section>
 
-      <footer style={{ background: '#2C2218', padding: '40px 80px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' }}>
+      <footer style={{ background: '#2C2218', padding: '40px 80px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white', flexWrap: 'wrap', gap: '16px' }}>
         <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', letterSpacing: '2px' }}>NIKAH RAPI ✦</div>
-        <div style={{ fontSize: '12px', opacity: 0.4 }}>© 2025 NIKAH RAPI · Wedding Planner Digital Premium</div>
+        <div style={{ fontSize: '12px', opacity: 0.4 }}>© 2025 NIKAH RAPI · Wedding Planner Digital Premium · Made with love 🤍</div>
       </footer>
     </div>
   );

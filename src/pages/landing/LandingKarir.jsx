@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LandingNav from '../../components/landing/LandingNav';
 import './LandingMain.css';
-import './LandingIbu.css';
+import './LandingKarir.css';
 
-const LandingIbu = () => {
+const LandingKarir = () => {
   const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState(null);
 
@@ -23,7 +23,7 @@ const LandingIbu = () => {
   }, []);
 
   const navLinks = [
-    { label: 'Kekhawatiran Ibu', href: '#masalah' },
+    { label: 'Masalah Karir', href: '#masalah' },
     { label: 'Fitur', href: '#fitur' },
     { label: 'Harga', href: '#pricing' },
     { label: 'FAQ', href: '#faq' }
@@ -35,15 +35,23 @@ const LandingIbu = () => {
 
       {/* ══ HERO ══ */}
       <section className="hero">
-        <div className="badge">Hadiah Terbaik Untuk Anak Ibu</div>
-        <p className="hero-eyebrow">Pernikahan anak Ibu pantas dipersiapkan dengan sempurna</p>
+        <div className="badge">Untuk Wanita Karir yang Mau Nikah</div>
+        <p className="hero-eyebrow">Kerja 9-to-5, rapat back-to-back — tapi persiapan nikah tidak bisa nunggu</p>
         <h1 className="hero-title">
-          Pastikan Pernikahan <em>Anak Ibu Sempurna</em><br />& Tanpa Drama Yang Menyakitkan
+          Kerja Full Time.<br /><em>Persiapan Nikah</em> Tetap<br />Zero Chaos, Zero Panik.
         </h1>
         <p className="hero-hook">
-          "Ibu ingin yang terbaik untuk hari besar anak Ibu. Biarkan NIKAH RAPI membantu mengontrol setiap detail, agar Ibu bisa fokus menikmati momen bahagia tanpa pusing urusan teknis."
+          "Kamu berhak punya pernikahan yang indah — tanpa harus mengorbankan performa kerja atau tidur malammu untuk ngurusin semuanya sendirian."
         </p>
-        
+        <p className="hero-title-sub">
+          Semua persiapan pernikahan — terkontrol rapi dalam 1 platform. Cukup isi datanya saat lunch break, sistem yang bekerja.
+        </p>
+        <div className="drama-tags">
+          <span className="drama-tag">⏰ Deadline Menumpuk</span>
+          <span className="drama-tag">📱 Data Tersebar</span>
+          <span className="drama-tag">😤 Koordinasi Pasangan Susah</span>
+        </div>
+
         <div className="product-showcase">
           <div className="showcase-glow"></div>
           <div className="float-badge float-badge-top">
@@ -63,10 +71,10 @@ const LandingIbu = () => {
           <div className="browser-frame">
             <div className="browser-bar">
               <div className="browser-dots"><div className="browser-dot" style={{background:'#ff5f57'}}></div><div className="browser-dot" style={{background:'#febc2e'}}></div><div className="browser-dot" style={{background:'#28c840'}}></div></div>
-              <div className="browser-url">nikahrapi.online/dashboard</div>
+              <div className="browser-url">app.nikahrapi.online ✦</div>
             </div>
             <div className="preview-stage on">
-              <img src="/landing-assets/dashboard.png" alt="Dashboard" />
+              <img src="/landing-assets/dashboard.png" alt="Dashboard NIKAH RAPI" width="900" height="500" />
             </div>
           </div>
         </div>
@@ -78,28 +86,38 @@ const LandingIbu = () => {
             <div className="price-save">HEMAT 63%</div>
           </div>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '20px' }}>
-            <a href={checkoutUrl} className="btn-primary">💍 Hadiahkan Untuk Anak Ibu</a>
+            <a href={checkoutUrl} className="btn-primary">⚡ Dapatkan NIKAH RAPI Sekarang</a>
             <button onClick={() => navigate('/demo')} className="btn-secondary">
-              👁️ Lihat Simulasi App
+              👁️ Coba Simulasi App
             </button>
           </div>
           <div className="cta-notes">
-            <div className="cta-note-item">✓ Bisa diakses Ibu & Anak</div>
-            <div className="cta-note-item">✓ Data aman di Cloud</div>
-            <div className="cta-note-item">✓ Langsung pakai</div>
+            <div className="cta-note-item">✓ Garansi 7 hari</div>
+            <div className="cta-note-item">✓ Akses instan via WA</div>
+            <div className="cta-note-item">✓ Bisa dari HP saat di kantor</div>
           </div>
+        </div>
+
+        <div className="social-proof-bar">
+          <div className="sp-avatars">
+            <div className="sp-avatar" style={{ background: 'linear-gradient(135deg,#E8C4B8,#D4A090)' }}>🌸</div>
+            <div className="sp-avatar" style={{ background: 'linear-gradient(135deg,#C4857A,#8B5E6A)' }}>💼</div>
+            <div className="sp-avatar" style={{ background: 'linear-gradient(135deg,#C9A96E,#E8D5B0)' }}>👩‍💻</div>
+          </div>
+          <div className="stars">★★★★★</div>
+          <span>Dipercaya wanita karir Indonesia</span>
         </div>
       </section>
 
-      {/* ══ DRAMA (IBU VERSION) ══ */}
+      {/* ══ DRAMA (KARIR VERSION) ══ */}
       <section className="drama-section" id="masalah">
-        <p className="section-eyebrow reveal">Kekhawatiran yang Ibu rasakan...</p>
-        <h2 className="section-title reveal">Jangan Biarkan Persiapan Nikah<br/><em>Bikin Ibu Stress & Kelelahan</em></h2>
+        <p className="section-eyebrow reveal">Terlalu familiar buat kamu...</p>
+        <h2 className="section-title reveal">Jangan Biarkan Persiapan Nikah<br/><em>Mengganggu Karir & Waktu Istirahatmu</em></h2>
         <div className="drama-grid">
           {[
-            { icon: '😰', title: 'Takut Ada Yang Terlewat', desc: 'Daftar undangan, katering, sampai kain seragam keluarga. Terlalu banyak detail yang bikin Ibu susah tidur.', scenario: '"Aduh, kain seragam keluarganya udah dipesan belum ya? Siapa yang ngurusin?"' },
-            { icon: '💰', title: 'Anggaran Tidak Terkontrol', desc: 'Pengeluaran tak terduga yang bikin kaget di akhir. Ibu ingin semua transparan dan terencana sejak awal.', scenario: '"Kok budget-nya tiba-tiba bengkak? Kemarin katanya cukup..."' },
-            { icon: '📋', title: 'Koordinasi Jarak Jauh', desc: 'Anak di kota lain, Ibu di kampung. Susah memantau sudah sampai mana persiapan. Ingin semua bisa dilihat dari HP.', scenario: '"Nak, seserahan-nya udah lengkap belum? Ibu khawatir ada yang kurang."' }
+            { icon: '⏰', title: 'Deadline Menumpuk', desc: 'Hectic di kantor ditambah ribuan detail pernikahan yang belum tuntas. Kamu butuh sistem yang bekerja otomatis bahkan saat kamu rapat.', scenario: '"Meeting jam 3, tapi otak masih mikirin DP katering udah dibayar belum."' },
+            { icon: '📱', title: 'Data Tersebar Kemana-mana', desc: 'Vendor di WA, budget di Excel laptop kantor, seserahan di notes HP. Semua berantakan dan rawan ada yang terlewat.', scenario: '"File Excel budget-nya di laptop kantor, sekarang lagi di rumah. Gimana cek?"' },
+            { icon: '😤', title: 'Koordinasi Pasangan Susah', desc: 'Capek rapat di kantor, masih harus debat sama pasangan soal hal teknis. Ingin satu tempat transparan buat berdua.', scenario: '"Udah capek kerja, pulang-pulang masih ribut soal vendor mana yang dipilih."' }
           ].map((item, i) => (
             <div key={i} className="drama-card reveal">
               <span className="drama-icon">{item.icon}</span>
@@ -109,27 +127,27 @@ const LandingIbu = () => {
             </div>
           ))}
         </div>
-        <p className="drama-closer reveal">"Ibu berhak menikmati momen bahagia — bukan dihantui kekhawatiran yang tak berujung."</p>
+        <p className="drama-closer reveal">"Karirmu sudah susah payah dibangun. Jangan sampai persiapan nikah merusaknya."</p>
       </section>
 
       {/* ══ SOLUTION ══ */}
       <section className="solution-section" id="fitur">
         <div className="solution-inner">
           <div className="solution-left">
-            <p className="section-eyebrow reveal" style={{ color: 'var(--blush)' }}>Solusi yang Ibu butuhkan</p>
-            <h2 className="section-title reveal">Satu platform.<br />Semua kekhawatiran<br />bisa teratasi.</h2>
+            <p className="section-eyebrow reveal" style={{ color: 'var(--blush)' }}>Solusi yang kamu butuhkan</p>
+            <h2 className="section-title reveal">Satu platform.<br />Kerja tetap fokus.<br />Nikah tetap rapi.</h2>
             <p className="reveal">
-              NIKAH RAPI dirancang khusus untuk keluarga calon pengantin Indonesia — 22+ modul Web App terintegrasi. 
-              Ibu bisa ikut memantau progress persiapan nikah dari HP Ibu, tanpa harus repot bertanya berulang kali.
+              NIKAH RAPI dirancang untuk kamu yang sibuk — 22+ modul Web App terintegrasi yang bisa diakses dari HP. 
+              Update vendor saat lunch break, ceklis seserahan saat di taksi. Input sekali, semua terupdate otomatis.
             </p>
             <a href="#pricing" className="btn-secondary reveal" style={{ background: 'white', color: 'var(--mauve)', border: 'none' }}>Lihat Harga & Paket →</a>
           </div>
           <div className="feature-cards">
             {[
-              { icon: '💍', title: 'Seserahan Tracker', tag: 'Eksklusif', desc: 'Catat semua item seserahan, harga, dan status pembelian. Ibu bisa pantau langsung dari HP.' },
-              { icon: '🎁', title: 'Kado & Angpao Tracker', tag: 'Eksklusif', desc: 'Rekap siapa beri apa, nominal angpao, status ucapan terima kasih. Tidak ada yang terlewat.' },
-              { icon: '💰', title: 'Budget Planner Otomatis', desc: 'Transparan dan real-time. Ibu bisa tahu persis total pengeluaran vs rencana awal.' },
-              { icon: '🏢', title: 'Vendor Manager Lengkap', desc: 'Semua kontak, kontrak, dan status pembayaran vendor — terpusat di satu tempat aman.' }
+              { icon: '💍', title: 'Seserahan Tracker', tag: 'Eksklusif', desc: 'Catat semua item, harga, status beli. Auto-hitung total. Update kapan saja dari HP.' },
+              { icon: '🎁', title: 'Kado & Angpao Tracker', tag: 'Eksklusif', desc: 'Rekap siapa beri apa, nominal angpao, status follow up. Tidak ada yang terlewat.' },
+              { icon: '💰', title: 'Budget Planner Otomatis', desc: 'Rencana vs realisasi terupdate real-time. Tahu persis kategori mana yang overbudget.' },
+              { icon: '🏢', title: 'Vendor Manager Lengkap', desc: 'Kontak, kontrak, DP & pelunasan. Semua vendor terpantau tanpa harus scroll chat WA.' }
             ].map((feat, i) => (
               <div key={i} className="feat-card reveal">
                 <div className="feat-icon">{feat.icon}</div>
@@ -158,7 +176,7 @@ const LandingIbu = () => {
                 ['Dashboard visual progress', false, true],
                 ['Disesuaikan adat Indonesia', false, true],
                 ['22+ modul terintegrasi', false, true],
-                ['Akses multi-device keluarga', false, true],
+                ['Akses PWA & Offline Support', false, true],
                 ['Export & Import Data', false, true],
                 ['Honeymoon Planner', false, true]
               ].map((row, i) => (
@@ -169,15 +187,15 @@ const LandingIbu = () => {
         </div>
       </section>
 
-      {/* ══ TESTIMONI IBU ══ */}
+      {/* ══ TESTIMONI KARIR ══ */}
       <section className="testi-section">
-        <p className="section-eyebrow reveal">Dari Ibu-Ibu Calon Besan</p>
-        <h2 className="section-title reveal">Ibu Lain Sudah <em>Merasakan Manfaatnya</em></h2>
+        <p className="section-eyebrow reveal">Dari Wanita Karir Seperti Kamu</p>
+        <h2 className="section-title reveal">Mereka Berhasil <em>Nikah Tanpa Resign</em></h2>
         <div className="testi-photo-grid">
           {[
-            { emoji: '👩', bg: 'linear-gradient(135deg,#C9A96E,#8B5E6A)', city: 'Surabaya', text: '"Anak saya kerja di Jakarta, saya di Surabaya. Sejak pakai NIKAH RAPI, semua list seserahan dan keperluan akad bisa saya pantau dari rumah. Tinggal bagi tugas, semua tercatat rapi."', name: 'Bunda Sri W.', role: 'Ibu Calon Pengantin · Okt 2026' },
-            { emoji: '🌸', bg: 'linear-gradient(135deg,#E8C4B8,#C4857A)', city: 'Yogyakarta', text: '"Saya senang sekali ada aplikasi ini. Budget pernikahan anak saya jadi terkontrol, dan saya bisa bantu awasi tanpa harus ikut campur berlebihan. Terima kasih NIKAH RAPI!"', name: 'Ibu Siti H.', role: 'Ibu Calon Pengantin · Des 2026' },
-            { emoji: '💐', bg: 'linear-gradient(135deg,#8B5E6A,#C9A96E)', city: 'Bekasi', text: '"Awalnya skeptis, tapi ternyata gampang banget dipakainya. Sekarang saya dan anak saya bisa koordinasi persiapan nikah tanpa harus telpon-telponan tiap malam."', name: 'Mama Linda', role: 'Ibu Calon Pengantin · Aug 2026' }
+            { emoji: '💼', bg: 'linear-gradient(135deg,#7A8C7E,#8B5E6A)', city: 'Tangerang', text: '"Kerja kantoran 9-to-5, gak ada waktu duduk depan laptop buat planning. Untungnya NIKAH RAPI bisa diakses dari HP. Update vendor pas lunch break, ceklis seserahan saat di taksi."', name: 'Maya S.', role: 'Marketing Manager · Des 2026' },
+            { emoji: '👩‍💻', bg: 'linear-gradient(135deg,#E8C4B8,#8B5E6A)', city: 'Jakarta', text: '"Saya remote worker, suami di kantor. NIKAH RAPI bikin kami bisa update persiapan masing-masing tanpa harus video call tiap malam. Dashboard-nya jelas banget, progress keliatan semua."', name: 'Dina K.', role: 'Software Engineer · Sept 2026' },
+            { emoji: '🌸', bg: 'linear-gradient(135deg,#C9A96E,#C4857A)', city: 'Bandung', text: '"Awalnya mau hire WO karena gak punya waktu. Tapi setelah coba NIKAH RAPI, ternyata bisa self-planned! Hematnya lumayan banget. Budget lebih terkontrol, dan gak perlu ambil cuti banyak."', name: 'Rina A.', role: 'Akuntan · Nov 2026' }
           ].map((t, i) => (
             <div key={i} className="testi-photo-card reveal">
               <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
@@ -200,8 +218,8 @@ const LandingIbu = () => {
 
       {/* ══ PRICING ══ */}
       <section className="pricing-section" id="pricing">
-        <p className="section-eyebrow reveal">Hadiah terbaik untuk ketenangan anak Ibu</p>
-        <h2 className="section-title reveal">Berikan NIKAH RAPI Sekarang</h2>
+        <p className="section-eyebrow reveal">Investasi terkecil — hemat waktu & tenaga</p>
+        <h2 className="section-title reveal">Dapatkan NIKAH RAPI Sekarang</h2>
         <div className="pricing-card reveal">
           <div className="pricing-card-badge">✦ Akses Premium Seumur Hidup</div>
           <div className="price-hero"><div className="price-big"><sup>Rp</sup>99.000</div></div>
@@ -209,14 +227,14 @@ const LandingIbu = () => {
           <div className="price-save-badge">🔥 Hemat 63% — Harga Promo Terbatas!</div>
           <ul className="include-list">
             <li>Aplikasi Web NIKAH RAPI — 22+ modul lengkap & terintegrasi</li>
-            <li>Seserahan Tracker eksklusif — pantau dari HP Ibu!</li>
+            <li>Seserahan Tracker eksklusif — tidak ada di produk lain!</li>
             <li>Kado & Angpao Tracker — follow up terima kasih mudah</li>
-            <li>Dashboard otomatis update — lihat progress anak kapan saja</li>
+            <li>Dashboard otomatis update — cek progress dari HP saat di kantor</li>
             <li>Update akses gratis seumur hidup</li>
-            <li>Akses multi-device (HP Ibu & HP Anak bisa bareng)</li>
+            <li>Akses multi-device (kamu & pasangan bisa bareng)</li>
           </ul>
           <a href={checkoutUrl} className="btn-primary" style={{ width: '100%', justifyContent: 'center', fontSize: '15px', padding: '22px' }}>
-            💍 Hadiahkan Sekarang — Rp 99.000
+            ⚡ Dapatkan Sekarang — Rp 99.000
           </a>
           <p className="urgency-note">⏰ Harga segera naik ke Rp 299.000 · Garansi 7 hari · Akses langsung via WA</p>
         </div>
@@ -228,10 +246,11 @@ const LandingIbu = () => {
         <h2 className="section-title reveal">FAQ</h2>
         <div className="faq-inner">
           {[
-            { q: 'Saya gaptek, bisa pakai tidak?', a: 'Tidak perlu jago teknologi! NIKAH RAPI dirancang agar tinggal isi data — semua kalkulasi dan dashboard berjalan otomatis. Kalau Ibu bisa pakai WhatsApp, Ibu sudah bisa pakai ini.' },
-            { q: 'Anak saya juga bisa akses?', a: 'Bisa! Ibu dan anak bisa buka aplikasinya di HP masing-masing dan datanya akan tersinkronisasi otomatis.' },
-            { q: 'Sekali bayar atau berlangganan?', a: 'Sekali bayar untuk akses seumur hidup. Tidak ada biaya bulanan.' },
-            { q: 'Ada garansi uang kembali?', a: 'Ada garansi 7 hari. Jika merasa tidak sesuai, kami kembalikan 100% tanpa pertanyaan.' }
+            { q: 'Saya sangat sibuk, butuh waktu lama untuk set up?', a: 'Tidak! NIKAH RAPI langsung bisa dipakai setelah login. Tidak perlu setup rumit — tinggal isi data sesuai kebutuhan, sisanya otomatis.' },
+            { q: 'Bisa diakses dari HP saat di kantor?', a: 'Tentu! NIKAH RAPI adalah Web App yang responsive. Buka browser di HP, login, dan langsung bisa update kapan saja — bahkan saat lunch break.' },
+            { q: 'Pasangan saya juga bisa akses?', a: 'Bisa! Kamu dan pasangan bisa buka aplikasinya di HP masing-masing dan datanya akan tersinkronisasi otomatis.' },
+            { q: 'Sekali bayar atau berlangganan?', a: 'Sekali bayar untuk akses seumur hidup. Tidak ada biaya bulanan — hemat waktu dan uang.' },
+            { q: 'Ada garansi uang kembali?', a: 'Ada garansi 7 hari. Jika tidak sesuai deskripsi, hubungi kami untuk refund penuh tanpa ribet.' }
           ].map((item, i) => (
             <div key={i} className={`faq-item reveal ${openFaq === i ? 'open' : ''}`} onClick={() => toggleFaq(i)}>
               <div className="faq-q">{item.q} <span className="faq-arrow">{openFaq === i ? '−' : '+'}</span></div>
@@ -243,20 +262,20 @@ const LandingIbu = () => {
 
       {/* ══ FINAL CTA ══ */}
       <section className="final-cta">
-        <p className="section-eyebrow reveal" style={{ color: 'var(--blush)' }}>Sudah siap, Bu?</p>
-        <h2 className="section-title reveal" style={{ color: 'white' }}>Bantu wujudkan pernikahan anak Ibu<br />dengan lebih <em style={{ color: '#E8D5B0' }}>tenang & rapi</em></h2>
-        <p className="reveal">Ratusan detail pernikahan dalam satu platform. Supaya hari terbaik mereka benar-benar terasa seperti hari terbaik.</p>
+        <p className="section-eyebrow reveal" style={{ color: 'var(--blush)' }}>Sudah siap?</p>
+        <h2 className="section-title reveal" style={{ color: 'white' }}>Mulai rencanakan pernikahanmu<br />dengan lebih <em style={{ color: '#E8D5B0' }}>tenang & efisien</em></h2>
+        <p className="reveal">Karirmu tetap cemerlang. Pernikahanmu tetap sempurna. Semua terkontrol dalam satu platform.</p>
         <a href={checkoutUrl} className="btn-secondary reveal" style={{ margin: '0 auto', background: 'white', color: 'var(--mauve)', border: 'none' }}>
-          💍 Hadiahkan NIKAH RAPI Untuk Anak Ibu
+          ⚡ Ambil Sekarang — Nikah Tanpa Chaos
         </a>
       </section>
 
       <footer style={{ background: '#2C2218', padding: '40px 80px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white', flexWrap: 'wrap', gap: '16px' }}>
         <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', letterSpacing: '2px' }}>NIKAH RAPI ✦</div>
-        <div style={{ fontSize: '12px', opacity: 0.4 }}>© 2025 NIKAH RAPI · Untuk Ibu & Keluarga Indonesia 🤍</div>
+        <div style={{ fontSize: '12px', opacity: 0.4 }}>© 2025 NIKAH RAPI · Untuk Wanita Karir Indonesia 🤍</div>
       </footer>
     </div>
   );
 };
 
-export default LandingIbu;
+export default LandingKarir;
