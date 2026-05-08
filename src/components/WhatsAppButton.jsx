@@ -7,6 +7,11 @@ export default function WhatsAppButton() {
       href="https://wa.me/6289627314790" 
       target="_blank" 
       rel="noopener noreferrer" 
+      onClick={() => {
+        if (window.fbq) {
+          window.fbq('track', 'Contact', { content_name: 'WhatsApp Support' });
+        }
+      }}
       className="fixed bottom-24 lg:bottom-8 right-6 lg:right-8 z-50 flex items-center justify-center gap-2 bg-[#25D366] text-white font-semibold px-4 py-3 lg:px-5 lg:py-3.5 rounded-full shadow-[0_4px_20px_rgba(37,211,102,0.4)] hover:bg-[#1ebe57] hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_25px_rgba(37,211,102,0.5)] transition-all duration-300 group"
     >
       <svg 

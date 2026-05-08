@@ -96,7 +96,17 @@ const LandingPria = () => {
             <div className="price-save">HEMAT 63%</div>
           </div>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '20px' }}>
-            <a href={checkoutUrl} className="btn-primary">⚡ Ambil Kendali Budget Sekarang →</a>
+            <a 
+              href={checkoutUrl} 
+              className="btn-primary"
+              onClick={() => {
+                if (window.fbq) {
+                  window.fbq('track', 'AddToCart', { content_name: 'Nikah Rapi Pria Package', value: 99000, currency: 'IDR' });
+                }
+              }}
+            >
+              ⚡ Ambil Kendali Budget Sekarang →
+            </a>
             <button onClick={() => navigate('/demo')} className="btn-secondary">
               📊 Lihat Cara Kerjanya
             </button>
@@ -265,7 +275,16 @@ const LandingPria = () => {
             <li>Update akses gratis seumur hidup</li>
             <li>Akses multi-device (Bisa dibuka di HP kamu & pasangan)</li>
           </ul>
-          <a href={checkoutUrl} className="btn-primary" style={{ width: '100%', justifyContent: 'center', fontSize: '15px', padding: '22px' }}>
+          <a 
+            href={checkoutUrl} 
+            className="btn-primary" 
+            style={{ width: '100%', justifyContent: 'center', fontSize: '15px', padding: '22px' }}
+            onClick={() => {
+              if (window.fbq) {
+                window.fbq('track', 'AddToCart', { content_name: 'Nikah Rapi Pria Package', value: 99000, currency: 'IDR' });
+              }
+            }}
+          >
             ⚡ Amankan Promo Sekarang — Rp 99.000
           </a>
           <p className="urgency-note">⏰ Harga segera naik ke Rp 299.000 · Garansi 7 hari · Akses langsung via WA</p>
