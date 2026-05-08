@@ -94,7 +94,7 @@ export default function AuthCallback() {
             {/* Confetti dots replacement with CSS shapes */}
             <div className="absolute inset-0 pointer-events-none">
                 {[...Array(12)].map((_, i) => (
-                    <div key={i} 
+                    <div key={i}
                         className="absolute rounded-full opacity-60 animate-fade-in"
                         style={{
                             width: 8 + (i % 3) * 4,
@@ -103,7 +103,7 @@ export default function AuthCallback() {
                             top: `${10 + (i * 7) % 80}%`,
                             left: `${5 + (i * 13) % 90}%`,
                             animationDelay: `${i * 0.1}s`
-                        }} 
+                        }}
                     />
                 ))}
             </div>
@@ -119,7 +119,7 @@ export default function AuthCallback() {
 
                 <h1 className="font-playfair text-3xl text-brown mb-2">Selamat Datang! 🎉</h1>
                 <p className="text-sm text-brown-muted mb-6">Akun kamu berhasil diaktivasi.</p>
-                
+
                 {userData?.email && (
                     <p className="text-sm font-semibold text-rose-gold mb-8">{userData.email}</p>
                 )}

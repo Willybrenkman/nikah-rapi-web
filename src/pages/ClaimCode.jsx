@@ -15,40 +15,40 @@ export default function ClaimCode() {
         e.preventDefault()
         if (!code) { toast.error('Masukkan kode akses dulu!'); return }
         if (!user) { toast.error('Sesi berakhir, silakan login ulang.'); return }
-        
+
         setLoading(true)
-        
+
         // Cek apakah kode valid dan belum dipakai
         const { data, error: fetchError } = await supabase
             .from('access_codes')
             .select('*')
             .eq('code', code)
             .single()
-            
+
         if (fetchError || !data) {
             toast.error('Kode tidak valid atau tidak ditemukan!')
             setLoading(false)
             return
         }
-        
+
         if (data.is_used) {
             toast.error('Kode voucher ini sudah pernah dipakai!')
             setLoading(false)
             return
         }
-        
+
         // Update kode menjadi sudah dipakai oleh user ini
         const { error: updateError } = await supabase
             .from('access_codes')
             .update({ is_used: true, used_by: user.id })
             .eq('id', data.id)
-            
+
         if (updateError) {
             toast.error('Terjadi kesalahan. Silakan coba lagi.')
             setLoading(false)
             return
         }
-        
+
         toast.success('Kode berhasil diklaim! Selamat menggunakan Nikah Rapi 💍')
         await refreshAccess()
         navigate('/')
@@ -110,7 +110,7 @@ export default function ClaimCode() {
                     >
                         {loading ? 'Memvalidasi...' : 'Klaim Kode Sekarang'}
                     </button>
-                    
+
                     <button
                         type="button"
                         onClick={() => supabase.auth.signOut()}

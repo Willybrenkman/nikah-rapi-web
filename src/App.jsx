@@ -29,6 +29,12 @@ import Dekorasi from './pages/Dekorasi'
 import Katering from './pages/Katering'
 import Undangan from './pages/Undangan'
 import MUABusana from './pages/MUABusana'
+
+// Landing pages
+import LandingMain from './pages/landing/LandingMain'
+import LandingIbu from './pages/landing/LandingIbu'
+import LandingPria from './pages/landing/LandingPria'
+import Demo from './pages/Demo'
 import FotoVideo from './pages/FotoVideo'
 import CincinMahar from './pages/CincinMahar'
 import Honeymoon from './pages/Honeymoon'
@@ -100,12 +106,16 @@ export default function App() {
       <WhatsAppButton />
       <Routes>
         {/* ── Public ── */}
+        <Route path="/" element={<LandingMain />} />
+        <Route path="/untuk-ibu" element={<LandingIbu />} />
+        <Route path="/untuk-pria" element={<LandingPria />} />
+        <Route path="/demo" element={<Demo />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
-        
+
         {/* ── Claim Code (requires login but NO access yet) ── */}
         <Route path="/claim-code" element={<CodeGuard><ClaimCode /></CodeGuard>} />
 
@@ -113,7 +123,7 @@ export default function App() {
         <Route path="/onboarding" element={<Guard><OnBoarding /></Guard>} />
 
         {/* ── Protected app ── */}
-        <Route path="/" element={<Guard><Layout /></Guard>}>
+        <Route path="/dashboard" element={<Guard><Layout /></Guard>}>
           <Route index element={<Dashboard />} />
           <Route path="budget" element={<BudgetPlanner />} />
           <Route path="seserahan" element={<SeserahanTracker />} />

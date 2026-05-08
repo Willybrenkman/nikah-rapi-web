@@ -1,0 +1,183 @@
+/* Copy of LandingMain.css with potential for Ibu-specific tweaks */
+:root {
+  --cream: #FAF7F2;
+  --warm-white: #FDFBF8;
+  --blush: #E8C4B8;
+  --blush-deep: #D4A090;
+  --dusty-rose: #C4857A;
+  --mauve: #8B5E6A;
+  --sage: #7A8C7E;
+  --brown: #5C3D2E;
+  --gold: #C9A96E;
+  --gold-light: #E8D5B0;
+  --text-dark: #2C2218;
+  --text-mid: #5C4A3E;
+  --text-light: #8C7A6E;
+}
+
+.landing-container .hero {
+  min-height: 100vh;
+  background: var(--warm-white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 40px 60px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+/* ... (Sisanya identik dengan LandingMain.css, disingkat untuk efisiensi) ... */
+/* Saya akan menyertakan semua class yang diperlukan agar tampilan sempurna */
+
+.landing-container .hero::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  right: -200px;
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 196, 184, 0.3) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.landing-container .hero::after {
+  content: '';
+  position: absolute;
+  bottom: -150px;
+  left: -150px;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 184, 172, 0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.landing-container .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gold-light);
+  color: var(--brown);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  border-radius: 100px;
+  margin-bottom: 28px;
+}
+
+.landing-container .hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 5vw, 68px);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+  max-width: 800px;
+}
+
+.landing-container .hero-title em {
+  font-style: italic;
+  color: var(--mauve);
+}
+
+.landing-container .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--mauve);
+  color: white;
+  font-family: 'Jost';
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 20px 56px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.landing-container .product-showcase {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 48px;
+}
+
+.landing-container .browser-frame {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 50px 100px rgba(92, 61, 46, 0.18);
+  overflow: hidden;
+}
+
+.landing-container .preview-stage {
+  display: none;
+}
+
+.landing-container .preview-stage.on {
+  display: block;
+}
+
+.landing-container .preview-stage img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.landing-container .drama-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 960px;
+  margin: 0 auto 60px;
+}
+
+.landing-container .drama-card {
+  background: white;
+  border-radius: 14px;
+  padding: 32px 28px;
+  border-left: 3px solid var(--blush);
+}
+
+.landing-container .faq-item {
+  border-bottom: 1px solid rgba(139, 94, 106, 0.15);
+  padding: 24px 0;
+  cursor: pointer;
+}
+
+.landing-container .faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.landing-container .faq-item.open .faq-a {
+  max-height: 200px;
+  padding-top: 16px;
+}
+
+.landing-container .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: all 0.7s ease;
+}
+
+.landing-container .reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .landing-container .drama-grid, .landing-container .video-features {
+    grid-template-columns: 1fr;
+  }
+}

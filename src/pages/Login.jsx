@@ -42,7 +42,7 @@ export default function Login() {
         e.preventDefault()
         if (!email) { toast.error('Isi email dulu!'); return }
         setLoading(true)
-        const { error } = await supabase.auth.signInWithOtp({ 
+        const { error } = await supabase.auth.signInWithOtp({
             email,
             options: {
                 emailRedirectTo: `${window.location.origin}/auth/callback`
@@ -84,7 +84,7 @@ export default function Login() {
             <div style={bg} /><div style={floral} />
             <div className="animate-fade-up auth-card" style={{ zIndex: 1, position: 'relative' }}>
                 <div style={{ textAlign: 'center', marginBottom: 8 }}>
-                    <h1 
+                    <h1
                         onClick={() => setClickCount(c => c + 1)}
                         style={{ fontFamily: "'Playfair Display',serif", fontSize: 32, color: '#C9956C', letterSpacing: 2, cursor: 'default', userSelect: 'none' }}
                     >
@@ -115,8 +115,8 @@ export default function Login() {
                     {clickCount >= 7 && (
                         <div className="animate-fade-in" style={{ marginTop: 24, padding: 16, background: '#f8f9fa', borderRadius: 12, border: '1px dashed #ccc' }}>
                             <p style={{ fontSize: 12, color: '#666', marginBottom: 8, textAlign: 'center' }}>[Dev Mode] Bypass Error 429</p>
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 disabled={loading}
                                 onClick={handleDevLogin}
                                 style={{ ...btn, width: '100%', background: '#2C1810', fontSize: 13 }}
