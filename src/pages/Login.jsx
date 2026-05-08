@@ -1,3 +1,4 @@
+// src/pages/Login.jsx
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
@@ -20,6 +21,17 @@ export default function Login() {
         }
     }, [user, navigate])
 
+    // ✅ FORCE UPDATE PWA: Hapus service worker lama saat di halaman login
+    useEffect(() => {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister()
+                }
+            })
+        }
+    }, [])
+
     useEffect(() => {
         const params = new URLSearchParams(location.search)
         if (params.get('reason') === 'timeout') {
@@ -35,19 +47,46 @@ export default function Login() {
         if (!email || !password) { toast.error('Isi email dan password!'); return }
         setLoading(true)
 
-        const { error } = await supabase.auth.signInWithPassword({ email, password })
+        try {
+            const { data: { session }, error } = await supabase.auth.signInWithPassword({ email, password })
 
-        if (error) {
-            if (error.message.includes('Invalid login')) {
-                toast.error('Email atau password salah!')
-            } else {
-                toast.error('Gagal masuk. Silakan coba lagi.')
+            if (error) {
+                if (error.message.includes('Invalid login')) {
+                    toast.error('Email atau password salah!')
+                } else {
+                    toast.error('Gagal masuk. Silakan coba lagi.')
+                }
+                setLoading(false)
+                return
             }
-        } else {
-            toast.success('Berhasil masuk! 💍')
-            navigate('/dashboard')
+
+            if (session?.user) {
+                toast.success('Berhasil masuk! 💍')
+                
+                // ✅ Cek profile sebelum redirect untuk mencegah flicker
+                console.log('[Login] Checking wedding profile post-auth...')
+                const { data: profile, error: profileError } = await supabase
+                    .from('wedding_profiles')
+                    .select('id')
+                    .eq('user_id', session.user.id)
+                    .single()
+
+                if (profileError && profileError.code === 'PGRST116') {
+                    // Profile memang belum ada
+                    console.log('[Login] No profile found, sending to onboarding')
+                    navigate('/onboarding', { replace: true })
+                } else {
+                    // Profile ada, atau error lain (biar dashboard yang handle retries)
+                    console.log('[Login] Profile exists or fetch failed, sending to dashboard')
+                    navigate('/dashboard', { replace: true })
+                }
+            }
+        } catch (err) {
+            console.error('[Login] Unexpected error:', err)
+            toast.error('Terjadi kesalahan sistem.')
+        } finally {
+            setLoading(false)
         }
-        setLoading(false)
     }
 
     return (
