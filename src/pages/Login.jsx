@@ -11,7 +11,14 @@ export default function Login() {
     const [clickCount, setClickCount] = useState(0)
     const location = useLocation()
     const navigate = useNavigate()
-    const { user } = useAuth()
+    const { user, hasAccess } = useAuth()
+
+    // ✅ FIX: Jika user sudah login, jangan tampilkan form login — langsung redirect
+    useEffect(() => {
+        if (user) {
+            navigate(hasAccess ? '/dashboard' : '/claim-code', { replace: true })
+        }
+    }, [user, hasAccess, navigate])
 
     const handleDevLogin = async () => {
         setLoading(true)
@@ -23,7 +30,7 @@ export default function Login() {
             toast.error('Gagal login dev: Pastikan akun admin@nikahrapi.com sudah dibuat di Supabase!')
         } else {
             toast.success('Berhasil masuk mode Dev! 🚀')
-            navigate('/')
+            navigate('/dashboard')
         }
         setLoading(false)
     }

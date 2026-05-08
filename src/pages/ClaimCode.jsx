@@ -51,7 +51,7 @@ export default function ClaimCode() {
 
         toast.success('Kode berhasil diklaim! Selamat menggunakan Nikah Rapi 💍')
         await refreshAccess()
-        navigate('/')
+        navigate('/dashboard')
     }
 
     return (

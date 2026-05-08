@@ -9,51 +9,115 @@ export default function AuthCallback() {
     const [userData, setUserData] = useState(null)
 
     useEffect(() => {
-        handleCallback()
-    }, [])
+        let mounted = true
+        let timeoutId = null
 
-    const handleCallback = async () => {
-        try {
-            // Supabase otomatis proses token dari URL hash
-            const { data: { session }, error } = await supabase.auth.getSession()
-
-            if (error || !session) {
-                // Coba exchange code jika ada
+        const handleCallback = async () => {
+            try {
+                // ── STEP 1: Coba exchange code (PKCE flow) jika ada di URL ──
                 const params = new URLSearchParams(window.location.search)
                 const code = params.get('code')
 
                 if (code) {
                     const { data, error: exchErr } = await supabase.auth.exchangeCodeForSession(code)
-                    if (exchErr || !data.session) { setStatus('error'); return }
-                    setUserData(data.session.user)
-                } else {
-                    setStatus('error'); return
+                    if (exchErr || !data?.session) {
+                        console.error('Exchange code error:', exchErr)
+                        if (mounted) setStatus('error')
+                        return
+                    }
+                    // Code exchange berhasil, session sudah tersimpan
+                    if (mounted) {
+                        setUserData(data.session.user)
+                        await handlePostAuth(data.session.user, mounted)
+                    }
+                    return
                 }
-            } else {
-                setUserData(session.user)
-            }
 
-            // Cek apakah sudah punya wedding profile
-            const { data: { user } } = await supabase.auth.getUser()
-            if (user) {
+                // ── STEP 2: Untuk magic link (hash fragment), tunggu Supabase proses token ──
+                // Supabase detectSessionInUrl:true akan parse hash secara async.
+                // Kita HARUS menunggu event SIGNED_IN, bukan langsung getSession().
+
+                // Cek dulu apakah sudah ada session (mungkin token sudah diproses)
+                const { data: { session } } = await supabase.auth.getSession()
+
+                if (session?.user) {
+                    if (mounted) {
+                        setUserData(session.user)
+                        await handlePostAuth(session.user, mounted)
+                    }
+                    return
+                }
+
+                // Belum ada session — tunggu onAuthStateChange SIGNED_IN
+                // (terjadi saat Supabase selesai parse hash fragment)
+                const { data: { subscription } } = supabase.auth.onAuthStateChange(
+                    async (event, newSession) => {
+                        if (!mounted) return
+
+                        if (event === 'SIGNED_IN' && newSession?.user) {
+                            subscription.unsubscribe()
+                            clearTimeout(timeoutId)
+                            setUserData(newSession.user)
+                            await handlePostAuth(newSession.user, mounted)
+                        }
+                    }
+                )
+
+                // Safety timeout — jika setelah 10 detik tidak ada SIGNED_IN event
+                timeoutId = setTimeout(() => {
+                    if (mounted) {
+                        subscription.unsubscribe()
+                        setStatus('error')
+                    }
+                }, 10000)
+
+            } catch (err) {
+                console.error('AuthCallback error:', err)
+                if (mounted) setStatus('error')
+            }
+        }
+
+        const handlePostAuth = async (user, isMounted) => {
+            try {
+                // Cek apakah sudah punya wedding profile
                 const { data: profile } = await supabase
                     .from('wedding_profiles')
                     .select('id')
                     .eq('user_id', user.id)
                     .single()
 
+                if (!isMounted) return
+
                 setStatus('success')
 
-                // Redirect ke onboarding jika belum ada profile, ke dashboard jika sudah
+                // ✅ FIX: Redirect ke /dashboard (bukan /) karena / = LandingMain
+                const destination = profile ? '/dashboard' : '/onboarding'
+
                 setTimeout(() => {
-                    navigate(profile ? '/' : '/onboarding', { replace: true })
+                    if (isMounted) {
+                        navigate(destination, { replace: true })
+                    }
                 }, 3500)
+            } catch (err) {
+                console.error('handlePostAuth error:', err)
+                if (isMounted) {
+                    // Tetap sukses meskipun profile check gagal
+                    // User sudah login, biarkan Guard handle redirect
+                    setStatus('success')
+                    setTimeout(() => {
+                        if (isMounted) navigate('/dashboard', { replace: true })
+                    }, 3500)
+                }
             }
-        } catch (err) {
-            console.error('AuthCallback error:', err)
-            setStatus('error')
         }
-    }
+
+        handleCallback()
+
+        return () => {
+            mounted = false
+            if (timeoutId) clearTimeout(timeoutId)
+        }
+    }, [navigate])
 
     // ── LOADING ──────────────────────────────────────────────
     if (status === 'loading') return (
@@ -79,8 +143,8 @@ export default function AuthCallback() {
                     Link konfirmasi sudah kadaluarsa atau tidak valid.<br />
                     Silakan daftar ulang atau minta link baru.
                 </p>
-                <button onClick={() => navigate('/register')} className="btn-rose w-full justify-center py-3">
-                    Kembali ke Daftar
+                <button onClick={() => navigate('/login')} className="btn-rose w-full justify-center py-3">
+                    Kembali ke Login
                 </button>
             </div>
         </div>
@@ -132,14 +196,14 @@ export default function AuthCallback() {
                     <div className="progress-fill" style={{ animation: 'progress-fill 3.5s linear forwards' }} />
                 </div>
 
-                <button onClick={() => navigate('/onboarding', { replace: true })} className="btn-rose w-full justify-center py-3">
-                    Mulai Rencanakan Pernikahan 💍
+                <button onClick={() => navigate('/dashboard', { replace: true })} className="btn-rose w-full justify-center py-3">
+                    Masuk ke Dashboard 💍
                 </button>
 
                 <p className="text-xs text-brown-muted mt-4">
-                    Sudah punya profil?{' '}
-                    <span className="text-rose-gold cursor-pointer font-bold hover:underline" onClick={() => navigate('/')}>
-                        Masuk ke Dashboard
+                    Belum punya profil?{' '}
+                    <span className="text-rose-gold cursor-pointer font-bold hover:underline" onClick={() => navigate('/onboarding', { replace: true })}>
+                        Mulai Setup Profil
                     </span>
                 </p>
             </div>
