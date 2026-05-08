@@ -2,11 +2,11 @@
 import { Link, useLocation } from "react-router-dom";
 
 const NAV_ITEMS = [
-    { to: "/",            icon: "🏠", label: "Utama" },
-    { to: "/budget",     icon: "💰", label: "Anggaran" },
-    { to: "/checklist",  icon: "✅", label: "Tugas" },
-    { to: "/guest-list", icon: "👥", label: "Tamu" },
-    { to: "/pengaturan", icon: "⚙️", label: "Aturan" },
+    { to: "/dashboard",            icon: "🏠", label: "Utama" },
+    { to: "/dashboard/budget",     icon: "💰", label: "Anggaran" },
+    { to: "/dashboard/checklist",  icon: "✅", label: "Tugas" },
+    { to: "/dashboard/guest-list", icon: "👥", label: "Tamu" },
+    { to: "/dashboard/pengaturan", icon: "⚙️", label: "Aturan" },
 ];
 
 export default function BottomNav() {
