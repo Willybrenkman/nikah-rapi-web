@@ -45,6 +45,19 @@ export default function Topbar() {
 
   const handleLogout = async () => {
     await signOut()
+
+    // ✅ Clear semua cache aplikasi
+    localStorage.removeItem('nr_user')
+    localStorage.removeItem('nr_wedding')
+    localStorage.removeItem('theme')
+    sessionStorage.clear()
+
+    // ✅ Clear Service Worker cache (PWA)
+    if ('caches' in window) {
+      const names = await caches.keys()
+      await Promise.all(names.map(name => caches.delete(name)))
+    }
+
     toast.success('Sampai jumpa! 👋')
     navigate('/login')
   }
