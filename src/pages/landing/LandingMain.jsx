@@ -108,17 +108,7 @@ const LandingMain = () => {
             <div className="price-save">HEMAT 63%</div>
           </div>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '20px' }}>
-            <a 
-              href={checkoutUrl} 
-              className="btn-primary"
-              onClick={() => {
-                if (window.fbq) {
-                  window.fbq('track', 'AddToCart', { content_name: 'Nikah Rapi Main Package', value: 99000, currency: 'IDR' });
-                }
-              }}
-            >
-              💍 Mulai Rapikan Pernikahanmu →
-            </a>
+            <a href={checkoutUrl} className="btn-primary">💍 Mulai Rapikan Pernikahanmu →</a>
             <button onClick={() => navigate('/demo')} className="btn-secondary">
               👁️ Coba Demo Dulu (Gratis)
             </button>
@@ -335,16 +325,7 @@ const LandingMain = () => {
             <li>Update akses gratis seumur hidup</li>
             <li>Akses dari mana saja (HP, Tablet, Laptop)</li>
           </ul>
-          <a 
-            href={checkoutUrl} 
-            className="btn-primary" 
-            style={{ width: '100%', justifyContent: 'center', fontSize: '15px', padding: '22px' }}
-            onClick={() => {
-              if (window.fbq) {
-                window.fbq('track', 'AddToCart', { content_name: 'Nikah Rapi Main Package', value: 99000, currency: 'IDR' });
-              }
-            }}
-          >
+          <a href={checkoutUrl} className="btn-primary" style={{ width: '100%', justifyContent: 'center', fontSize: '15px', padding: '22px' }}>
             💍 Dapatkan Sekarang — Rp 99.000
           </a>
           <p className="urgency-note">⏰ Harga segera naik ke Rp 299.000 · Garansi 7 hari · Akses langsung via WA</p>
