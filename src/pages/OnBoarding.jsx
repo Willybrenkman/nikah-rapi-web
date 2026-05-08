@@ -49,7 +49,7 @@ export default function OnBoarding() {
         if (user?.id === 'tester-uid') {
             setTimeout(async () => {
                 toast.success('Profil pernikahan berhasil dibuat (Simulasi)! 🎉')
-                navigate('/', { replace: true })
+                navigate('/dashboard', { replace: true })
                 setSaving(false)
             }, 1000)
             return
@@ -69,7 +69,7 @@ export default function OnBoarding() {
         }
         await refetch()
         toast.success('Profil pernikahan berhasil dibuat! 🎉')
-        navigate('/', { replace: true })
+        navigate('/dashboard', { replace: true })
         setSaving(false)
     }
 
