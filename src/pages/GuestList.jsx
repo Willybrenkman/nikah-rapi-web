@@ -283,16 +283,18 @@ export default function GuestList() {
 
             {/* Filter + Search */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
-                <div className="flex gap-2 overflow-x-auto pb-4 lg:pb-0 scrollbar-hide">
-                    {['Semua', 'Keluarga', 'Teman', 'Kolega', 'VIP'].map(f => (
-                        <button 
-                            key={f} 
-                            className={`filter-btn whitespace-nowrap px-6 py-2.5 text-[11px] font-black uppercase tracking-widest ${filter === f ? 'active' : ''}`} 
-                            onClick={() => setFilter(f)}
-                        >
-                            {f}
-                        </button>
-                    ))}
+                <div className="overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0">
+                    <div className="flex gap-2 min-w-max">
+                        {['Semua', 'Keluarga', 'Teman', 'Kolega', 'VIP'].map(f => (
+                            <button 
+                                key={f} 
+                                className={`filter-btn whitespace-nowrap px-6 py-2.5 text-[11px] font-black uppercase tracking-widest ${filter === f ? 'active ring-4 ring-rose-gold/5 shadow-md shadow-rose-gold/10' : 'bg-white text-brown-muted hover:bg-ivory/50 border border-ivory/50 shadow-sm'}`} 
+                                onClick={() => setFilter(f)}
+                            >
+                                {f}
+                            </button>
+                        ))}
+                    </div>
                 </div>
                 <div className="relative group w-full lg:w-80">
                     <input 
