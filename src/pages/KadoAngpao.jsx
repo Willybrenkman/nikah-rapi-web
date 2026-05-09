@@ -220,16 +220,18 @@ export default function KadoAngpao() {
             </div>
 
             {/* Filter */}
-            <div className="mb-8 flex gap-2 overflow-x-auto pb-4 scrollbar-hide">
-                {['Semua', 'Kado', 'Angpao', 'Keduanya', 'Akad', 'Resepsi'].map(f => (
-                    <button 
-                        key={f} 
-                        className={`filter-btn whitespace-nowrap px-8 py-3 text-[10px] uppercase font-black tracking-widest transition-all ${filter === f ? 'active ring-4 ring-rose-gold/5 shadow-md shadow-rose-gold/10' : 'bg-white text-brown-muted hover:bg-ivory/50 border border-ivory/50 shadow-sm'}`} 
-                        onClick={() => setFilter(f)}
-                    >
-                        {f === 'Semua' ? 'Semua Data' : f}
-                    </button>
-                ))}
+            <div className="mb-8 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
+                <div className="flex gap-2 min-w-max">
+                    {['Semua', 'Kado', 'Angpao', 'Keduanya', 'Akad', 'Resepsi'].map(f => (
+                        <button 
+                            key={f} 
+                            className={`filter-btn whitespace-nowrap px-8 py-3 text-[10px] uppercase font-black tracking-widest transition-all ${filter === f ? 'active ring-4 ring-rose-gold/5 shadow-md shadow-rose-gold/10' : 'bg-white text-brown-muted hover:bg-ivory/50 border border-ivory/50 shadow-sm'}`} 
+                            onClick={() => setFilter(f)}
+                        >
+                            {f === 'Semua' ? 'Semua Data' : f}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             {/* Table */}
