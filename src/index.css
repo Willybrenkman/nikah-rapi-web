@@ -452,6 +452,39 @@ textarea:focus {
     color: #fff;
   }
 
+  /* ── Filter Scroll Container (mobile-safe) ── */
+  .filter-scroll {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 4px;
+  }
+  .filter-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .filter-scroll-inner {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 8px;
+    min-width: max-content !important;
+    width: max-content !important;
+  }
+  .filter-scroll-inner .filter-btn {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  @media (max-width: 767px) {
+    .filter-scroll {
+      margin-left: -16px;
+      margin-right: -16px;
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+  }
+
   /* Summary row */
   .summary-row {
     @apply flex justify-between items-center py-2.5 text-[13px] border-b border-border-soft;
