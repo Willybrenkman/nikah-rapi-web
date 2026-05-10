@@ -1,11 +1,16 @@
 // src/components/WhatsAppButton.jsx
 import React from 'react';
 
-export default function WhatsAppButton() {
-  // Disembunyikan sementara sesuai request (sedang tidak mau di-chat)
-  return null;
+import { useLocation } from 'react-router-dom';
 
-  /*
+export default function WhatsAppButton() {
+  const location = useLocation();
+  
+  // Sembunyikan di landing page dan halaman login. Hanya tampil di dalam dashboard.
+  if (!location.pathname.startsWith('/dashboard')) {
+    return null;
+  }
+
   return (
     <a 
       href="https://wa.me/6289627314790" 
@@ -24,5 +29,4 @@ export default function WhatsAppButton() {
       <span className="sm:hidden text-sm">Bantuan</span>
     </a>
   );
-  */
 }
