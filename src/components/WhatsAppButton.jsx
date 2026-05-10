@@ -2,6 +2,10 @@
 import React from 'react';
 
 export default function WhatsAppButton() {
+  // Disembunyikan sementara sesuai request (sedang tidak mau di-chat)
+  return null;
+
+  /*
   return (
     <a 
       href="https://wa.me/6289627314790" 
@@ -20,4 +24,5 @@ export default function WhatsAppButton() {
       <span className="sm:hidden text-sm">Bantuan</span>
     </a>
   );
+  */
 }
