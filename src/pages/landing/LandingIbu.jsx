@@ -40,6 +40,7 @@ const LandingIbu = () => {
         keywords="hadiah pernikahan anak, ibu calon pengantin, persiapan nikah anak, seserahan pernikahan, wedding planner untuk orang tua, koordinasi nikah jarak jauh"
       />
       <LandingNav links={navLinks} />
+      <main className="landing-page">
 
       {/* ══ HERO ══ */}
       <section className="hero">
@@ -78,7 +79,10 @@ const LandingIbu = () => {
               <div className="browser-url">nikahrapi.online/dashboard</div>
             </div>
             <div className="preview-stage on">
-              <img src="/landing-assets/dashboard.png" alt="Dashboard" />
+              <picture>
+                <source srcSet="/landing-assets/dashboard.webp" type="image/webp" />
+                <img src="/landing-assets/dashboard-opt.png" alt="Dashboard" width="665" height="346" fetchPriority="high" decoding="async" style={{ width: '100%', height: 'auto' }} />
+              </picture>
             </div>
           </div>
         </div>
@@ -161,7 +165,7 @@ const LandingIbu = () => {
               <div key={i} className="feat-card reveal">
                 <div className="feat-icon">{feat.icon}</div>
                 <div className="feat-text">
-                  <h4>{feat.title} {feat.tag && <span className="usp-tag">{feat.tag}</span>}</h4>
+                  <h3>{feat.title} {feat.tag && <span className="usp-tag">{feat.tag}</span>}</h3>
                   <p>{feat.desc}</p>
                 </div>
               </div>
@@ -294,10 +298,11 @@ const LandingIbu = () => {
           💍 Hadiahkan NIKAH RAPI Untuk Anak Ibu
         </a>
       </section>
-
+      
+      </main>
       <footer style={{ background: '#2C2218', padding: '40px 80px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white', flexWrap: 'wrap', gap: '16px' }}>
         <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', letterSpacing: '2px' }}>NIKAH RAPI ✦</div>
-        <div style={{ fontSize: '12px', opacity: 0.4 }}>© 2025 NIKAH RAPI · Untuk Ibu & Keluarga Indonesia 🤍</div>
+        <div style={{ fontSize: '12px', opacity: 0.7 }}>© 2025 NIKAH RAPI · Untuk Ibu & Keluarga Indonesia 🤍</div>
       </footer>
     </div>
   );

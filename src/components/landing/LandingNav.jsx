@@ -52,7 +52,7 @@ const LandingNav = ({ links }) => {
               key={idx} 
               href={link.href} 
               onClick={(e) => handleLinkClick(e, link.href)}
-              className="text-[#8C7A6E] hover:text-[#5C3D2E] text-sm font-medium transition-colors"
+              className="text-[#5C3D2E] hover:text-[#8B5E6A] text-sm font-medium transition-colors"
             >
               {link.label}
             </a>
@@ -63,7 +63,7 @@ const LandingNav = ({ links }) => {
         <div className="flex items-center gap-4">
           <button 
             onClick={() => navigate('/login')}
-            className="text-[#8C7A6E] hover:text-[#5C3D2E] text-sm font-bold transition-colors"
+            className="text-[#5C3D2E] hover:text-[#8B5E6A] text-sm font-bold transition-colors"
           >
             Masuk
           </button>

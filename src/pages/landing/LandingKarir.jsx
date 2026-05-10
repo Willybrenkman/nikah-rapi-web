@@ -40,6 +40,7 @@ const LandingKarir = () => {
         keywords="wanita karir menikah, persiapan nikah sambil kerja, wedding planner wanita sibuk, atur pernikahan dari HP, wedding app indonesia, nikah tanpa ribet"
       />
       <LandingNav links={navLinks} />
+      <main className="landing-page">
 
       {/* ══ HERO ══ */}
       <section className="hero">
@@ -83,7 +84,10 @@ const LandingKarir = () => {
               <div className="browser-url">app.nikahrapi.online ✦</div>
             </div>
             <div className="preview-stage on">
-              <img src="/landing-assets/dashboard.png" alt="Dashboard NIKAH RAPI" width="900" height="500" />
+              <picture>
+                <source srcSet="/landing-assets/dashboard.webp" type="image/webp" />
+                <img src="/landing-assets/dashboard-opt.png" alt="Dashboard NIKAH RAPI" width="665" height="346" fetchPriority="high" decoding="async" style={{ width: '100%', height: 'auto' }} />
+              </picture>
             </div>
           </div>
         </div>
@@ -176,7 +180,7 @@ const LandingKarir = () => {
               <div key={i} className="feat-card reveal">
                 <div className="feat-icon">{feat.icon}</div>
                 <div className="feat-text">
-                  <h4>{feat.title} {feat.tag && <span className="usp-tag">{feat.tag}</span>}</h4>
+                  <h3>{feat.title} {feat.tag && <span className="usp-tag">{feat.tag}</span>}</h3>
                   <p>{feat.desc}</p>
                 </div>
               </div>
@@ -310,10 +314,11 @@ const LandingKarir = () => {
           ⚡ Ambil Sekarang — Nikah Tanpa Chaos
         </a>
       </section>
-
+      
+      </main>
       <footer style={{ background: '#2C2218', padding: '40px 80px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white', flexWrap: 'wrap', gap: '16px' }}>
         <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', letterSpacing: '2px' }}>NIKAH RAPI ✦</div>
-        <div style={{ fontSize: '12px', opacity: 0.4 }}>© 2025 NIKAH RAPI · Untuk Wanita Karir Indonesia 🤍</div>
+        <div style={{ fontSize: '12px', opacity: 0.7 }}>© 2025 NIKAH RAPI · Untuk Wanita Karir Indonesia 🤍</div>
       </footer>
     </div>
   );

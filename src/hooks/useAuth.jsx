@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState, useRef, useMemo } from 'react'
-import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext()
 const USER_CACHE_KEY = 'nr_user'
@@ -36,9 +35,21 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     let mounted = true
+    let unsubscribe = null
 
     const initAuth = async () => {
       try {
+        // PERF: Don't load Supabase eagerly on landing pages if not logged in
+        const isLandingPage = ['/', '/untuk-ibu', '/untuk-pria', '/untuk-karir', '/demo'].includes(window.location.pathname)
+        if (isLandingPage && !cached.user) {
+          if (mounted && !initializedRef.current) {
+            setLoading(false)
+            initializedRef.current = true
+          }
+          return
+        }
+
+        const { supabase } = await import('../lib/supabase')
         const { data: { session } } = await supabase.auth.getSession()
         if (!mounted) return
 
@@ -57,6 +68,31 @@ export function AuthProvider({ children }) {
             }
           }
         }
+
+        // ── Auth state change listener ──
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          (event, session) => {
+            if (!mounted) return
+
+            if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
+              if (session?.user) {
+                setUserWithCache(session.user)
+                if (!initializedRef.current) {
+                  setLoading(false)
+                  initializedRef.current = true
+                }
+              }
+            } else if (event === 'SIGNED_OUT') {
+              if (initializedRef.current) {
+                setUserWithCache(null)
+                setLoading(false)
+                initializedRef.current = false
+              }
+            }
+          }
+        )
+        unsubscribe = () => subscription.unsubscribe()
+
       } catch (err) {
         console.error('initAuth error:', err)
         if (!cached.user && mounted) {
@@ -69,37 +105,15 @@ export function AuthProvider({ children }) {
 
     initAuth()
 
-    // ── Auth state change listener ──
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (!mounted) return
-
-        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
-          if (session?.user) {
-            setUserWithCache(session.user)
-            if (!initializedRef.current) {
-              setLoading(false)
-              initializedRef.current = true
-            }
-          }
-        } else if (event === 'SIGNED_OUT') {
-          if (initializedRef.current) {
-            setUserWithCache(null)
-            setLoading(false)
-            initializedRef.current = false
-          }
-        }
-      }
-    )
-
     return () => {
       mounted = false
-      subscription.unsubscribe()
+      if (unsubscribe) unsubscribe()
     }
   }, [])
 
   // ── Sign out ──
   const signOut = async () => {
+    const { supabase } = await import('../lib/supabase')
     await supabase.auth.signOut()
     setUserWithCache(null)
     initializedRef.current = false

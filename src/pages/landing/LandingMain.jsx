@@ -47,6 +47,7 @@ const LandingMain = () => {
         keywords="wedding planner indonesia, persiapan nikah, budget pernikahan, seserahan tracker, vendor pernikahan, aplikasi nikah, wedding organizer digital"
       />
       <LandingNav />
+      <main className="landing-page">
 
       {/* ══ HERO ══ */}
       <section className="hero">
@@ -96,7 +97,10 @@ const LandingMain = () => {
               <div className="browser-url">app.nikahrapi.online ✦</div>
             </div>
             <div className="preview-stage on">
-              <img src="/landing-assets/dashboard.png" alt="Dashboard NIKAH RAPI" width="900" height="500" />
+              <picture>
+                <source srcSet="/landing-assets/dashboard.webp" type="image/webp" />
+                <img src="/landing-assets/dashboard-opt.png" alt="Dashboard NIKAH RAPI" width="665" height="346" fetchPriority="high" decoding="async" style={{ width: '100%', height: 'auto' }} />
+              </picture>
             </div>
           </div>
         </div>
@@ -170,22 +174,22 @@ const LandingMain = () => {
           <div className="vf-card">
             <div className="vf-icon">💍</div>
             <div className="vf-text">
-              <h4>Seserahan Tracker <span className="usp-tag">Eksklusif</span></h4>
-              <p>Catat item, harga, status, auto-hitung total.</p>
+              <h3>Seserahan Tracker <span className="usp-tag">Eksklusif</span></h3>
+              <p>Satu-satunya di Indonesia. Catat barang hantaran, harga, dan progress belanjanya.</p>
             </div>
           </div>
           <div className="vf-card">
             <div className="vf-icon">🎁</div>
             <div className="vf-text">
-              <h4>Kado & Angpao Tracker <span className="usp-tag">Eksklusif</span></h4>
-              <p>Siapa beri apa, nominal, follow up ucapan.</p>
+              <h3>Kado & Angpao Tracker <span className="usp-tag">Eksklusif</span></h3>
+              <p>Data angpao masuk tercatat rapi, siap di-export jadi PDF untuk laporan ke orang tua.</p>
             </div>
           </div>
           <div className="vf-card">
             <div className="vf-icon">💰</div>
             <div className="vf-text">
-              <h4>Budget Planner</h4>
-              <p>Rencana vs realisasi, update otomatis real-time.</p>
+              <h3>Budget Planner</h3>
+              <p>Pantau budget estimasi vs realisasi secara real-time. Anti boncos, anti drama.</p>
             </div>
           </div>
         </div>
@@ -237,7 +241,7 @@ const LandingMain = () => {
               <div key={i} className="feat-card reveal">
                 <div className="feat-icon">{feat.icon}</div>
                 <div className="feat-text">
-                  <h4>{feat.title} {feat.tag && <span className="usp-tag">{feat.tag}</span>}</h4>
+                  <h3>{feat.title} {feat.tag && <span className="usp-tag">{feat.tag}</span>}</h3>
                   <p>{feat.desc}</p>
                 </div>
               </div>
@@ -392,9 +396,10 @@ const LandingMain = () => {
         </a>
       </section>
 
+      </main>
       <footer style={{ background: '#2C2218', padding: '40px 80px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white', flexWrap: 'wrap', gap: '16px' }}>
         <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', letterSpacing: '2px' }}>NIKAH RAPI ✦</div>
-        <div style={{ fontSize: '12px', opacity: 0.4 }}>© 2025 NIKAH RAPI · Wedding Planner Digital Premium · Made with love 🤍</div>
+        <div style={{ fontSize: '12px', opacity: 0.7 }}>© 2025 NIKAH RAPI · Wedding Planner Digital Premium · Made with love 🤍</div>
       </footer>
     </div>
   );

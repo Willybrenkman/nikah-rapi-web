@@ -1,0 +1,9 @@
+# Robots.txt for nikahrapi.online
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /login
+Disallow: /onboarding
+
+# Sitemap
+Sitemap: https://www.nikahrapi.online/sitemap.xml
