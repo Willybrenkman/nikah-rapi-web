@@ -69,6 +69,8 @@ export default function App() {
         const { data } = await supabase.auth.getSession();
         if (data.session) {
           await supabase.auth.signOut();
+          localStorage.removeItem('nr_user');
+          localStorage.removeItem('nr_wedding');
           window.location.href = '/login?reason=timeout';
         }
       }, TIMEOUT_IN_MS);

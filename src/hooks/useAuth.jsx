@@ -60,12 +60,11 @@ export function AuthProvider({ children }) {
             initializedRef.current = true
           }
         } else {
-          if (!cached.user) {
-            setUserWithCache(null)
-            if (mounted) {
-              setLoading(false)
-              initializedRef.current = true
-            }
+          // No valid session — always clear cache, even if cached user exists
+          setUserWithCache(null)
+          if (mounted) {
+            setLoading(false)
+            initializedRef.current = true
           }
         }
 
@@ -115,6 +114,7 @@ export function AuthProvider({ children }) {
   const signOut = async () => {
     const { supabase } = await import('../lib/supabase')
     await supabase.auth.signOut()
+    localStorage.removeItem('nr_wedding')
     setUserWithCache(null)
     initializedRef.current = false
   }

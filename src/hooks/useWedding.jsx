@@ -36,6 +36,12 @@ export function WeddingProvider({ children }) {
   const [error, setError] = useState(null) // State error baru
   const [hMin, setHMin] = useState(() => calcHMin(cachedRef.current?.tanggal_pernikahan))
   const lastFetchedUserId = useRef(null)
+  const mountedRef = useRef(true)
+
+  useEffect(() => {
+    mountedRef.current = true
+    return () => { mountedRef.current = false }
+  }, [])
 
   const updateWedding = useCallback((data) => {
     setWedding(data)
@@ -86,6 +92,7 @@ export function WeddingProvider({ children }) {
           if (retryCount < 2) {
             console.log(`[useWedding] Retrying in 1.5s...`)
             await new Promise(r => setTimeout(r, 1500))
+            if (!mountedRef.current) return
             return fetchWedding(userId, true, retryCount + 1)
           }
 

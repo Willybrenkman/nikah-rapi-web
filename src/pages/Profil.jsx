@@ -17,10 +17,17 @@ export default function Profil() {
 
     const handleChangePw = async (e) => {
         e.preventDefault()
+        if (!pwForm.current) { toast.error('Isi password saat ini!'); return }
         if (!pwForm.newpw) { toast.error('Isi password baru!'); return }
         if (pwForm.newpw.length < 6) { toast.error('Minimal 6 karakter!'); return }
         if (pwForm.newpw !== pwForm.confirm) { toast.error('Password tidak cocok!'); return }
         setSavingPw(true)
+        // Re-authenticate to verify current password before allowing change
+        const { error: authError } = await supabase.auth.signInWithPassword({
+            email: user.email,
+            password: pwForm.current,
+        })
+        if (authError) { toast.error('Password saat ini salah!'); setSavingPw(false); return }
         const { error } = await supabase.auth.updateUser({ password: pwForm.newpw })
         if (error) { toast.error('Gagal ubah password!') }
         else { toast.success('Password berhasil diubah! 🔑'); setPwForm({ current: '', newpw: '', confirm: '' }); setShowPw(false) }
@@ -105,13 +112,23 @@ export default function Profil() {
                 {showPw && (
                     <form onSubmit={handleChangePw} className="animate-fade-in">
                         <div className="form-group mb-4">
+                            <label className="form-label">Password Saat Ini</label>
+                            <input
+                                type="password"
+                                className="form-input"
+                                placeholder="Masukkan password saat ini"
+                                value={pwForm.current}
+                                onChange={e => setPwForm(p => ({ ...p, current: e.target.value }))}
+                            />
+                        </div>
+                        <div className="form-group mb-4">
                             <label className="form-label">Password Baru</label>
-                            <input 
-                                type="password" 
-                                className="form-input" 
-                                placeholder="Minimal 6 karakter" 
-                                value={pwForm.newpw} 
-                                onChange={e => setPwForm(p => ({ ...p, newpw: e.target.value }))} 
+                            <input
+                                type="password"
+                                className="form-input"
+                                placeholder="Minimal 6 karakter"
+                                value={pwForm.newpw}
+                                onChange={e => setPwForm(p => ({ ...p, newpw: e.target.value }))}
                             />
                         </div>
                         <div className="form-group mb-5">

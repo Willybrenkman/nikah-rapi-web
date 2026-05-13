@@ -25,15 +25,31 @@ export default function Pengaturan() {
 
     const handleSave = async () => {
         setSaving(true)
-        const payload = { ...form, total_budget: Number(form.total_budget) || 0, user_id: user.id }
-        if (wedding) {
-            await supabase.from('wedding_profiles').update(payload).eq('id', wedding.id)
-        } else {
-            await supabase.from('wedding_profiles').insert(payload)
+        try {
+            const payload = { ...form, total_budget: Number(form.total_budget) || 0 }
+            let error
+            if (wedding) {
+                // Exclude user_id from update — ownership must not change
+                const { error: updateError } = await supabase
+                    .from('wedding_profiles')
+                    .update(payload)
+                    .eq('id', wedding.id)
+                error = updateError
+            } else {
+                const { error: insertError } = await supabase
+                    .from('wedding_profiles')
+                    .insert({ ...payload, user_id: user.id })
+                error = insertError
+            }
+            if (error) { toast.error('Gagal menyimpan. Coba lagi!'); return }
+            await refetch()
+            toast.success('✅ Pengaturan berhasil disimpan!')
+        } catch (err) {
+            console.error('[Pengaturan] Save error:', err)
+            toast.error('Terjadi kesalahan. Coba lagi!')
+        } finally {
+            setSaving(false)
         }
-        await refetch()
-        toast.success('✅ Pengaturan berhasil disimpan!')
-        setSaving(false)
     }
 
     const card = { background: '#fff', borderRadius: 16, border: '1px solid #F0E6DF', padding: 24, boxShadow: '0 2px 16px rgba(201,149,108,.06)' }

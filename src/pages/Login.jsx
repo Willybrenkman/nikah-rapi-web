@@ -1,5 +1,5 @@
 // src/pages/Login.jsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
@@ -13,12 +13,14 @@ export default function Login() {
     const location = useLocation()
     const navigate = useNavigate()
     const { user } = useAuth()
+    const pendingRedirectRef = useRef(null)
 
-    // Jika user sudah login, langsung ke dashboard
+    // Navigate only after AuthContext.user is confirmed set to avoid ProtectedRoute race
     useEffect(() => {
-        if (user) {
-            navigate('/dashboard', { replace: true })
-        }
+        if (!user) return
+        const dest = pendingRedirectRef.current || '/dashboard'
+        pendingRedirectRef.current = null
+        navigate(dest, { replace: true })
     }, [user, navigate])
 
     // ✅ FORCE UPDATE PWA: Hapus service worker lama saat di halaman login
@@ -62,24 +64,17 @@ export default function Login() {
 
             if (session?.user) {
                 toast.success('Berhasil masuk! 💍')
-                
-                // ✅ Cek profile sebelum redirect untuk mencegah flicker
-                console.log('[Login] Checking wedding profile post-auth...')
-                const { data: profile, error: profileError } = await supabase
+
+                const { error: profileError } = await supabase
                     .from('wedding_profiles')
                     .select('id')
                     .eq('user_id', session.user.id)
                     .single()
 
-                if (profileError && profileError.code === 'PGRST116') {
-                    // Profile memang belum ada
-                    console.log('[Login] No profile found, sending to onboarding')
-                    navigate('/onboarding', { replace: true })
-                } else {
-                    // Profile ada, atau error lain (biar dashboard yang handle retries)
-                    console.log('[Login] Profile exists or fetch failed, sending to dashboard')
-                    navigate('/dashboard', { replace: true })
-                }
+                // Store destination — useEffect navigates once AuthContext.user is confirmed set
+                pendingRedirectRef.current = (profileError?.code === 'PGRST116')
+                    ? '/onboarding'
+                    : '/dashboard'
             }
         } catch (err) {
             console.error('[Login] Unexpected error:', err)
