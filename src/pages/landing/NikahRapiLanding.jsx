@@ -537,7 +537,7 @@ export default function NikahRapiLanding() {
                     <img
                         src="/landing-assets/gambaran-produk-hp.jpg"
                         alt="Gambaran Produk Nikah Rapi di HP"
-                        style={{ width: '100%', height: 'auto', borderRadius: '16px', display: 'block' }}
+                        style={{ width: 'calc(100% + 48px)', marginLeft: '-24px', height: 'auto', display: 'block' }}
                     />
 
                     {/* FREEBIES */}
