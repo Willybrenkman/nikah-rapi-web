@@ -607,7 +607,7 @@ export default function NikahRapiLanding() {
                     <div className="price-old">Rp 199.000</div>
                     <div className="price-now"><sup>Rp</sup>99.000</div>
                     <div className="price-note">Akses seumur hidup · Update gratis · Mulai hari ini</div>
-                    <div className="slot-warn">⚡ Sisa <strong>10 slot</strong> di harga Early Bird ini!</div>
+
                 </div>
 
                 {/* ── BONUS ── */}
