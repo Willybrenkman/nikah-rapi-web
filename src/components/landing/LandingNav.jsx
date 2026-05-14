@@ -61,13 +61,7 @@ const LandingNav = ({ links }) => {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
-          <button 
-            onClick={() => navigate('/login')}
-            className="text-[#5C3D2E] hover:text-[#8B5E6A] text-sm font-bold transition-colors"
-          >
-            Masuk
-          </button>
-          <a 
+          <a
             href={checkoutUrl}
             className="bg-[#8B5E6A] hover:bg-[#5C3D2E] text-white px-5 py-2 rounded-lg text-sm font-bold transition-all shadow-md shadow-[#8B5E6A]/20"
           >
