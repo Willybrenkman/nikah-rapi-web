@@ -71,7 +71,6 @@ export function WeddingProvider({ children }) {
     setError(null)
 
     try {
-      console.log(`[useWedding] Fetching profile (Attempt ${retryCount + 1})...`)
       const { data, error: fetchError } = await supabase
         .from('wedding_profiles')
         .select('*')
@@ -81,7 +80,6 @@ export function WeddingProvider({ children }) {
       if (fetchError) {
         // PGRST116 = JSON object requested, but no rows returned (Berarti belum onboarding)
         if (fetchError.code === 'PGRST116') {
-          console.log('[useWedding] Status: No profile found (Confirmed)')
           updateWedding(null)
           setError(null) // Bukan error sistem, memang datanya tidak ada
         } else {
@@ -90,7 +88,6 @@ export function WeddingProvider({ children }) {
           
           // Retry logic (max 2x) untuk error selain PGRST116
           if (retryCount < 2) {
-            console.log(`[useWedding] Retrying in 1.5s...`)
             await new Promise(r => setTimeout(r, 1500))
             if (!mountedRef.current) return
             return fetchWedding(userId, true, retryCount + 1)
@@ -100,7 +97,6 @@ export function WeddingProvider({ children }) {
           // JANGAN set wedding=null jika ini error sistem, agar Layout tidak redirect paksa ke onboarding
         }
       } else {
-        console.log('[useWedding] Status: Profile loaded successfully')
         updateWedding(data)
         setError(null)
       }

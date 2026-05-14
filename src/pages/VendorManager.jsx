@@ -94,7 +94,6 @@ export default function VendorManager() {
         }
 
         setSaving(true)
-        console.log("🔍 Memulai proses simpan aman (Dynamic Sync)...")
 
         // Persiapkan Payload Dasar
         const rawPayload = { 
@@ -109,7 +108,6 @@ export default function VendorManager() {
         try {
             // Filter payload agar hanya mengirim kolom yang BENAR-BENAR ada di DB
             const safePayload = await getSafePayload('vendors', rawPayload)
-            console.log("📦 Payload Final (Safe):", safePayload)
 
             let result
             if (editId) {
@@ -144,7 +142,6 @@ export default function VendorManager() {
             )
 
             activityService.log(wedding.id, user?.email, editId ? 'Update Vendor' : 'Tambah Vendor', `Vendor: ${cleanNama}, Kategori: ${form.kategori}, Total: ${rp(rawPayload.total)}`)
-            console.log("✅ Data berhasil tersimpan!")
             toast.success(editId ? 'Vendor & Budget diperbarui! ✨' : 'Vendor & Budget ditambahkan! ✨')
             
             setModal(false)
