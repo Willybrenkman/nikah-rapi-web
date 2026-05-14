@@ -110,9 +110,9 @@ const LandingIbu = () => {
             >
               💝 Hadiahkan untuk Anak Ibu →
             </a>
-            <button onClick={() => navigate('/demo')} className="btn-secondary">
+            <a href={checkoutUrl} className="btn-secondary">
               👁️ Lihat Tampilan App
-            </button>
+            </a>
           </div>
           <div className="cta-notes">
             <div className="cta-note-item">✓ Akses Ibu & anak sekaligus</div>

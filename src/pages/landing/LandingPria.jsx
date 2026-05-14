@@ -116,9 +116,9 @@ const LandingPria = () => {
             >
               ⚡ Ambil Kendali Budget Sekarang →
             </a>
-            <button onClick={() => navigate('/demo')} className="btn-secondary">
+            <a href={checkoutUrl} className="btn-secondary">
               📊 Lihat Cara Kerjanya
-            </button>
+            </a>
           </div>
           <div className="cta-notes">
             <div className="cta-note-item">✓ Sekali bayar, akses seumur hidup</div>
