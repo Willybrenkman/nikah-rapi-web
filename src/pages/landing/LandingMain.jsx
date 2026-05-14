@@ -399,7 +399,10 @@ const LandingMain = () => {
       </main>
       <footer style={{ background: '#2C2218', padding: '40px 80px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white', flexWrap: 'wrap', gap: '16px' }}>
         <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', letterSpacing: '2px' }}>NIKAH RAPI ✦</div>
-        <div style={{ fontSize: '12px', opacity: 0.7 }}>© 2025 NIKAH RAPI · Wedding Planner Digital Premium · Made with love 🤍</div>
+        <div style={{ fontSize: '12px', opacity: 0.7, display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <span>© 2025 NIKAH RAPI · Wedding Planner Digital Premium · Made with love 🤍</span>
+          <a href="/privacy" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none', borderBottom: '1px solid rgba(255,255,255,0.3)' }}>Kebijakan Privasi</a>
+        </div>
       </footer>
     </div>
   );
