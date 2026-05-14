@@ -25,6 +25,7 @@ const Undangan = lazy(() => import('./pages/Undangan'))
 const MUABusana = lazy(() => import('./pages/MUABusana'))
 
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
+const ResetPassword = lazy(() => import('./pages/ResetPassword'))
 const LandingMain = lazy(() => import('./pages/landing/LandingMain'))
 const LandingIbu = lazy(() => import('./pages/landing/LandingIbu'))
 const LandingPria = lazy(() => import('./pages/landing/LandingPria'))
@@ -119,6 +120,7 @@ export default function App() {
             <Route path="/demo" element={<Demo />} />
             <Route path="/login" element={<Login />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
             {/* ── Onboarding (protected) ── */}
             <Route path="/onboarding" element={<Guard><OnBoarding /></Guard>} />
