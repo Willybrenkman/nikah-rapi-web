@@ -12,10 +12,16 @@ export default function ResetPassword() {
     const [ready, setReady] = useState(false) // token valid dari Supabase
     const navigate = useNavigate()
 
-    // Supabase otomatis proses token dari URL hash saat halaman dimuat
+    // Cek session saat mount (token sudah diproses Supabase dari URL hash)
     useEffect(() => {
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-            if (event === 'PASSWORD_RECOVERY') {
+        // Cek jika session sudah ada (recovery link sudah diproses)
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) setReady(true)
+        })
+
+        // Fallback: dengarkan event jika belum diproses
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
                 setReady(true)
             }
         })
