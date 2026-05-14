@@ -603,7 +603,7 @@ export default function NikahRapiLanding() {
                 {/* ── HARGA ── */}
                 <div className="pricing">
                     <div className="pricing-title">Harga:</div>
-                    <div className="price-old">Rp 199.000</div>
+                    <div className="price-old">Rp 299.000</div>
                     <div className="price-now"><sup>Rp</sup>99.000</div>
                     <div className="price-note">Akses seumur hidup · Update gratis · Mulai hari ini</div>
 
