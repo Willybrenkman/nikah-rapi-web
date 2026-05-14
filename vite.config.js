@@ -12,7 +12,10 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         cleanupOutdatedCaches: true,
+        skipWaiting: true,
         clientsClaim: true,
+        // Jangan cache halaman protected
+        navigateFallbackDenylist: [/^\/dashboard/, /^\/onboarding/],
       },
       manifest: {
         name: 'Nikah Rapi Planner',
@@ -31,7 +34,7 @@ export default defineConfig({
   },
   build: {
     outDir: "dist",
-    sourcemap: false,
+    sourcemap: true,
     rollupOptions: {
       output: {
         // Code splitting untuk performa lebih baik

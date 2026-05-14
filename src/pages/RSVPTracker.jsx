@@ -7,46 +7,95 @@ import toast from 'react-hot-toast'
 const statusBadge = { hadir: 'badge-green', tidak: 'badge-red', belum: 'badge-grey' }
 const statusLabel = { hadir: 'Hadir', tidak: 'Tidak Hadir', belum: 'Belum Konfirmasi' }
 
+const PAGE_SIZE = 25
+
 export default function RSVPTracker() {
     const { wedding } = useWedding()
     const [items, setItems] = useState([])
     const [loading, setLoading] = useState(true)
+    const [page, setPage] = useState(0)
+    const [hasMore, setHasMore] = useState(true)
+    const [totalCount, setTotalCount] = useState(0)
 
-    useEffect(() => { if (wedding) fetchItems() }, [wedding])
-
-    const fetchItems = async () => {
-        setLoading(true)
-        if (wedding.id === 'dummy-wedding-id') {
-            setItems([
-                { id: 1, nama: 'Bpk. Ahmad Subarjo', hubungan: 'VIP', status_rsvp: 'hadir', jumlah_orang: 2, no_meja: 'A1', kupon_makan: true },
-                { id: 2, nama: 'Ibu Siti Aminah', hubungan: 'Keluarga', status_rsvp: 'hadir', jumlah_orang: 4, no_meja: 'K-01', kupon_makan: false },
-                { id: 3, nama: 'Budi Santoso', hubungan: 'Teman', status_rsvp: 'tidak', jumlah_orang: 1, no_meja: 'T-12', kupon_makan: false },
-                { id: 4, nama: 'Diana Putri', hubungan: 'Teman', status_rsvp: 'belum', jumlah_orang: 2, no_meja: 'T-13', kupon_makan: false },
-                { id: 5, nama: 'Bp. Heru & Ibu', hubungan: 'Kolega', status_rsvp: 'hadir', jumlah_orang: 2, no_meja: 'R-05', kupon_makan: true },
-            ])
-            setLoading(false)
-            return
+    useEffect(() => {
+        if (wedding) {
+            setPage(0)
+            fetchItems(0, true)
         }
-        const { data } = await supabase.from('tamu_undangan').select('*').eq('wedding_id', wedding.id).order('nama')
-        setItems(data || [])
-        setLoading(false)
+    }, [wedding])
+
+    const fetchItems = async (pageIndex = 0, reset = false) => {
+        setLoading(true)
+        try {
+            if (wedding.id === 'dummy-wedding-id') {
+                setItems([
+                    { id: 1, nama: 'Bpk. Ahmad Subarjo', hubungan: 'VIP', status_rsvp: 'hadir', jumlah_orang: 2, no_meja: 'A1', kupon_makan: true },
+                    { id: 2, nama: 'Ibu Siti Aminah', hubungan: 'Keluarga', status_rsvp: 'hadir', jumlah_orang: 4, no_meja: 'K-01', kupon_makan: false },
+                    { id: 3, nama: 'Budi Santoso', hubungan: 'Teman', status_rsvp: 'tidak', jumlah_orang: 1, no_meja: 'T-12', kupon_makan: false },
+                    { id: 4, nama: 'Diana Putri', hubungan: 'Teman', status_rsvp: 'belum', jumlah_orang: 2, no_meja: 'T-13', kupon_makan: false },
+                    { id: 5, nama: 'Bp. Heru & Ibu', hubungan: 'Kolega', status_rsvp: 'hadir', jumlah_orang: 2, no_meja: 'R-05', kupon_makan: true },
+                ])
+                setTotalCount(5)
+                setHasMore(false)
+                return
+            }
+
+            const from = pageIndex * PAGE_SIZE
+            const to = from + PAGE_SIZE - 1
+
+            const { data, count, error } = await supabase
+                .from('tamu_undangan')
+                .select('*', { count: 'exact' })
+                .eq('wedding_id', wedding.id)
+                .order('nama')
+                .range(from, to)
+
+            if (error) throw error
+
+            if (reset) {
+                setItems(data || [])
+            } else {
+                setItems(prev => [...prev, ...(data || [])])
+            }
+            setTotalCount(count || 0)
+            setHasMore((data || []).length === PAGE_SIZE)
+        } catch (err) {
+            console.error('[RSVPTracker] fetchItems error:', err)
+            toast.error('Gagal memuat data RSVP')
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const loadMore = () => {
+        const next = page + 1
+        setPage(next)
+        fetchItems(next)
     }
 
     const updateStatus = async (id, status) => {
-        await supabase.from('tamu_undangan').update({ status_rsvp: status }).eq('id', id)
+        const { error } = await supabase
+            .from('tamu_undangan')
+            .update({ status_rsvp: status })
+            .eq('id', id)
+        if (error) { toast.error('Gagal update status RSVP!'); return }
         toast.success('Status RSVP diperbarui!')
-        fetchItems()
+        setItems(prev => prev.map(i => i.id === id ? { ...i, status_rsvp: status } : i))
     }
 
     const toggleKupon = async (item) => {
-        await supabase.from('tamu_undangan').update({ kupon_makan: !item.kupon_makan }).eq('id', item.id)
-        fetchItems()
+        const { error } = await supabase
+            .from('tamu_undangan')
+            .update({ kupon_makan: !item.kupon_makan })
+            .eq('id', item.id)
+        if (error) { toast.error('Gagal update kupon makan!'); return }
+        setItems(prev => prev.map(i => i.id === item.id ? { ...i, kupon_makan: !item.kupon_makan } : i))
     }
 
     const hadir = items.filter(i => i.status_rsvp === 'hadir').length
     const tidak = items.filter(i => i.status_rsvp === 'tidak').length
     const belum = items.filter(i => !i.status_rsvp || i.status_rsvp === 'belum').length
-    const konfPct = items.length > 0 ? Math.round((hadir + tidak) / items.length * 100) : 0
+    const konfPct = totalCount > 0 ? Math.round((hadir + tidak) / totalCount * 100) : 0
 
     return (
         <div className="animate-fade-in pb-12">
@@ -85,7 +134,7 @@ export default function RSVPTracker() {
                     </div>
                     <div className="text-right">
                         <span className="text-xl font-playfair font-black text-rose-gold">{konfPct}%</span>
-                        <p className="text-[10px] font-bold text-brown-muted uppercase tracking-widest">{hadir + tidak} dari {items.length} Tamu</p>
+                        <p className="text-[10px] font-bold text-brown-muted uppercase tracking-widest">{hadir + tidak} dari {totalCount} Tamu</p>
                     </div>
                 </div>
                 <div className="progress-track h-3 bg-ivory overflow-hidden rounded-full">
@@ -99,7 +148,7 @@ export default function RSVPTracker() {
             <div className="card p-0 overflow-hidden group/table shadow-sm border-ivory/50">
                 <div className="p-6 border-b border-border bg-ivory/5 flex items-center justify-between">
                     <h2 className="font-playfair text-lg font-bold text-brown">Daftar Konfirmasi Tamu</h2>
-                    <span className="text-[10px] font-bold text-brown-muted uppercase tracking-widest italic">{items.length} Tamu Terdaftar</span>
+                    <span className="text-[10px] font-bold text-brown-muted uppercase tracking-widest italic">{totalCount} Tamu Terdaftar</span>
                 </div>
                 <div className="overflow-x-auto">
                     <table>
@@ -116,14 +165,20 @@ export default function RSVPTracker() {
                         </thead>
                         <tbody>
                             {loading && items.length === 0 ? (
-                                <tr><td colSpan={7} className="td text-center py-24 text-brown-muted italic">Meyiapkan data konfirmasi tamu...</td></tr>
+                                <tr><td colSpan={7} className="td text-center py-24 text-brown-muted italic">Menyiapkan data konfirmasi tamu...</td></tr>
                             ) : items.length === 0 ? (
-                                <tr><td colSpan={7} className="td text-center py-24 text-brown-muted italic">Belum ada tamu terdaftar. Silakan tambah di menu Daftar Tamu.</td></tr>
+                                <tr>
+                                    <td colSpan={7} className="td text-center py-24">
+                                        <div className="text-4xl mb-3">✉️</div>
+                                        <p className="text-brown-muted font-semibold text-sm">Belum ada tamu terdaftar</p>
+                                        <p className="text-brown-muted/60 text-xs mt-1">Silakan tambah tamu di menu Daftar Tamu terlebih dahulu.</p>
+                                    </td>
+                                </tr>
                             ) : items.map((item, i) => {
                                 const st = item.status_rsvp || 'belum'
                                 return (
                                     <tr key={item.id} className="tr group hover:bg-ivory/10 transition-colors">
-                                        <td className="td text-center text-[10px] text-brown-muted font-black tracking-widest hide-on-mobile" data-label="No">{String(i + 1).padStart(2, '0')}</td>
+                                        <td className="td text-center text-[10px] text-brown-muted font-black tracking-widest hide-on-mobile" data-label="No">{String(page * PAGE_SIZE + i + 1).padStart(2, '0')}</td>
                                         <td className="td font-bold text-brown group-hover:text-rose-gold transition-colors" data-label="Nama Tamu">{item.nama}</td>
                                         <td className="td" data-label="Status RSVP">
                                             <span className={`badge ${statusBadge[st] || 'badge-grey'} text-[9px] font-black uppercase tracking-tighter`}>
@@ -144,12 +199,12 @@ export default function RSVPTracker() {
                                         <td className="td td-actions text-right pr-8" data-label="Update Status">
                                             <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                                                 {['hadir', 'tidak', 'belum'].map(s => (
-                                                    <button 
-                                                        key={s} 
+                                                    <button
+                                                        key={s}
                                                         onClick={() => updateStatus(item.id, s)}
                                                         className={`w-8 h-8 flex items-center justify-center rounded-xl text-[10px] font-black transition-all border shadow-sm ${
-                                                            st === s 
-                                                            ? 'bg-rose-gold border-rose-gold text-white scale-110' 
+                                                            st === s
+                                                            ? 'bg-rose-gold border-rose-gold text-white scale-110'
                                                             : 'bg-white border-border text-brown-muted hover:border-rose-gold hover:text-rose-gold hover:bg-rose-gold/5'
                                                         }`}
                                                         title={statusLabel[s]}
@@ -165,6 +220,19 @@ export default function RSVPTracker() {
                         </tbody>
                     </table>
                 </div>
+
+                {/* Load More */}
+                {hasMore && (
+                    <div className="p-6 border-t border-border text-center">
+                        <button
+                            onClick={loadMore}
+                            disabled={loading}
+                            className="btn-outline px-8 py-2.5 text-sm"
+                        >
+                            {loading ? 'Memuat...' : `Muat Lebih Banyak (${items.length} / ${totalCount})`}
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     )

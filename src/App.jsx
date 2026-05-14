@@ -5,6 +5,7 @@ import { useAuth } from './hooks/useAuth'
 import Layout from './components/layout/Layout'
 import WhatsAppButton from './components/WhatsAppButton'
 import ErrorBoundary from './components/ErrorBoundary'
+import ErrorBoundary from './components/ErrorBoundary'
 
 // Lazy load pages for code splitting
 const Login = lazy(() => import('./pages/Login'))
@@ -24,6 +25,7 @@ const Katering = lazy(() => import('./pages/Katering'))
 const Undangan = lazy(() => import('./pages/Undangan'))
 const MUABusana = lazy(() => import('./pages/MUABusana'))
 
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
 const LandingMain = lazy(() => import('./pages/landing/LandingMain'))
 const LandingIbu = lazy(() => import('./pages/landing/LandingIbu'))
 const LandingPria = lazy(() => import('./pages/landing/LandingPria'))
@@ -59,6 +61,13 @@ const Loader = () => (
 )
 
 export default function App() {
+  // Reload otomatis saat lazy chunk gagal dimuat (terjadi setelah deploy baru)
+  useEffect(() => {
+    const handler = () => window.location.reload()
+    window.addEventListener('vite:preloadError', handler)
+    return () => window.removeEventListener('vite:preloadError', handler)
+  }, [])
+
   // Inactivity Timer Logic
   useEffect(() => {
     let timeoutId;
@@ -73,6 +82,11 @@ export default function App() {
           await supabase.auth.signOut();
           localStorage.removeItem('nr_user');
           localStorage.removeItem('nr_wedding');
+          // Unregister service worker agar tidak serve cached protected pages
+          if ('serviceWorker' in navigator) {
+            const regs = await navigator.serviceWorker.getRegistrations()
+            for (const reg of regs) await reg.unregister()
+          }
           window.location.href = '/login?reason=timeout';
         }
       }, TIMEOUT_IN_MS);
@@ -91,55 +105,56 @@ export default function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <Toaster position="top-right" toastOptions={{ style: { fontFamily: "'DM Sans',sans-serif", fontSize: 14 } }} />
-      <WhatsAppButton />
-      <ErrorBoundary>
-      <Suspense fallback={<Loader />}>
-        <Routes>
-          {/* ── Public ── */}
-          <Route path="/" element={<LandingMain />} />
-          <Route path="/untuk-ibu" element={<LandingIbu />} />
-          <Route path="/untuk-pria" element={<LandingPria />} />
-          <Route path="/untuk-karir" element={<LandingKarir />} />
-          <Route path="/v4" element={<NikahRapiLanding />} />
-          <Route path="/demo" element={<Demo />} />
-          <Route path="/login" element={<Login />} />
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Toaster position="top-right" toastOptions={{ style: { fontFamily: "'DM Sans',sans-serif", fontSize: 14 } }} />
+        <WhatsAppButton />
+        <Suspense fallback={<Loader />}>
+          <Routes>
+            {/* ── Public ── */}
+            <Route path="/" element={<LandingMain />} />
+            <Route path="/untuk-ibu" element={<LandingIbu />} />
+            <Route path="/untuk-pria" element={<LandingPria />} />
+            <Route path="/untuk-karir" element={<LandingKarir />} />
+            <Route path="/v4" element={<NikahRapiLanding />} />
+            <Route path="/demo" element={<Demo />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
 
-          {/* ── Onboarding (protected) ── */}
-          <Route path="/onboarding" element={<Guard><OnBoarding /></Guard>} />
+            {/* ── Onboarding (protected) ── */}
+            <Route path="/onboarding" element={<Guard><OnBoarding /></Guard>} />
 
-          {/* ── Protected app ── */}
-          <Route path="/dashboard" element={<Guard><Layout /></Guard>}>
-            <Route index element={<Dashboard />} />
-            <Route path="budget" element={<BudgetPlanner />} />
-            <Route path="seserahan" element={<SeserahanTracker />} />
-            <Route path="kado-angpao" element={<KadoAngpao />} />
-            <Route path="guest-list" element={<GuestList />} />
-            <Route path="rsvp" element={<RSVPTracker />} />
-            <Route path="vendor" element={<VendorManager />} />
-            <Route path="timeline" element={<TimelineAcara />} />
-            <Route path="checklist" element={<Checklist />} />
-            <Route path="dekorasi" element={<Dekorasi />} />
-            <Route path="katering" element={<Katering />} />
-            <Route path="undangan" element={<Undangan />} />
-            <Route path="mua-busana" element={<MUABusana />} />
-            <Route path="foto-video" element={<FotoVideo />} />
-            <Route path="cincin-mahar" element={<CincinMahar />} />
-            <Route path="honeymoon" element={<Honeymoon />} />
-            <Route path="souvenir" element={<Souvenir />} />
-            <Route path="catatan" element={<CatatanPenting />} />
-            <Route path="rekap" element={<RekapAkhir />} />
-            <Route path="activity" element={<ActivityLogs />} />
-            <Route path="panduan" element={<Panduan />} />
-            <Route path="pengaturan" element={<Pengaturan />} />
-            <Route path="profil" element={<Profil />} />
-          </Route>
+            {/* ── Protected app ── */}
+            <Route path="/dashboard" element={<Guard><Layout /></Guard>}>
+              <Route index element={<Dashboard />} />
+              <Route path="budget" element={<BudgetPlanner />} />
+              <Route path="seserahan" element={<SeserahanTracker />} />
+              <Route path="kado-angpao" element={<KadoAngpao />} />
+              <Route path="guest-list" element={<GuestList />} />
+              <Route path="rsvp" element={<RSVPTracker />} />
+              <Route path="vendor" element={<VendorManager />} />
+              <Route path="timeline" element={<TimelineAcara />} />
+              <Route path="checklist" element={<Checklist />} />
+              <Route path="dekorasi" element={<Dekorasi />} />
+              <Route path="katering" element={<Katering />} />
+              <Route path="undangan" element={<Undangan />} />
+              <Route path="mua-busana" element={<MUABusana />} />
+              <Route path="foto-video" element={<FotoVideo />} />
+              <Route path="cincin-mahar" element={<CincinMahar />} />
+              <Route path="honeymoon" element={<Honeymoon />} />
+              <Route path="souvenir" element={<Souvenir />} />
+              <Route path="catatan" element={<CatatanPenting />} />
+              <Route path="rekap" element={<RekapAkhir />} />
+              <Route path="activity" element={<ActivityLogs />} />
+              <Route path="panduan" element={<Panduan />} />
+              <Route path="pengaturan" element={<Pengaturan />} />
+              <Route path="profil" element={<Profil />} />
+            </Route>
 
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Suspense>
-      </ErrorBoundary>
-    </BrowserRouter>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </ErrorBoundary>
   )
 }
