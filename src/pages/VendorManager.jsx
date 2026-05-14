@@ -384,11 +384,12 @@ export default function VendorManager() {
                                             <span>📄</span> Lihat Kontrak
                                         </a>
                                     )}
-                                    <FileUpload 
-                                        weddingId={wedding.id} 
-                                        folder="vendors" 
-                                        onUploadComplete={(url) => setForm(p => ({ ...p, kontrak_url: url }))} 
-                                    />
+                                    {/* FileUpload hidden — storage quota terbatas, aktifkan saat upgrade */}
+                                    {/* <FileUpload
+                                        weddingId={wedding.id}
+                                        folder="vendors"
+                                        onUploadComplete={(url) => setForm(p => ({ ...p, kontrak_url: url }))}
+                                    /> */}
                                 </div>
                             </div>
                         </div>
