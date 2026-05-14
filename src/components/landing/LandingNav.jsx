@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const LandingNav = ({ links }) => {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
-  const checkoutUrl = "https://entrepreneurai.myscalev.com/checkout-page";
+  const checkoutUrl = "https://checkout.nikahrapi.online/";
 
   const defaultLinks = [
     { label: 'Fitur', href: '#fitur' },

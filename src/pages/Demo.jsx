@@ -27,7 +27,7 @@ const Demo = () => {
   const [activeMenu, setActiveMenu] = useState('Dashboard Utama');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showBottomCTA, setShowBottomCTA] = useState(false);
-  const checkoutUrl = "https://entrepreneurai.myscalev.com/checkout-page";
+  const checkoutUrl = "https://checkout.nikahrapi.online/";
 
   useEffect(() => {
     const handleScroll = () => {

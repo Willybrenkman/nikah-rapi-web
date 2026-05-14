@@ -10,7 +10,7 @@ const LandingMain = () => {
   const [openFaq, setOpenFaq] = useState(null);
   const videoRef = useRef(null);
 
-  const checkoutUrl = "https://entrepreneurai.myscalev.com/checkout-page";
+  const checkoutUrl = "https://checkout.nikahrapi.online/";
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {

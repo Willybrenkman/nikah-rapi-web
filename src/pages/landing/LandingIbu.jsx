@@ -11,7 +11,7 @@ const LandingIbu = () => {
   const [openFaq, setOpenFaq] = useState(null);
 
   const toggleFaq = (index) => setOpenFaq(openFaq === index ? null : index);
-  const checkoutUrl = "https://entrepreneurai.myscalev.com/checkout-page";
+  const checkoutUrl = "https://checkout.nikahrapi.online/";
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
