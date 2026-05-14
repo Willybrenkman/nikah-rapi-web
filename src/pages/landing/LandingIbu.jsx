@@ -91,7 +91,7 @@ const LandingIbu = () => {
           <div className="price-display">
             <div className="price-new"><sup style={{fontSize:'22px'}}>Rp</sup>99.000</div>
             <div className="price-old"><s>Rp 299.000</s></div>
-            <div className="price-save">HEMAT 57%</div>
+            <div className="price-save">HEMAT 67%</div>
           </div>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '20px' }}>
             <a 
@@ -240,7 +240,7 @@ const LandingIbu = () => {
           <div className="pricing-card-badge">✦ Akses Premium Seumur Hidup</div>
           <div className="price-hero"><div className="price-big"><sup>Rp</sup>99.000</div></div>
           <div className="price-was-p"><s>Rp 299.000</s></div>
-          <div className="price-save-badge">🔥 Hemat 57% — Harga Promo Terbatas!</div>
+          <div className="price-save-badge">🔥 Hemat 67% — Harga Promo Terbatas!</div>
           <ul className="include-list">
             <li>Aplikasi Web NIKAH RAPI — 22+ modul lengkap & terintegrasi</li>
             <li>Seserahan Tracker eksklusif — pantau dari HP Ibu!</li>
