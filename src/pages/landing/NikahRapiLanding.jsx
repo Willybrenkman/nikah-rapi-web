@@ -587,7 +587,7 @@ export default function NikahRapiLanding() {
                         </div>
                         <div className="feat-item">
                             <div className="feat-check">✓</div>
-                            <div className="feat-text">Undangan digital langsung kirim via WhatsApp<span>Desain cantik, bisa dibagikan dalam hitungan detik</span></div>
+                            <div className="feat-text">Tracker seserahan & kado angpao terintegrasi<span>Catat semua item hantaran dan angpao tamu dalam satu tempat</span></div>
                         </div>
                         <div className="feat-item">
                             <div className="feat-check">✓</div>
