@@ -111,8 +111,8 @@ export default function Login() {
             if (error) {
                 toast.error('Gagal kirim email reset. Periksa alamat email kamu.')
             } else {
-                toast.success('Email reset password sudah dikirim! Cek inbox kamu.', { duration: 6000 })
-                setMode('login')
+                toast.success('Link reset password sudah dikirim ke email kamu! Cek inbox atau folder spam.', { duration: 8000 })
+                setTimeout(() => setMode('login'), 1500)
             }
         } catch (err) {
             console.error('[Login] Reset password error:', err)
