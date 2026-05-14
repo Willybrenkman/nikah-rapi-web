@@ -5,7 +5,6 @@ import { useAuth } from './hooks/useAuth'
 import Layout from './components/layout/Layout'
 import WhatsAppButton from './components/WhatsAppButton'
 import ErrorBoundary from './components/ErrorBoundary'
-import ErrorBoundary from './components/ErrorBoundary'
 
 // Lazy load pages for code splitting
 const Login = lazy(() => import('./pages/Login'))
