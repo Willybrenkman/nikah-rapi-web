@@ -100,7 +100,7 @@ export default function App() {
           <Route path="/untuk-ibu" element={<LandingIbu />} />
           <Route path="/untuk-pria" element={<LandingPria />} />
           <Route path="/untuk-karir" element={<LandingKarir />} />
-          <Route path="/landing-simple" element={<NikahRapiLanding />} />
+          <Route path="/v4" element={<NikahRapiLanding />} />
           <Route path="/demo" element={<Demo />} />
           <Route path="/login" element={<Login />} />
 
