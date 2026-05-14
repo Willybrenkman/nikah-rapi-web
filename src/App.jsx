@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast'
 import { useAuth } from './hooks/useAuth'
 import Layout from './components/layout/Layout'
 import WhatsAppButton from './components/WhatsAppButton'
+import ErrorBoundary from './components/ErrorBoundary'
 
 // Lazy load pages for code splitting
 const Login = lazy(() => import('./pages/Login'))
@@ -93,6 +94,7 @@ export default function App() {
     <BrowserRouter>
       <Toaster position="top-right" toastOptions={{ style: { fontFamily: "'DM Sans',sans-serif", fontSize: 14 } }} />
       <WhatsAppButton />
+      <ErrorBoundary>
       <Suspense fallback={<Loader />}>
         <Routes>
           {/* ── Public ── */}
@@ -137,6 +139,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
+      </ErrorBoundary>
     </BrowserRouter>
   )
 }

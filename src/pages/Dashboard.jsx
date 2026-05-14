@@ -51,8 +51,6 @@ export default function Dashboard() {
     const [milestones, setMilestones] = useState({ administrasi: { done: 0, total: 0 }, venue: { done: 0, total: 0 }, mua: { done: 0, total: 0 }, dokumentasi: { done: 0, total: 0 } })
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => { fetchStats() }, [fetchStats])
-
     const fetchStats = useCallback(async () => {
         if (!wedding) { setLoading(false); return }
         
@@ -133,6 +131,8 @@ export default function Dashboard() {
         } catch (err) { console.error(err) }
         finally { setLoading(false) }
     }, [wedding])
+
+    useEffect(() => { fetchStats() }, [fetchStats])
 
     if (loading) return (
         <div className="min-h-[60vh] flex flex-col items-center justify-center gap-6">
