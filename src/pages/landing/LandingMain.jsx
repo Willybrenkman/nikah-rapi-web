@@ -128,9 +128,9 @@ const LandingMain = () => {
             >
               💍 Mulai Rapikan Pernikahanmu →
             </a>
-            <a href={checkoutUrl} className="btn-secondary">
+            <button onClick={() => navigate('/demo')} className="btn-secondary">
               👁️ Coba Demo Dulu (Gratis)
-            </a>
+            </button>
           </div>
           <div className="cta-notes">
             <div className="cta-note-item">✓ Garansi 7 hari</div>

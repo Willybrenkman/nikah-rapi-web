@@ -115,9 +115,9 @@ const LandingKarir = () => {
             >
               ⚡ Hemat Waktumu, Mulai Sekarang →
             </a>
-            <a href={checkoutUrl} className="btn-secondary">
+            <button onClick={() => navigate('/demo')} className="btn-secondary">
               👁️ Coba 2 Menit Gratis
-            </a>
+            </button>
           </div>
           <div className="cta-notes">
             <div className="cta-note-item">✓ Bisa diakses dari HP saat meeting</div>
