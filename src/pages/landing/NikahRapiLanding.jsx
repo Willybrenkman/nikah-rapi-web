@@ -534,12 +534,11 @@ export default function NikahRapiLanding() {
                 {/* ── FOTO PRODUK ── */}
                 <div className="product-section">
 
-                    {/* SWAP: ganti div ini dengan <img src="foto-produk.png" /> */}
-                    <div className="product-placeholder">
-                        <div className="placeholder-ico">📸</div>
-                        <div className="placeholder-text">Letakkan Foto Produk di Sini</div>
-                        <div className="placeholder-sub">Ganti div ini dengan &lt;img src="foto-produk.png" /&gt;</div>
-                    </div>
+                    <img
+                        src="/landing-assets/Gambaran Produk ditampilan HP ini.png"
+                        alt="Gambaran Produk Nikah Rapi di HP"
+                        style={{ width: '100%', height: 'auto', borderRadius: '16px', display: 'block' }}
+                    />
 
                     {/* FREEBIES */}
                     <div className="freebies" style={{ padding: '16px 0 0', border: 'none' }}>
