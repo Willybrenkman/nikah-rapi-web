@@ -654,7 +654,7 @@ export default function NikahRapiLanding() {
                     <div className="closing-sub">
                         👇 Klik tombol di bawah dan dapatkan akses sekarang
                     </div>
-                    <a href="https://checkout.nikahrapi.online/" className="cta-btn">
+                    <a href="https://checkout.nikahrapi.online/" className="cta-btn" onClick={() => window.fbq && window.fbq('track', 'InitiateCheckout')}>
                         💍 Dapatkan Nikah Rapi + Bonus Sekarang
                     </a>
                     <div className="safe">🛡️ Pembayaran aman via Scalev · Akses langsung setelah bayar</div>
