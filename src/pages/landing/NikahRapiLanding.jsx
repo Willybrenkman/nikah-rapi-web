@@ -605,6 +605,7 @@ export default function NikahRapiLanding() {
                     <div className="pricing-title">Harga:</div>
                     <div className="price-old">Rp 299.000</div>
                     <div className="price-now"><sup>Rp</sup>99.000</div>
+                    <div style={{ display: 'inline-block', background: '#D4756B', color: '#fff', fontSize: '12px', fontWeight: '800', padding: '4px 12px', borderRadius: '20px', marginTop: '6px', letterSpacing: '0.05em' }}>🔥 HEMAT 67%</div>
                     <div className="price-note">Akses seumur hidup · Update gratis · Mulai hari ini</div>
 
                 </div>
