@@ -623,10 +623,17 @@ export default function NikahRapiLanding() {
                             </div>
                         </div>
                         <div className="bonus-item">
-                            <div className="bonus-ico">🎬</div>
+                            <div className="bonus-ico">💻</div>
                             <div className="bonus-copy">
-                                <h4>Video Tutorial Penggunaan Lengkap</h4>
-                                <p>Panduan step-by-step semua fitur. Langsung bisa dipakai dalam 10 menit.</p>
+                                <h4>Tutorial Lengkap di Dalam Website</h4>
+                                <p>Panduan step-by-step semua fitur tersedia langsung di dalam aplikasi. Langsung bisa dipakai dalam 10 menit.</p>
+                            </div>
+                        </div>
+                        <div className="bonus-item">
+                            <div className="bonus-ico">💬</div>
+                            <div className="bonus-copy">
+                                <h4>Customer Service Siap Membantu</h4>
+                                <p>Ada kendala atau pertanyaan? Tim CS kami siap bantu via WhatsApp kapanpun kamu butuh.</p>
                             </div>
                         </div>
                     </div>
