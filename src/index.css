@@ -611,14 +611,6 @@ textarea:focus {
 
 /* Mobile */
 @media (max-width:1023px) {
-  .sidebar {
-    transform: translateX(-100%);
-  }
-
-  .sidebar.open {
-    transform: translateX(0);
-  }
-
   .layout-main {
     margin-left: 0;
   }

@@ -46,7 +46,7 @@ export default function Sidebar() {
       )}
 
       {/* Sidebar */}
-      <aside className={`sidebar lg:translate-x-0 ${sidebarOpen ? 'open' : ''}`}>
+      <aside className={`sidebar ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
 
         {/* Header */}
         <div style={{ padding: '24px 20px 16px', borderBottom: '1px solid var(--border)', flexShrink: 0, position: 'relative' }}>
