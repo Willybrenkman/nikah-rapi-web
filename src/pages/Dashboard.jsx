@@ -89,11 +89,11 @@ export default function Dashboard() {
 
         try {
             const [budgetRes, tamuRes, angpaoRes, checkRes, vendorRes] = await Promise.all([
-                supabase.from('budget_items').select('*').eq('wedding_id', wedding.id),
+                supabase.from('budget_items').select('id,kategori,tipe,jumlah_estimasi,jumlah_aktual').eq('wedding_id', wedding.id),
                 supabase.from('tamu_undangan').select('status_rsvp').eq('wedding_id', wedding.id),
                 supabase.from('kado_angpao').select('nominal,jenis').eq('wedding_id', wedding.id),
                 supabase.from('checklist_items').select('is_done,kategori').eq('wedding_id', wedding.id),
-                supabase.from('vendors').select('*').eq('wedding_id', wedding.id).order('deadline_pelunasan').limit(4)
+                supabase.from('vendors').select('id,nama,kategori,deadline_pelunasan').eq('wedding_id', wedding.id).order('deadline_pelunasan').limit(4)
             ])
 
             const items = budgetRes.data || []

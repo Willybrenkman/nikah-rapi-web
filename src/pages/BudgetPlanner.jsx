@@ -47,7 +47,7 @@ export default function BudgetPlanner() {
             setLoading(false)
             return
         }
-        const { data } = await supabase.from('budget_items').select('*').eq('wedding_id', wedding.id).order('created_at')
+        const { data } = await supabase.from('budget_items').select('id,kategori,tipe,jumlah_estimasi,jumlah_aktual,catatan,file_url').eq('wedding_id', wedding.id).order('created_at').limit(100)
         setItems(data || [])
         setLoading(false)
     }
@@ -67,7 +67,7 @@ export default function BudgetPlanner() {
         setModal(true) 
         
         // Fetch real payments from DB
-        const { data } = await supabase.from('budget_payments').select('*').eq('budget_item_id', item.id).order('payment_date', { ascending: false })
+        const { data } = await supabase.from('budget_payments').select('id,description,payment_date,amount,receipt_url').eq('budget_item_id', item.id).order('payment_date', { ascending: false })
         setDbPayments(data || [])
     }
 
@@ -491,7 +491,7 @@ export default function BudgetPlanner() {
                                                                 const res = await confirmDelete('Hapus riwayat bayar ini?')
                                                                 if(!res.isConfirmed) return; 
                                                                 await supabase.from('budget_payments').delete().eq('id', p.id)
-                                                                const { data } = await supabase.from('budget_payments').select('*').eq('budget_item_id', editId).order('payment_date', { ascending: false })
+                                                                const { data } = await supabase.from('budget_payments').select('id,description,payment_date,amount,receipt_url').eq('budget_item_id', editId).order('payment_date', { ascending: false })
                                                                 setDbPayments(data || [])
                                                                 // Update total aktual di UI
                                                                 const newTotal = (data || []).reduce((acc, curr) => acc + Number(curr.amount), 0)
@@ -542,7 +542,7 @@ export default function BudgetPlanner() {
                                                     activityService.log(wedding.id, user?.email, 'Tambah Pembayaran', `Membayar ${k} senilai ${rp(Number(a))} untuk ${form.kategori}`)
                                                     
                                                     // Refresh list
-                                                    const { data } = await supabase.from('budget_payments').select('*').eq('budget_item_id', editId).order('payment_date', { ascending: false })
+                                                    const { data } = await supabase.from('budget_payments').select('id,description,payment_date,amount,receipt_url').eq('budget_item_id', editId).order('payment_date', { ascending: false })
                                                     setDbPayments(data || [])
                                                     
                                                     // Update total aktual di form & items

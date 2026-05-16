@@ -38,7 +38,7 @@ export default function VendorManager() {
             setLoading(false)
             return
         }
-        const { data } = await supabase.from('vendors').select('*').eq('wedding_id', wedding.id).order('created_at')
+        const { data } = await supabase.from('vendors').select('id,nama,kategori,pic_nama,pic_hp,total,dp,deadline_pelunasan,status_kontrak,catatan,kontrak_url').eq('wedding_id', wedding.id).order('created_at').limit(100)
         setItems(data || [])
         setLoading(false)
     }

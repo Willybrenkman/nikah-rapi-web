@@ -34,7 +34,7 @@ export default function Checklist() {
             setLoading(false)
             return
         }
-        const { data } = await supabase.from('checklist_items').select('*').eq('wedding_id', wedding.id).order('created_at')
+        const { data } = await supabase.from('checklist_items').select('id,task,kategori,deadline,pic,priority,status,is_done').eq('wedding_id', wedding.id).order('created_at').limit(200)
         setItems(data || [])
         setLoading(false)
     }

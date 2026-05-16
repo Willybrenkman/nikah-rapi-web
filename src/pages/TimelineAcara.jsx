@@ -35,7 +35,7 @@ export default function TimelineAcara() {
             setLoading(false)
             return
         }
-        const { data } = await supabase.from('timeline_events').select('*').eq('wedding_id', wedding.id).order('waktu')
+        const { data } = await supabase.from('timeline_events').select('id,sesi,waktu,durasi_menit,event,lokasi,status').eq('wedding_id', wedding.id).order('waktu').limit(100)
         setItems(data || [])
         setLoading(false)
     }

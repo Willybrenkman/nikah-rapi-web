@@ -24,42 +24,27 @@ export default function Dekorasi() {
     const [editId, setEditId] = useState(null)
     const [saving, setSaving] = useState(false)
 
-    useEffect(() => { if (wedding) fetchData() }, [wedding])
+    useEffect(() => {
+        if (!wedding) return
+        setTema(wedding.tema_dekorasi || '')
+        setMoodboard(wedding.moodboard_notes || '')
+        if (wedding.palet_warna?.length > 0) setPalet(wedding.palet_warna)
+        fetchData()
+    }, [wedding])
 
     const fetchData = async () => {
         setLoading(true)
-        const [dekRes, profRes] = await Promise.all([
-            supabase.from('dekorasi_items').select('*').eq('wedding_id', wedding.id).order('created_at'),
-            // Kita coba fetch palet_warna jika kolomnya sudah ada
-            supabase.from('wedding_profiles').select('*').eq('id', wedding.id).single(),
-        ])
-        setItems(dekRes.data || [])
-        if (profRes.data) { 
-            setTema(profRes.data.tema_dekorasi || '')
-            setMoodboard(profRes.data.moodboard_notes || '')
-            if (profRes.data.palet_warna && profRes.data.palet_warna.length > 0) {
-                setPalet(profRes.data.palet_warna)
-            }
-        }
+        const { data } = await supabase.from('dekorasi_items').select('id,nama,area,estimasi,status,catatan').eq('wedding_id', wedding.id).order('created_at').limit(100)
+        setItems(data || [])
         setLoading(false)
     }
 
     const saveTema = async () => {
-        const payload = { tema_dekorasi: tema, moodboard_notes: moodboard, palet_warna: palet }
-        
-        // Cek kolom yang tersedia agar tidak error jika kolom palet_warna belum ada
-        const { data } = await supabase.from('wedding_profiles').select('*').limit(1)
-        const safePayload = {}
-        if (data && data.length > 0) {
-            const dbCols = Object.keys(data[0])
-            Object.keys(payload).forEach(k => {
-                if (dbCols.includes(k)) safePayload[k] = payload[k]
-            })
-        } else {
-            Object.assign(safePayload, payload)
-        }
-
-        await supabase.from('wedding_profiles').update(safePayload).eq('id', wedding.id)
+        await supabase.from('wedding_profiles').update({
+            tema_dekorasi: tema,
+            moodboard_notes: moodboard,
+            palet_warna: palet
+        }).eq('id', wedding.id)
         toast.success('Tema & Palet disimpan!')
     }
 
