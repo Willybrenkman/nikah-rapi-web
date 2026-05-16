@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
 import { confirmDelete } from '../lib/swal'
+import TableSkeleton from '../components/TableSkeleton'
 import toast from 'react-hot-toast'
 import { syncService } from '../lib/syncService'
 import { activityService } from '../lib/activityService'
@@ -178,8 +179,6 @@ export default function VendorManager() {
         return diff <= 30 && diff >= 0
     })
 
-    if (loading && items.length === 0) return <div className="text-center py-20 text-brown-muted font-playfair italic">Menghubungkan dengan daftar vendor kalian...</div>
-
     return (
         <div className="animate-fade-in pb-12">
             <div className="section-header">
@@ -252,7 +251,7 @@ export default function VendorManager() {
                             </tr>
                         </thead>
                         <tbody>
-                            {items.length === 0 ? (
+                            {loading ? <TableSkeleton cols={9} rows={5} /> : items.length === 0 ? (
                                 <tr><td colSpan={9} className="td text-center py-24 text-brown-muted italic font-medium">Belum ada vendor terdaftar. Yuk, mulai data rekanan pernikahanmu!</td></tr>
                             ) : items.map(item => {
                                 const sisa = (item.total || 0) - (item.dp || 0)

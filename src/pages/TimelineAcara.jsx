@@ -88,8 +88,28 @@ export default function TimelineAcara() {
                 </div>
             </div>
 
-            {loading && items.length === 0 ? (
-                <div className="text-center py-24 text-brown-muted font-playfair italic">Menyiapkan urutan acara pernikahanmu...</div>
+            {loading ? (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {[0, 1].map(g => (
+                        <div key={g} className="card p-0 overflow-hidden shadow-sm border-ivory/50">
+                            <div className="p-6 border-b border-border bg-ivory/5">
+                                <div className="h-4 w-32 bg-ivory animate-shimmer rounded-full" />
+                            </div>
+                            <div className="p-8 space-y-6">
+                                {[0, 1, 2].map(i => (
+                                    <div key={i} className="flex gap-4 items-start" style={{ animationDelay: `${i * 80}ms` }}>
+                                        <div className="w-4 h-4 rounded-full bg-ivory animate-shimmer shrink-0 mt-1" />
+                                        <div className="flex-1 space-y-2">
+                                            <div className="h-3 bg-ivory animate-shimmer rounded-full w-1/3" />
+                                            <div className="h-4 bg-ivory animate-shimmer rounded-full w-3/4" />
+                                            <div className="h-3 bg-ivory animate-shimmer rounded-full w-1/2" />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
             ) : displayed.length === 0 ? (
                 <div className="card text-center py-20 shadow-sm border-ivory/50 bg-ivory/5">
                     <div className="w-20 h-20 bg-rose-gold/10 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-6 shadow-inner-white">📅</div>

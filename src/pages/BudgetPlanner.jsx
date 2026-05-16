@@ -8,6 +8,7 @@ import { syncService } from '../lib/syncService'
 import { activityService } from '../lib/activityService'
 import { useAuth } from '../hooks/useAuth'
 import EmptyState from '../components/EmptyState'
+import TableSkeleton from '../components/TableSkeleton'
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js'
 import { Pie, Bar } from 'react-chartjs-2'
 import FileUpload from '../components/FileUpload'
@@ -157,8 +158,6 @@ export default function BudgetPlanner() {
         return '💰'
     }
 
-    if (loading && items.length === 0) return <div className="text-center py-20 text-brown-muted font-playfair italic">Menganalisa rincian anggaran pernikahanmu...</div>
-
     return (
         <div className="animate-fade-in pb-12">
             <div className="section-header">
@@ -302,8 +301,8 @@ export default function BudgetPlanner() {
                     <span className="text-[10px] font-bold text-brown-muted uppercase tracking-widest italic">{items.length} Kategori Anggaran</span>
                 </div>
                 
-                {items.length === 0 ? (
-                    <EmptyState 
+                {!loading && items.length === 0 ? (
+                    <EmptyState
                         icon="💰"
                         title="Belum ada rencana budget"
                         subtitle="Mulai susun rencana keuangan pernikahanmu dengan menekan tombol 'Tambah Kategori Budget' di pojok kanan atas."
@@ -324,7 +323,7 @@ export default function BudgetPlanner() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {items.map((item, i) => {
+                                {loading ? <TableSkeleton cols={8} rows={5} /> : items.map((item, i) => {
                                     const sel = (item.jumlah_estimasi || 0) - (item.jumlah_aktual || 0)
                                     const pct = item.jumlah_estimasi > 0 ? Math.min(100, Math.round((item.jumlah_aktual || 0) / item.jumlah_estimasi * 100)) : 0
                                     const badge = item.jumlah_aktual === 0 ? 'badge-grey' : pct >= 100 ? 'badge-green' : pct > 70 ? 'badge-yellow' : 'badge-red'

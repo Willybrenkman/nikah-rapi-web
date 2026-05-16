@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
 import { confirmDelete } from '../lib/swal'
+import TableSkeleton from '../components/TableSkeleton'
 import toast from 'react-hot-toast'
 
 const EMPTY = { task: '', kategori: 'Venue', deadline: '', pic: '', priority: 'Medium', status: 'Belum' }
@@ -70,8 +71,6 @@ export default function Checklist() {
     const pct = items.length > 0 ? Math.round(doneCount / items.length * 100) : 0
     const displayed = filter === 'Semua' ? items : filter === 'Prioritas Tinggi' ? items.filter(i => i.priority === 'High') : items.filter(i => i.status === (filter === 'Selesai' ? 'Selesai' : filter === 'Dalam Proses' ? 'Proses' : 'Belum'))
 
-    if (loading && items.length === 0) return <div className="text-center py-20 text-brown-muted font-playfair italic">Meyiapkan daftar tugas persiapan pernikahanmu...</div>
-
     return (
         <div className="animate-fade-in pb-12">
             <div className="section-header">
@@ -134,7 +133,7 @@ export default function Checklist() {
                             </tr>
                         </thead>
                         <tbody>
-                            {displayed.length === 0 ? (
+                            {loading ? <TableSkeleton cols={7} rows={5} /> : displayed.length === 0 ? (
                                 <tr><td colSpan={7} className="td text-center py-24 text-brown-muted italic font-medium">Belum ada tugas dalam kategori ini. Mari mulai buat daftar!</td></tr>
                             ) : displayed.map(item => (
                                 <tr key={item.id} className={`tr group transition-all ${item.is_done ? 'bg-ivory/10' : ''}`}>
