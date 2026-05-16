@@ -551,9 +551,11 @@ export default function NikahRapiLanding() {
                             <div className="freebie-ico">🎬</div>
                             <div className="freebie-text"><strong>Free Tutorial</strong>Video Panduan Penggunaan Lengkap</div>
                         </div>
-                        <div className="freebie" style={{ flexBasis: '100%' }}>
-                            <div className="freebie-ico">💬</div>
-                            <div className="freebie-text"><strong>CS Available</strong>Siap Bantu Kapanpun Kamu Butuh</div>
+                        <div style={{ flexBasis: '100%', display: 'flex', justifyContent: 'center' }}>
+                            <div className="freebie" style={{ flex: '0 0 calc(50% - 5px)' }}>
+                                <div className="freebie-ico">💬</div>
+                                <div className="freebie-text"><strong>CS Available</strong>Siap Bantu Kapanpun Kamu Butuh</div>
+                            </div>
                         </div>
                     </div>
 
