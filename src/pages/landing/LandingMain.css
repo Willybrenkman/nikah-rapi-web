@@ -103,10 +103,6 @@
   animation: fadeDown 0.6s ease both;
 }
 
-.landing-container .badge::before {
-  content: 'âœ¦';
-  color: var(--gold);
-}
 
 .landing-container .hero-eyebrow {
   font-family: 'Jost', sans-serif;
