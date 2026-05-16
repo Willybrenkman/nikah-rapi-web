@@ -1,18 +1,21 @@
-import Swal from 'sweetalert2'
+let _Swal = null
+async function getSwal() {
+    if (!_Swal) _Swal = (await import('sweetalert2')).default
+    return _Swal
+}
 
-export const confirmDelete = (title = 'Hapus item ini?', text = 'Data yang dihapus tidak bisa dikembalikan!') => {
+export const confirmDelete = async (title = 'Hapus item ini?', text = 'Data yang dihapus tidak bisa dikembalikan!') => {
+    const Swal = await getSwal()
     return Swal.fire({
-        title: title,
-        text: text,
+        title, text,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#C9956C', // Warna Brown/Rose Gold kita
-        cancelButtonColor: '#D4756B', // Warna Rose/Danger kita
+        confirmButtonColor: '#C9956C',
+        cancelButtonColor: '#D4756B',
         confirmButtonText: 'Ya, Hapus!',
         cancelButtonText: 'Batal',
         background: '#fff',
         color: '#5D4037',
-        borderRadius: '20px',
         customClass: {
             popup: 'rounded-3xl border-none shadow-2xl',
             title: 'font-playfair font-bold',
@@ -22,14 +25,14 @@ export const confirmDelete = (title = 'Hapus item ini?', text = 'Data yang dihap
     })
 }
 
-export const confirmWarning = (title, text, confirmText = 'Lanjutkan', cancelText = 'Batal') => {
+export const confirmWarning = async (title, text, confirmText = 'Lanjutkan', cancelText = 'Batal') => {
+    const Swal = await getSwal()
     return Swal.fire({
-        title: title,
-        text: text,
+        title, text,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#C9956C', // Rose Gold
-        cancelButtonColor: '#9B8070', // Muted Brown
+        confirmButtonColor: '#C9956C',
+        cancelButtonColor: '#9B8070',
         confirmButtonText: confirmText,
         cancelButtonText: cancelText,
         background: '#fff',
@@ -43,13 +46,12 @@ export const confirmWarning = (title, text, confirmText = 'Lanjutkan', cancelTex
     })
 }
 
-export const alertSuccess = (title, text) => {
+export const alertSuccess = async (title, text) => {
+    const Swal = await getSwal()
     return Swal.fire({
-        title: title,
-        text: text,
+        title, text,
         icon: 'success',
         confirmButtonColor: '#8BAF8B',
         timer: 2000,
-        borderRadius: '20px',
     })
 }

@@ -34,14 +34,16 @@ export default defineConfig({
   },
   build: {
     outDir: "dist",
-    sourcemap: true,
+    target: "es2020",
+    minify: "esbuild",
+    cssCodeSplit: true,
+    sourcemap: false,
     rollupOptions: {
       output: {
-        // Code splitting untuk performa lebih baik
         manualChunks: {
           vendor: ["react", "react-dom", "react-router-dom"],
           supabase: ["@supabase/supabase-js"],
-          charts: ["recharts"],
+          charts: ["recharts", "chart.js", "react-chartjs-2"],
         },
       },
     },

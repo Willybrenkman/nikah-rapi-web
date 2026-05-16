@@ -4,7 +4,6 @@ import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
 import toast from 'react-hot-toast'
 import { syncService } from '../lib/syncService'
-import { exportService } from '../lib/exportService'
 import { confirmDelete } from '../lib/swal'
 
 const rp = (n = 0) => 'Rp ' + Number(n).toLocaleString('id-ID')
@@ -120,7 +119,7 @@ export default function SeserahanTracker() {
                 </div>
                 <div className="flex gap-2">
                     {items.length > 0 && (
-                        <button className="btn-outline px-4 flex items-center gap-2 text-sm" onClick={() => exportService.exportSeserahan(items)}>
+                        <button className="btn-outline px-4 flex items-center gap-2 text-sm" onClick={async () => { const { exportService } = await import('../lib/exportService'); exportService.exportSeserahan(items) }}>
                             📥 Excel
                         </button>
                     )}

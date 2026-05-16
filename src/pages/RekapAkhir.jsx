@@ -5,7 +5,6 @@ import { useWedding } from '../hooks/useWedding'
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 import toast from 'react-hot-toast'
-import { exportService } from '../lib/exportService'
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
 
 const rp = (n = 0) => 'Rp ' + Number(n).toLocaleString('id-ID')
@@ -24,7 +23,7 @@ export default function RekapAkhir() {
         setLoading(true)
         try {
             const [budgetRes, tamuRes, vendorRes, sesRes, angpaoRes, checkRes] = await Promise.all([
-                supabase.from('budget_items').select('*').eq('wedding_id', wedding.id),
+                supabase.from('budget_items').select('id,kategori,jumlah_estimasi,jumlah_aktual').eq('wedding_id', wedding.id),
                 supabase.from('tamu_undangan').select('status_rsvp').eq('wedding_id', wedding.id),
                 supabase.from('vendors').select('id').eq('wedding_id', wedding.id),
                 supabase.from('seserahan_items').select('id').eq('wedding_id', wedding.id),
@@ -75,6 +74,7 @@ export default function RekapAkhir() {
                 supabase.from('checklist_items').select('*').eq('wedding_id', wedding.id),
                 supabase.from('timeline_events').select('*').eq('wedding_id', wedding.id).order('waktu'),
             ])
+            const { exportService } = await import('../lib/exportService')
             exportService.exportRekapLengkap({
                 budget: bRes.data || [],
                 guests: gRes.data || [],

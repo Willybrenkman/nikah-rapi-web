@@ -5,7 +5,6 @@ import { useWedding } from '../hooks/useWedding'
 import { confirmDelete, confirmWarning } from '../lib/swal'
 import toast from 'react-hot-toast'
 import EmptyState from '../components/EmptyState'
-import { exportService } from '../lib/exportService'
 import { activityService } from '../lib/activityService'
 import { useAuth } from '../hooks/useAuth'
 
@@ -249,7 +248,7 @@ export default function GuestList() {
                 </div>
                 <div className="flex gap-3">
                     {items.length > 0 && (
-                        <button className="btn-outline px-4 py-2.5 text-[10px] font-black uppercase tracking-widest flex items-center gap-2" onClick={() => exportService.exportGuestList(items)}>
+                        <button className="btn-outline px-4 py-2.5 text-[10px] font-black uppercase tracking-widest flex items-center gap-2" onClick={async () => { const { exportService } = await import('../lib/exportService'); exportService.exportGuestList(items) }}>
                             <span>📤</span> Ekspor Excel
                         </button>
                     )}

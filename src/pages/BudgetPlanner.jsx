@@ -5,7 +5,6 @@ import { useWedding } from '../hooks/useWedding'
 import { confirmDelete } from '../lib/swal'
 import toast from 'react-hot-toast'
 import { syncService } from '../lib/syncService'
-import { exportService } from '../lib/exportService'
 import { activityService } from '../lib/activityService'
 import { useAuth } from '../hooks/useAuth'
 import EmptyState from '../components/EmptyState'
@@ -169,7 +168,7 @@ export default function BudgetPlanner() {
                 </div>
                 <div className="flex gap-2">
                     {items.length > 0 && (
-                        <button className="btn-outline px-4 flex items-center gap-2 text-sm" onClick={() => exportService.exportBudget(items, wedding?.total_budget)}>
+                        <button className="btn-outline px-4 flex items-center gap-2 text-sm" onClick={async () => { const { exportService } = await import('../lib/exportService'); exportService.exportBudget(items, wedding?.total_budget) }}>
                             📥 Excel
                         </button>
                     )}

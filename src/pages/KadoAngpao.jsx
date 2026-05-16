@@ -4,7 +4,6 @@ import { supabase } from '../lib/supabase'
 import { useWedding } from '../hooks/useWedding'
 import { confirmDelete } from '../lib/swal'
 import toast from 'react-hot-toast'
-import { exportService } from '../lib/exportService'
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js'
 import { Doughnut, Bar } from 'react-chartjs-2'
 ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend)
@@ -86,7 +85,7 @@ export default function KadoAngpao() {
                 </div>
                 <div className="flex gap-2">
                     {items.length > 0 && (
-                        <button className="btn-outline px-4 flex items-center gap-2 text-sm" onClick={() => exportService.exportKadoAngpao(items)}>
+                        <button className="btn-outline px-4 flex items-center gap-2 text-sm" onClick={async () => { const { exportService } = await import('../lib/exportService'); exportService.exportKadoAngpao(items) }}>
                             📥 Excel
                         </button>
                     )}
