@@ -6,8 +6,8 @@ import { useLocation } from 'react-router-dom';
 export default function WhatsAppButton() {
   const location = useLocation();
   
-  // Sembunyikan hanya di halaman login/register
-  if (['/login', '/register', '/forgot-password'].includes(location.pathname)) {
+  // Hanya tampil di dalam dashboard
+  if (!location.pathname.startsWith('/dashboard')) {
     return null;
   }
 
