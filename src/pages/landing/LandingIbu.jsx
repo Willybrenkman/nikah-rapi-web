@@ -99,7 +99,7 @@ const LandingIbu = () => {
             <div className="preview-stage on">
               <picture>
                 <source srcSet="/landing-assets/dashboard.webp" type="image/webp" />
-                <img src="/landing-assets/dashboard-opt.png" alt="Dashboard" width="665" height="346" fetchPriority="high" loading="eager" decoding="async" style={{ width: '100%', height: 'auto' }} />
+                <img src="/landing-assets/dashboard-opt.png" alt="Dashboard" width="665" height="346" fetchPriority="high" loading="eager" decoding="sync" style={{ width: '100%', height: 'auto' }} />
               </picture>
             </div>
           </div>

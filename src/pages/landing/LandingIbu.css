@@ -132,6 +132,8 @@
   width: 100%;
   height: auto;
   display: block;
+  content-visibility: auto;
+  contain-intrinsic-size: 665px 346px;
 }
 
 .landing-container .drama-grid {
