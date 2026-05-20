@@ -541,10 +541,10 @@ export default function NikahRapiLanding() {
                 <div className="product-section">
 
                     <img
-                        src="/landing-assets/gambaran-produk-hp.webp"
+                        src="/landing-assets/gambaran-produk-hp-480.webp"
                         alt="Gambaran Produk Nikah Rapi di HP"
-                        width="800"
-                        height="505"
+                        width="480"
+                        height="303"
                         fetchPriority="high"
                         loading="eager"
                         decoding="sync"
