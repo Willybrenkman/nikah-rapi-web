@@ -3,9 +3,14 @@ import React from 'react';
 export default function NikahRapiLanding() {
     return (
         <>
+            <link
+                rel="stylesheet"
+                href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+                media="print"
+                onLoad={e => { e.currentTarget.media = 'all' }}
+            />
             <style>
                 {`
-                @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
                 :root {
                     --rose: #C9856A;
@@ -536,8 +541,13 @@ export default function NikahRapiLanding() {
                 <div className="product-section">
 
                     <img
-                        src="/landing-assets/gambaran-produk-hp.jpg"
+                        src="/landing-assets/gambaran-produk-hp.webp"
                         alt="Gambaran Produk Nikah Rapi di HP"
+                        width="800"
+                        height="505"
+                        fetchPriority="high"
+                        loading="eager"
+                        decoding="sync"
                         style={{ width: '100%', height: 'auto', borderRadius: '16px', display: 'block' }}
                     />
 
