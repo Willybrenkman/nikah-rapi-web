@@ -16,6 +16,16 @@ const LandingKarir = () => {
   const checkoutUrl = "https://checkout.nikahrapi.online/";
 
   useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = '/landing-assets/dashboard-opt.png';
+    link.fetchPriority = 'high';
+    document.head.appendChild(link);
+    return () => { if (document.head.contains(link)) document.head.removeChild(link); };
+  }, []);
+
+  useEffect(() => {
     if (window.fbq) {
       window.fbq('track', 'ViewContent', {
         content_name: 'Nikah Rapi Karir Package',
@@ -106,10 +116,7 @@ const LandingKarir = () => {
               <div className="browser-url">app.nikahrapi.online ✦</div>
             </div>
             <div className="preview-stage on">
-              <picture>
-                <source srcSet="/landing-assets/dashboard.webp" type="image/webp" />
-                <img src="/landing-assets/dashboard-opt.png" alt="Dashboard NIKAH RAPI" width="665" height="346" fetchPriority="high" loading="eager" decoding="sync" style={{ width: '100%', height: 'auto' }} />
-              </picture>
+              <img src="/landing-assets/dashboard-opt.png" alt="Dashboard NIKAH RAPI" width="665" height="346" fetchPriority="high" loading="eager" decoding="sync" style={{ width: '100%', height: 'auto' }} />
             </div>
           </div>
         </div>

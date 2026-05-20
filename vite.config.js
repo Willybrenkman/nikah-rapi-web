@@ -41,13 +41,18 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('@supabase')) return 'supabase';
-            if (id.includes('recharts') || id.includes('chart.js') || id.includes('react-chartjs-2')) return 'charts';
-            if (id.includes('sweetalert2')) return 'sweetalert2';
-            return 'vendor';
-          }
-          if (id.includes('LandingDemoPreview')) return 'demo-preview';
+          if (!id.includes('node_modules')) return;
+          if (id.includes('@supabase')) return 'supabase';
+          if (id.includes('recharts') || id.includes('chart.js') || id.includes('d3')) return 'charts';
+          if (id.includes('sweetalert')) return 'sweetalert';
+          if (id.includes('react-helmet-async') || id.includes('react-hot-toast')) return 'ui-vendor';
+          if (
+            id.includes('/node_modules/react/') ||
+            id.includes('/node_modules/react-dom/') ||
+            id.includes('/node_modules/react-router') ||
+            id.includes('/node_modules/scheduler/')
+          ) return 'react-vendor';
+          return 'vendor';
         },
       },
     },
