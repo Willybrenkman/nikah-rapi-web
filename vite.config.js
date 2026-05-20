@@ -34,25 +34,16 @@ export default defineConfig({
   },
   build: {
     outDir: "dist",
-    target: "es2015",
+    target: "es2020",
     minify: "esbuild",
     cssCodeSplit: true,
     sourcemap: false,
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (!id.includes('node_modules')) return;
-          if (id.includes('@supabase')) return 'supabase';
-          if (id.includes('recharts') || id.includes('chart.js') || id.includes('d3')) return 'charts';
-          if (id.includes('sweetalert')) return 'sweetalert';
-          if (id.includes('react-helmet-async') || id.includes('react-hot-toast')) return 'ui-vendor';
-          if (
-            id.includes('/node_modules/react/') ||
-            id.includes('/node_modules/react-dom/') ||
-            id.includes('/node_modules/react-router') ||
-            id.includes('/node_modules/scheduler/')
-          ) return 'react-vendor';
-          return 'vendor';
+        manualChunks: {
+          vendor: ["react", "react-dom", "react-router-dom"],
+          supabase: ["@supabase/supabase-js"],
+          charts: ["recharts", "chart.js", "react-chartjs-2"],
         },
       },
     },

@@ -16,8 +16,10 @@ const LandingNav = ({ links }) => {
   const displayLinks = links || defaultLinks;
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -25,84 +27,47 @@ const LandingNav = ({ links }) => {
     if (href.startsWith('#')) {
       e.preventDefault();
       const el = document.querySelector(href);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
   return (
-    <nav style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      zIndex: 1000,
-      transition: 'all 0.3s ease',
-      background: scrolled ? 'rgba(250, 247, 242, 0.95)' : '#FAF7F2',
-      backdropFilter: scrolled ? 'blur(12px)' : 'none',
-      boxShadow: scrolled ? '0 1px 8px rgba(92, 61, 46, 0.08)' : 'none',
-      borderBottom: scrolled ? '1px solid rgba(92, 61, 46, 0.1)' : 'none',
-      padding: scrolled ? '12px 0' : '16px 0',
-    }}>
-      <div style={{
-        maxWidth: '1280px',
-        margin: '0 auto',
-        padding: '0 48px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}>
-        <div
-          style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+    <nav className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 ${scrolled ? 'bg-[#FAF7F2]/95 backdrop-blur-md shadow-sm py-3 border-b border-[#5C3D2E]/10' : 'bg-[#FAF7F2] py-4'}`}>
+      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+        {/* Logo */}
+        <div 
+          className="flex items-center gap-2 cursor-pointer"
           onClick={() => navigate('/')}
         >
-          <span style={{ fontSize: '20px' }}>💍</span>
-          <span style={{
-            color: '#5C3D2E',
-            fontFamily: "'Cormorant Garamond', serif",
-            fontWeight: '700',
-            fontSize: '20px',
-            letterSpacing: '2px',
-          }}>NIKAH RAPI</span>
+          <span className="text-xl">💍</span>
+          <span className="text-[#5C3D2E] font-playfair font-bold text-xl tracking-wide">NIKAH RAPI</span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+        {/* Desktop Links */}
+        <div className="hidden md:flex items-center gap-8">
           {displayLinks.map((link, idx) => (
-            <a
-              key={idx}
-              href={link.href}
+            <a 
+              key={idx} 
+              href={link.href} 
               onClick={(e) => handleLinkClick(e, link.href)}
-              style={{
-                color: '#5C3D2E',
-                fontSize: '14px',
-                fontWeight: '500',
-                textDecoration: 'none',
-                fontFamily: "'Jost', sans-serif",
-                transition: 'color 0.2s ease',
-              }}
-              onMouseEnter={e => e.currentTarget.style.color = '#8B5E6A'}
-              onMouseLeave={e => e.currentTarget.style.color = '#5C3D2E'}
+              className="text-[#5C3D2E] hover:text-[#8B5E6A] text-sm font-medium transition-colors"
             >
               {link.label}
             </a>
           ))}
         </div>
 
-        <a
-          href={checkoutUrl}
-          style={{
-            background: '#8B5E6A',
-            color: 'white',
-            padding: '8px 20px',
-            borderRadius: '8px',
-            fontSize: '14px',
-            fontWeight: '700',
-            textDecoration: 'none',
-            fontFamily: "'Jost', sans-serif",
-            boxShadow: '0 4px 12px rgba(139, 94, 106, 0.2)',
-          }}
-        >
-          Mulai Sekarang
-        </a>
+        {/* Actions */}
+        <div className="flex items-center gap-4">
+          <a
+            href={checkoutUrl}
+            className="bg-[#8B5E6A] hover:bg-[#5C3D2E] text-white px-5 py-2 rounded-lg text-sm font-bold transition-all shadow-md shadow-[#8B5E6A]/20"
+          >
+            Mulai Sekarang
+          </a>
+        </div>
       </div>
     </nav>
   );

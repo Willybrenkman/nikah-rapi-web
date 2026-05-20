@@ -26,11 +26,11 @@ const MUABusana = lazy(() => import('./pages/MUABusana'))
 
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
 const ResetPassword = lazy(() => import('./pages/ResetPassword'))
-import LandingMain from './pages/landing/LandingMain'
-import LandingIbu from './pages/landing/LandingIbu'
-import LandingPria from './pages/landing/LandingPria'
-import LandingKarir from './pages/landing/LandingKarir'
-import NikahRapiLanding from './pages/landing/NikahRapiLanding'
+const LandingMain = lazy(() => import('./pages/landing/LandingMain'))
+const LandingIbu = lazy(() => import('./pages/landing/LandingIbu'))
+const LandingPria = lazy(() => import('./pages/landing/LandingPria'))
+const LandingKarir = lazy(() => import('./pages/landing/LandingKarir'))
+const NikahRapiLanding = lazy(() => import('./pages/landing/NikahRapiLanding'))
 const Demo = lazy(() => import('./pages/Demo'))
 const FotoVideo = lazy(() => import('./pages/FotoVideo'))
 const CincinMahar = lazy(() => import('./pages/CincinMahar'))

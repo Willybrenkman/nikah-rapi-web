@@ -117,7 +117,6 @@
   border-radius: 16px;
   box-shadow: 0 50px 100px rgba(92, 61, 46, 0.18);
   overflow: hidden;
-  will-change: transform;
 }
 
 .landing-container .preview-stage {
@@ -218,47 +217,8 @@
   .landing-container .final-cta { padding: 80px 40px; }
 }
 
-/* ── Content-visibility for below-fold sections ── */
-.landing-container .drama-section,
-.landing-container .solution-section,
-.landing-container .diff-section,
-.landing-container .testi-section,
-.landing-container .faq-section {
-  content-visibility: auto;
-  contain-intrinsic-size: 0 500px;
-}
-
-/* ── Sticky bottom bar (mobile only) ── */
-.landing-container .sticky-bottom-bar {
-  display: none;
-}
-
 /* ── Mobile (768px) ── */
 @media (max-width: 768px) {
-  .landing-container .product-showcase { display: none; }
-
-  .landing-container .sticky-bottom-bar {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    box-sizing: border-box;
-    background: var(--mauve);
-    color: white;
-    padding: 16px 24px;
-    font-family: 'Jost', sans-serif;
-    font-weight: 500;
-    font-size: 15px;
-    text-align: center;
-    text-decoration: none;
-    box-shadow: 0 -4px 20px rgba(139, 94, 106, 0.25);
-    z-index: 999;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-
   .landing-container .hero { padding: 60px 20px 40px; min-height: auto; }
   .landing-container .hero-title { font-size: clamp(28px, 7vw, 42px); }
   .landing-container .badge { font-size: 10px; padding: 6px 14px; letter-spacing: 1px; }
