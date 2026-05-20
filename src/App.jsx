@@ -46,8 +46,8 @@ const ActivityLogs = lazy(() => import('./pages/ActivityLogs'))
 function Guard({ children }) {
   const { user, loading } = useAuth()
   if (loading) return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FDFAF6' }}>
-      <div style={{ fontSize: 48, animation: 'pulse-logo 1.5s ease-in-out infinite' }}>💍</div>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FDFAF6', contain: 'layout paint style' }}>
+      <div style={{ fontSize: 48, animation: 'pulse-logo 1.5s ease-in-out infinite', willChange: 'transform', display: 'inline-block' }}>💍</div>
     </div>
   )
   if (!user) return <Navigate to="/login" replace />
@@ -55,8 +55,8 @@ function Guard({ children }) {
 }
 
 const Loader = () => (
-  <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FDFAF6' }}>
-    <div style={{ fontSize: 48, animation: 'pulse-logo 1.5s ease-in-out infinite' }}>💍</div>
+  <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FDFAF6', contain: 'layout paint style' }}>
+    <div style={{ fontSize: 48, animation: 'pulse-logo 1.5s ease-in-out infinite', willChange: 'transform', display: 'inline-block' }}>💍</div>
   </div>
 )
 

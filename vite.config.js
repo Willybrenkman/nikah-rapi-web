@@ -34,10 +34,20 @@ export default defineConfig({
   },
   build: {
     outDir: "dist",
-    target: "es2020",
+    target: "esnext",
     minify: "esbuild",
     cssCodeSplit: true,
     sourcemap: false,
+    modulePreload: {
+      resolveDependencies: (filename, deps) => {
+        // Jangan preload chunk berat yang tidak dibutuhkan di landing page
+        return deps.filter(dep =>
+          !dep.includes('supabase') &&
+          !dep.includes('charts') &&
+          !dep.includes('sweetalert')
+        )
+      }
+    },
     rollupOptions: {
       output: {
         manualChunks: {
