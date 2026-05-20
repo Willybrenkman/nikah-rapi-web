@@ -9,9 +9,27 @@ import './LandingIbu.css';
 const LandingIbu = () => {
   const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState(null);
+  const [showSticky, setShowSticky] = useState(false);
 
   const toggleFaq = (index) => setOpenFaq(openFaq === index ? null : index);
   const checkoutUrl = "https://checkout.nikahrapi.online/";
+
+  useEffect(() => {
+    if (window.fbq) {
+      window.fbq('track', 'ViewContent', {
+        content_name: 'Nikah Rapi Ibu Package',
+        content_category: 'Wedding Planner',
+        value: 99000,
+        currency: 'IDR'
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => setShowSticky(window.scrollY > 300);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -81,7 +99,7 @@ const LandingIbu = () => {
             <div className="preview-stage on">
               <picture>
                 <source srcSet="/landing-assets/dashboard.webp" type="image/webp" />
-                <img src="/landing-assets/dashboard-opt.png" alt="Dashboard" width="665" height="346" fetchPriority="high" decoding="async" style={{ width: '100%', height: 'auto' }} />
+                <img src="/landing-assets/dashboard-opt.png" alt="Dashboard" width="665" height="346" fetchPriority="high" loading="eager" decoding="async" style={{ width: '100%', height: 'auto' }} />
               </picture>
             </div>
           </div>
@@ -90,21 +108,16 @@ const LandingIbu = () => {
         <div className="hero-cta-block">
           <div className="price-display">
             <div className="price-new"><sup style={{fontSize:'22px'}}>Rp</sup>99.000</div>
-            <div className="price-old"><s>Rp 299.000</s></div>
-            <div className="price-save">HEMAT 67%</div>
+            <div className="price-old"><s>Rp 199.000</s></div>
+            <div className="price-save">HEMAT 50%</div>
           </div>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '20px' }}>
-            <a 
-              href={checkoutUrl} 
+            <a
+              href={checkoutUrl}
               className="btn-primary"
               onClick={() => {
                 if (window.fbq) {
-                  window.fbq('track', 'ViewContent', { 
-                    content_name: 'Nikah Rapi Ibu Package', 
-                    content_category: 'Wedding Planner',
-                    value: 99000, 
-                    currency: 'IDR' 
-                  });
+                  window.fbq('track', 'InitiateCheckout', { value: 99000, currency: 'IDR' });
                 }
               }}
             >
@@ -118,6 +131,9 @@ const LandingIbu = () => {
             <div className="cta-note-item">✓ Akses Ibu & anak sekaligus</div>
             <div className="cta-note-item">✓ Sederhana, tidak ribet</div>
             <div className="cta-note-item">✓ Garansi 7 hari</div>
+          </div>
+          <div className="social-proof-bar">
+            👩 127+ ibu sudah hadiahkan untuk anaknya
           </div>
         </div>
       </section>
@@ -239,8 +255,8 @@ const LandingIbu = () => {
         <div className="pricing-card reveal">
           <div className="pricing-card-badge">✦ Akses Premium Seumur Hidup</div>
           <div className="price-hero"><div className="price-big"><sup>Rp</sup>99.000</div></div>
-          <div className="price-was-p"><s>Rp 299.000</s></div>
-          <div className="price-save-badge">🔥 Hemat 67% — Harga Promo Terbatas!</div>
+          <div className="price-was-p"><s>Rp 199.000</s></div>
+          <div className="price-save-badge">🔥 Hemat 50% — Harga Promo Terbatas!</div>
           <ul className="include-list">
             <li>Aplikasi Web NIKAH RAPI — 22+ modul lengkap & terintegrasi</li>
             <li>Seserahan Tracker eksklusif — pantau dari HP Ibu!</li>
@@ -255,18 +271,13 @@ const LandingIbu = () => {
             style={{ width: '100%', justifyContent: 'center', fontSize: '15px', padding: '22px' }}
             onClick={() => {
               if (window.fbq) {
-                window.fbq('track', 'ViewContent', { 
-                  content_name: 'Nikah Rapi Ibu Package', 
-                  content_category: 'Wedding Planner',
-                  value: 99000, 
-                  currency: 'IDR' 
-                });
+                window.fbq('track', 'InitiateCheckout', { value: 99000, currency: 'IDR' });
               }
             }}
           >
             💍 Hadiahkan Sekarang — Rp 99.000
           </a>
-          <p className="urgency-note">⏰ Harga segera naik ke Rp 299.000 · Garansi 7 hari · Akses langsung via WA</p>
+          <p className="urgency-note">⏰ Harga naik ke Rp 199.000 setelah 10 slot terjual · Sisa X slot · Garansi 7 hari</p>
         </div>
       </section>
 
@@ -300,6 +311,19 @@ const LandingIbu = () => {
       </section>
       
       </main>
+
+      {showSticky && (
+        <a
+          href={checkoutUrl}
+          className="sticky-bottom-bar"
+          onClick={() => {
+            if (window.fbq) window.fbq('track', 'InitiateCheckout', { value: 99000, currency: 'IDR' });
+          }}
+        >
+          💍 Hadiahkan Sekarang — Rp 99.000
+        </a>
+      )}
+
       <footer style={{ background: '#2C2218', padding: '40px 80px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white', flexWrap: 'wrap', gap: '16px' }}>
         <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', letterSpacing: '2px' }}>NIKAH RAPI ✦</div>
         <div style={{ fontSize: '12px', opacity: 0.7 }}>© 2025 NIKAH RAPI · Untuk Ibu & Keluarga Indonesia 🤍</div>
