@@ -5,8 +5,6 @@ import { useAuth } from './hooks/useAuth'
 import Layout from './components/layout/Layout'
 import WhatsAppButton from './components/WhatsAppButton'
 import ErrorBoundary from './components/ErrorBoundary'
-import NikahRapiLanding from './pages/landing/NikahRapiLanding'
-
 // Lazy load pages for code splitting
 const Login = lazy(() => import('./pages/Login'))
 const OnBoarding = lazy(() => import('./pages/OnBoarding'))
@@ -31,6 +29,7 @@ const LandingMain = lazy(() => import('./pages/landing/LandingMain'))
 const LandingIbu = lazy(() => import('./pages/landing/LandingIbu'))
 const LandingPria = lazy(() => import('./pages/landing/LandingPria'))
 const LandingKarir = lazy(() => import('./pages/landing/LandingKarir'))
+const NikahRapiLanding = lazy(() => import('./pages/landing/NikahRapiLanding'))
 const Demo = lazy(() => import('./pages/Demo'))
 const FotoVideo = lazy(() => import('./pages/FotoVideo'))
 const CincinMahar = lazy(() => import('./pages/CincinMahar'))
