@@ -6,16 +6,6 @@ import Layout from './components/layout/Layout'
 import WhatsAppButton from './components/WhatsAppButton'
 import ErrorBoundary from './components/ErrorBoundary'
 
-// Preload LCP image untuk /v4 sebelum React render
-if (typeof window !== 'undefined' && window.location.pathname === '/v4') {
-  const link = document.createElement('link')
-  link.rel = 'preload'
-  link.as = 'image'
-  link.href = '/landing-assets/gambaran-produk-hp.webp'
-  link.fetchPriority = 'high'
-  document.head.appendChild(link)
-}
-
 // Lazy load pages for code splitting
 const Login = lazy(() => import('./pages/Login'))
 const OnBoarding = lazy(() => import('./pages/OnBoarding'))
