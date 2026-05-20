@@ -40,10 +40,14 @@ export default defineConfig({
     sourcemap: false,
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ["react", "react-dom", "react-router-dom"],
-          supabase: ["@supabase/supabase-js"],
-          charts: ["recharts", "chart.js", "react-chartjs-2"],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('@supabase')) return 'supabase';
+            if (id.includes('recharts') || id.includes('chart.js') || id.includes('react-chartjs-2')) return 'charts';
+            if (id.includes('sweetalert2')) return 'sweetalert2';
+            return 'vendor';
+          }
+          if (id.includes('LandingDemoPreview')) return 'demo-preview';
         },
       },
     },

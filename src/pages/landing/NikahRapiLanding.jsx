@@ -1,6 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function NikahRapiLanding() {
+    const [showSticky, setShowSticky] = useState(false);
+    const checkoutUrl = "https://checkout.nikahrapi.online/";
+
+    useEffect(() => {
+        if (window.fbq) {
+            window.fbq('track', 'ViewContent', {
+                content_name: 'Nikah Rapi Main Package',
+                content_category: 'Wedding Planner',
+                value: 99000,
+                currency: 'IDR'
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        const handleScroll = () => setShowSticky(window.scrollY > 300);
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     return (
         <>
             <style>
@@ -538,6 +558,9 @@ export default function NikahRapiLanding() {
                     <img
                         src="/landing-assets/gambaran-produk-hp.jpg"
                         alt="Gambaran Produk Nikah Rapi di HP"
+                        fetchPriority="high"
+                        loading="eager"
+                        decoding="sync"
                         style={{ width: '100%', height: 'auto', borderRadius: '16px', display: 'block' }}
                     />
 
@@ -610,9 +633,9 @@ export default function NikahRapiLanding() {
                 {/* ── HARGA ── */}
                 <div className="pricing">
                     <div className="pricing-title">Harga:</div>
-                    <div className="price-old">Rp 299.000</div>
+                    <div className="price-old">Rp 199.000</div>
                     <div className="price-now"><sup>Rp</sup>99.000</div>
-                    <div style={{ display: 'inline-block', background: '#D4756B', color: '#fff', fontSize: '12px', fontWeight: '800', padding: '4px 12px', borderRadius: '20px', marginTop: '6px', letterSpacing: '0.05em' }}>🔥 HEMAT 67%</div>
+                    <div style={{ display: 'inline-block', background: '#D4756B', color: '#fff', fontSize: '12px', fontWeight: '800', padding: '4px 12px', borderRadius: '20px', marginTop: '6px', letterSpacing: '0.05em' }}>🔥 HEMAT 50%</div>
                     <div className="price-note">Akses seumur hidup · Update gratis · Mulai hari ini</div>
 
                 </div>
@@ -654,7 +677,7 @@ export default function NikahRapiLanding() {
                     <div className="closing-sub">
                         👇 Klik tombol di bawah dan dapatkan akses sekarang
                     </div>
-                    <a href="https://checkout.nikahrapi.online/" className="cta-btn" onClick={() => window.fbq && window.fbq('track', 'InitiateCheckout')}>
+                    <a href={checkoutUrl} className="cta-btn" onClick={() => window.fbq && window.fbq('track', 'InitiateCheckout', { value: 99000, currency: 'IDR' })}>
                         💍 Dapatkan Nikah Rapi + Bonus Sekarang
                     </a>
                     <div className="safe">🛡️ Pembayaran aman via Scalev · Akses langsung setelah bayar</div>
@@ -662,6 +685,39 @@ export default function NikahRapiLanding() {
 
                 <div className="footer">Powered by 🔵 <strong>Scalev</strong> · © 2025 Nikah Rapi</div>
             </div>
+
+            {showSticky && (
+                <div style={{
+                    display: 'block',
+                    position: 'fixed',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    padding: '12px 16px',
+                    background: '#8B5045',
+                    zIndex: 999,
+                    boxShadow: '0 -4px 20px rgba(0,0,0,0.15)',
+                    boxSizing: 'border-box'
+                }}>
+                    <a
+                        href={checkoutUrl}
+                        onClick={() => window.fbq && window.fbq('track', 'InitiateCheckout', { value: 99000, currency: 'IDR' })}
+                        style={{
+                            display: 'block',
+                            textAlign: 'center',
+                            color: 'white',
+                            fontSize: '14px',
+                            fontWeight: '700',
+                            letterSpacing: '0.5px',
+                            textDecoration: 'none',
+                            padding: '14px',
+                            fontFamily: "'Plus Jakarta Sans', sans-serif"
+                        }}
+                    >
+                        💍 Dapatkan Sekarang — Rp 99.000
+                    </a>
+                </div>
+            )}
         </>
     );
 }

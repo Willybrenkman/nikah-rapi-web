@@ -1,27 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LandingNav from '../../components/landing/LandingNav';
-import LandingDemoPreview from '../../components/landing/LandingDemoPreview';
 import SEO from '../../components/SEO';
+
+const LandingDemoPreview = React.lazy(() => import('../../components/landing/LandingDemoPreview'));
 import './LandingMain.css';
 import './LandingPria.css';
 
 const LandingPria = () => {
   const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState(null);
+  const [showSticky, setShowSticky] = useState(false);
 
   const toggleFaq = (index) => setOpenFaq(openFaq === index ? null : index);
   const checkoutUrl = "https://checkout.nikahrapi.online/";
 
   useEffect(() => {
+    if (window.fbq) {
+      window.fbq('track', 'ViewContent', {
+        content_name: 'Nikah Rapi Pria Package',
+        content_category: 'Wedding Planner',
+        value: 99000,
+        currency: 'IDR'
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => setShowSticky(window.scrollY > 300);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
     const els = document.querySelectorAll('.reveal');
     els.forEach(el => observer.observe(el));
-    return () => els.forEach(el => observer.unobserve(el));
+    return () => observer.disconnect();
   }, []);
 
   const navLinks = [
@@ -87,7 +109,7 @@ const LandingPria = () => {
             <div className="preview-stage on">
               <picture>
                 <source srcSet="/landing-assets/dashboard.webp" type="image/webp" />
-                <img src="/landing-assets/dashboard-opt.png" alt="Dashboard NIKAH RAPI" width="665" height="346" fetchPriority="high" decoding="async" style={{ width: '100%', height: 'auto' }} />
+                <img src="/landing-assets/dashboard-opt.png" alt="Dashboard NIKAH RAPI" width="665" height="346" fetchPriority="high" loading="eager" decoding="sync" style={{ width: '100%', height: 'auto' }} />
               </picture>
             </div>
           </div>
@@ -96,21 +118,16 @@ const LandingPria = () => {
         <div className="hero-cta-block">
           <div className="price-display">
             <div className="price-new"><sup style={{fontSize:'22px'}}>Rp</sup>99.000</div>
-            <div className="price-old"><s>Rp 299.000</s></div>
-            <div className="price-save">HEMAT 67%</div>
+            <div className="price-old"><s>Rp 199.000</s></div>
+            <div className="price-save">HEMAT 50%</div>
           </div>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '20px' }}>
-            <a 
-              href={checkoutUrl} 
+            <a
+              href={checkoutUrl}
               className="btn-primary"
               onClick={() => {
                 if (window.fbq) {
-                  window.fbq('track', 'ViewContent', { 
-                    content_name: 'Nikah Rapi Pria Package', 
-                    content_category: 'Wedding Planner',
-                    value: 99000, 
-                    currency: 'IDR' 
-                  });
+                  window.fbq('track', 'InitiateCheckout', { value: 99000, currency: 'IDR' });
                 }
               }}
             >
@@ -195,7 +212,9 @@ const LandingPria = () => {
       </section>
 
       {/* ══ DEMO PREVIEW ══ */}
-      <LandingDemoPreview navigate={navigate} />
+      <Suspense fallback={<div style={{height:'400px'}}/>}>
+        <LandingDemoPreview navigate={navigate} />
+      </Suspense>
 
       {/* ══ DIFF ══ */}
       <section className="diff-section">
@@ -274,8 +293,8 @@ const LandingPria = () => {
         <div className="pricing-card reveal">
           <div className="pricing-card-badge">✦ Akses Premium Seumur Hidup</div>
           <div className="price-hero"><div className="price-big"><sup>Rp</sup>99.000</div></div>
-          <div className="price-was-p"><s>Rp 299.000</s></div>
-          <div className="price-save-badge">🔥 Hemat 67% — Harga Promo Terbatas!</div>
+          <div className="price-was-p"><s>Rp 199.000</s></div>
+          <div className="price-save-badge">🔥 Hemat 50% — Harga Promo Terbatas!</div>
           <ul className="include-list">
             <li>Aplikasi Web NIKAH RAPI — 22+ modul lengkap & terintegrasi</li>
             <li>Budget Planner otomatis — kontrol penuh atas keuangan nikah</li>
@@ -290,18 +309,13 @@ const LandingPria = () => {
             style={{ width: '100%', justifyContent: 'center', fontSize: '15px', padding: '22px' }}
             onClick={() => {
               if (window.fbq) {
-                window.fbq('track', 'ViewContent', { 
-                  content_name: 'Nikah Rapi Pria Package', 
-                  content_category: 'Wedding Planner',
-                  value: 99000, 
-                  currency: 'IDR' 
-                });
+                window.fbq('track', 'InitiateCheckout', { value: 99000, currency: 'IDR' });
               }
             }}
           >
             ⚡ Amankan Promo Sekarang — Rp 99.000
           </a>
-          <p className="urgency-note">⏰ Harga segera naik ke Rp 299.000 · Garansi 7 hari · Akses langsung via WA</p>
+          <p className="urgency-note">⏰ Harga naik ke Rp 199.000 setelah 10 slot terjual · Sisa X slot · Garansi 7 hari</p>
         </div>
       </section>
 
@@ -337,6 +351,21 @@ const LandingPria = () => {
       </section>
       
       </main>
+
+      {showSticky && (
+        <div className="sticky-cta-mobile">
+          <a
+            href={checkoutUrl}
+            className="sticky-cta-btn"
+            onClick={() => {
+              if (window.fbq) window.fbq('track', 'InitiateCheckout', { value: 99000, currency: 'IDR' });
+            }}
+          >
+            💍 Dapatkan Sekarang — Rp 99.000
+          </a>
+        </div>
+      )}
+
       <footer style={{ background: '#2C2218', padding: '40px 80px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white', flexWrap: 'wrap', gap: '16px' }}>
         <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', letterSpacing: '2px' }}>NIKAH RAPI ✦</div>
         <div style={{ fontSize: '12px', opacity: 0.7 }}>© 2025 NIKAH RAPI · Untuk Pria Terencana Indonesia 🤍</div>

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LandingNav from '../../components/landing/LandingNav';
-import LandingDemoPreview from '../../components/landing/LandingDemoPreview';
 import SEO from '../../components/SEO';
+
+const LandingDemoPreview = React.lazy(() => import('../../components/landing/LandingDemoPreview'));
 import './LandingMain.css';
 import './LandingIbu.css';
 
@@ -34,12 +35,15 @@ const LandingIbu = () => {
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
     const els = document.querySelectorAll('.reveal');
     els.forEach(el => observer.observe(el));
-    return () => els.forEach(el => observer.unobserve(el));
+    return () => observer.disconnect();
   }, []);
 
   const navLinks = [
@@ -191,7 +195,9 @@ const LandingIbu = () => {
       </section>
 
       {/* ══ DEMO PREVIEW ══ */}
-      <LandingDemoPreview navigate={navigate} />
+      <Suspense fallback={<div style={{height:'400px'}}/>}>
+        <LandingDemoPreview navigate={navigate} />
+      </Suspense>
 
       {/* ══ DIFF ══ */}
       <section className="diff-section">
