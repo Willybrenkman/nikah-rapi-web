@@ -22,25 +22,26 @@ export default function RekapAkhir() {
     const fetchData = async () => {
         setLoading(true)
         try {
-            const [budgetRes, tamuRes, vendorRes, sesRes, angpaoRes, checkRes] = await Promise.all([
+            const [budgetRes, tamuSummaryRes, vendorSummaryRes, sesRes, angpaoRes, checkRes] = await Promise.all([
                 supabase.from('budget_items').select('id,kategori,jumlah_estimasi,jumlah_aktual').eq('wedding_id', wedding.id),
-                supabase.from('tamu_undangan').select('status_rsvp').eq('wedding_id', wedding.id),
-                supabase.from('vendors').select('id').eq('wedding_id', wedding.id),
+                supabase.rpc('get_guest_summary', { p_wedding_id: wedding.id }),
+                supabase.rpc('get_vendor_summary', { p_wedding_id: wedding.id }),
                 supabase.from('seserahan_items').select('id').eq('wedding_id', wedding.id),
                 supabase.from('kado_angpao').select('nominal,jenis').eq('wedding_id', wedding.id),
                 supabase.from('checklist_items').select('is_done').eq('wedding_id', wedding.id),
             ])
             const items = budgetRes.data || []
-            const tamu = tamuRes.data || []
+            const tamuSummary = tamuSummaryRes.data || { total_tamu: 0, total_hadir: 0 }
+            const vendorSummary = vendorSummaryRes.data || { total_vendor: 0 }
             const angpao = angpaoRes.data || []
             const checks = checkRes.data || []
             setBudgetItems(items)
             setStats({
                 totalBudget: wedding.total_budget || 0,
                 usedBudget: items.reduce((a, i) => a + (i.jumlah_aktual || 0), 0),
-                totalTamu: tamu.length,
-                tamuHadir: tamu.filter(t => t.status_rsvp === 'hadir').length,
-                totalVendor: (vendorRes.data || []).length,
+                totalTamu: tamuSummary.total_tamu,
+                tamuHadir: tamuSummary.total_hadir,
+                totalVendor: vendorSummary.total_vendor,
                 totalSeserahan: (sesRes.data || []).length,
                 totalAngpao: angpao.filter(a => a.jenis === 'Angpao' || a.jenis === 'Keduanya').reduce((a, i) => a + (i.nominal || 0), 0),
                 angpaoPemberi: angpao.length,
