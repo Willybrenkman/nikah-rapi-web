@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LandingNav from '../../components/landing/LandingNav';
 import SEO from '../../components/SEO';
@@ -9,6 +9,17 @@ const LandingGlobal = () => {
   const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState(null);
   const toggleFaq = (i) => setOpenFaq(openFaq === i ? null : i);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+    const els = document.querySelectorAll('.reveal');
+    els.forEach(el => observer.observe(el));
+    return () => els.forEach(el => observer.unobserve(el));
+  }, []);
   const checkoutUrl = 'https://checkout.nikahrapi.online/global';
 
   const navLinks = [
