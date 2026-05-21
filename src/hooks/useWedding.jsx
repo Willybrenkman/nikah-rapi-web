@@ -1,6 +1,5 @@
 // src/hooks/useWedding.jsx
 import { useState, useEffect, useCallback, useRef, createContext, useContext } from 'react'
-import { supabase } from '../lib/supabase'
 import { useAuth } from './useAuth'
 
 const WeddingContext = createContext(null)
@@ -71,6 +70,7 @@ export function WeddingProvider({ children }) {
     setError(null)
 
     try {
+      const { supabase } = await import('../lib/supabase')
       const { data, error: fetchError } = await supabase
         .from('wedding_profiles')
         .select('*')

@@ -1,6 +1,12 @@
 {
   "headers": [
     {
+      "source": "/untuk-ibu",
+      "headers": [
+        { "key": "Link", "value": "</landing-assets/dashboard.webp>; rel=preload; as=image; fetchpriority=high" }
+      ]
+    },
+    {
       "source": "/v4",
       "headers": [
         { "key": "Link", "value": "</landing-assets/gambaran-produk-hp-480.webp>; rel=preload; as=image; fetchpriority=high" }
