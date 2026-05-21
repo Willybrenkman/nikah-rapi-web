@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const LandingNav = ({ links }) => {
+const LandingNav = ({ links, ctaText, ctaUrl }) => {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
-  const checkoutUrl = "https://checkout.nikahrapi.online/";
+  const checkoutUrl = ctaUrl || "https://checkout.nikahrapi.online/";
 
   const defaultLinks = [
     { label: 'Fitur', href: '#fitur' },
@@ -65,7 +65,7 @@ const LandingNav = ({ links }) => {
             href={checkoutUrl}
             className="bg-[#8B5E6A] hover:bg-[#5C3D2E] text-white px-5 py-2 rounded-lg text-sm font-bold transition-all shadow-md shadow-[#8B5E6A]/20"
           >
-            Mulai Sekarang
+            {ctaText || 'Mulai Sekarang'}
           </a>
         </div>
       </div>

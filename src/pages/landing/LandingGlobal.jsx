@@ -37,7 +37,7 @@ const LandingGlobal = () => {
         path="/global"
         keywords="muslim wedding planner, wedding app malaysia, wedding organizer singapore, nikah planner, hantaran tracker, wedding budget malaysia"
       />
-      <LandingNav links={navLinks} />
+      <LandingNav links={navLinks} ctaText="Get Started" ctaUrl={checkoutUrl} />
       <main className="landing-page">
 
         {/* ══ HERO ══ */}
