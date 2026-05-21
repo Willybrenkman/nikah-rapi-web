@@ -109,7 +109,7 @@ const LandingGlobal = () => {
               >
                 💍 Get Nikah Rapi Now →
               </a>
-              <button onClick={() => navigate('/demo')} className="btn-secondary">
+              <button onClick={() => navigate('/demo?lang=en')} className="btn-secondary">
                 👁️ See the App
               </button>
             </div>
