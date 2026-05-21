@@ -31,6 +31,12 @@ const LandingIbu = lazy(() => import('./pages/landing/LandingIbu'))
 const LandingPria = lazy(() => import('./pages/landing/LandingPria'))
 const LandingKarir = lazy(() => import('./pages/landing/LandingKarir'))
 const NikahRapiLanding = lazy(() => import('./pages/landing/NikahRapiLanding'))
+
+// Kick off chunk download immediately for /v4 visitors — paralel dengan React init
+if (window.location.pathname === '/v4') {
+  import('./pages/landing/NikahRapiLanding')
+}
+
 const Demo = lazy(() => import('./pages/Demo'))
 const FotoVideo = lazy(() => import('./pages/FotoVideo'))
 const CincinMahar = lazy(() => import('./pages/CincinMahar'))
