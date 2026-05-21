@@ -7,6 +7,12 @@
       ]
     },
     {
+      "source": "/global",
+      "headers": [
+        { "key": "Link", "value": "</landing-assets/dashboard.webp>; rel=preload; as=image; fetchpriority=high" }
+      ]
+    },
+    {
       "source": "/untuk-ibu",
       "headers": [
         { "key": "Link", "value": "</landing-assets/dashboard.webp>; rel=preload; as=image; fetchpriority=high" }

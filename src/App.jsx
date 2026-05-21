@@ -30,6 +30,7 @@ const LandingMain = lazy(() => import('./pages/landing/LandingMain'))
 const LandingIbu = lazy(() => import('./pages/landing/LandingIbu'))
 const LandingPria = lazy(() => import('./pages/landing/LandingPria'))
 const LandingKarir = lazy(() => import('./pages/landing/LandingKarir'))
+const LandingGlobal = lazy(() => import('./pages/landing/LandingGlobal'))
 const NikahRapiLanding = lazy(() => import('./pages/landing/NikahRapiLanding'))
 
 // Kick off chunk download immediately for /v4 visitors — paralel dengan React init
@@ -123,6 +124,7 @@ export default function App() {
             <Route path="/untuk-pria" element={<LandingPria />} />
             <Route path="/untuk-karir" element={<LandingKarir />} />
             <Route path="/v4" element={<NikahRapiLanding />} />
+            <Route path="/global" element={<LandingGlobal />} />
             <Route path="/demo" element={<Demo />} />
             <Route path="/login" element={<Login />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
