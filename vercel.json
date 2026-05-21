@@ -1,7 +1,25 @@
 {
   "headers": [
     {
+      "source": "/",
+      "headers": [
+        { "key": "Link", "value": "</landing-assets/dashboard.webp>; rel=preload; as=image; fetchpriority=high" }
+      ]
+    },
+    {
       "source": "/untuk-ibu",
+      "headers": [
+        { "key": "Link", "value": "</landing-assets/dashboard.webp>; rel=preload; as=image; fetchpriority=high" }
+      ]
+    },
+    {
+      "source": "/untuk-pria",
+      "headers": [
+        { "key": "Link", "value": "</landing-assets/dashboard.webp>; rel=preload; as=image; fetchpriority=high" }
+      ]
+    },
+    {
+      "source": "/untuk-karir",
       "headers": [
         { "key": "Link", "value": "</landing-assets/dashboard.webp>; rel=preload; as=image; fetchpriority=high" }
       ]
