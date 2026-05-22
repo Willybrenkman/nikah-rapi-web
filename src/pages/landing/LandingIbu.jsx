@@ -99,11 +99,11 @@ const LandingIbu = () => {
               className="btn-primary"
               onClick={() => {
                 if (window.fbq) {
-                  window.fbq('track', 'ViewContent', { 
-                    content_name: 'Nikah Rapi Ibu Package', 
+                  window.fbq('track', 'InitiateCheckout', {
+                    content_name: 'Nikah Rapi Ibu Package',
                     content_category: 'Wedding Planner',
-                    value: 99000, 
-                    currency: 'IDR' 
+                    value: 99000,
+                    currency: 'IDR'
                   });
                 }
               }}
@@ -255,11 +255,11 @@ const LandingIbu = () => {
             style={{ width: '100%', justifyContent: 'center', fontSize: '15px', padding: '22px' }}
             onClick={() => {
               if (window.fbq) {
-                window.fbq('track', 'ViewContent', { 
-                  content_name: 'Nikah Rapi Ibu Package', 
+                window.fbq('track', 'InitiateCheckout', {
+                  content_name: 'Nikah Rapi Ibu Package',
                   content_category: 'Wedding Planner',
-                  value: 99000, 
-                  currency: 'IDR' 
+                  value: 99000,
+                  currency: 'IDR'
                 });
               }
             }}
