@@ -195,6 +195,14 @@ export default function Login() {
                             Belum punya akun? Hubungi CS kami setelah pembelian
                             <br />untuk mendapatkan akses login.
                         </p>
+                        <a
+                            href="https://wa.me/6289627314790"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 12, padding: '11px 0', background: 'transparent', border: '1.5px solid #F0E6DF', borderRadius: 10, fontSize: 13, color: '#9B8070', textDecoration: 'none', fontFamily: "'DM Sans',sans-serif", fontWeight: 500 }}
+                        >
+                            💬 Hubungi Admin
+                        </a>
                     </form>
                 ) : (
                     <form onSubmit={handleForgotPassword}>
