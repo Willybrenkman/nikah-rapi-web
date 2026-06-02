@@ -42,7 +42,7 @@ const LandingMain = () => {
     <div className="landing-container" style={{ paddingTop: '70px' }}>
       <SEO
         title="NIKAH RAPI — Wedding Planner Digital #1 Indonesia | Budget, Vendor, Seserahan"
-        description="Atur semua persiapan pernikahan di 1 Web App. Budget planner otomatis, seserahan tracker, vendor manager, kado & angpao tracker. 22+ modul terintegrasi. Rp 99.000 akses seumur hidup."
+        description="Atur semua persiapan pernikahan di 1 Web App. Budget planner otomatis, seserahan tracker, vendor manager, kado & angpao tracker. 22+ modul terintegrasi. Rp 129.000 akses seumur hidup."
         path="/"
         keywords="wedding planner indonesia, persiapan nikah, budget pernikahan, seserahan tracker, vendor pernikahan, aplikasi nikah, wedding organizer digital"
       />
@@ -107,8 +107,8 @@ const LandingMain = () => {
 
         <div className="hero-cta-block">
           <div className="price-display">
-            <div className="price-new"><sup style={{ fontSize: '22px' }}>Rp</sup>99.000</div>
-            <div className="price-old"><s>Rp 299.000</s></div>
+            <div className="price-new"><sup style={{ fontSize: '22px' }}>Rp</sup>129.000</div>
+            <div className="price-old"><s>Rp 2129.000</s></div>
             <div className="price-save">HEMAT 67%</div>
           </div>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '20px' }}>
@@ -322,9 +322,9 @@ const LandingMain = () => {
         <div className="pricing-card reveal">
           <div className="pricing-card-badge">✦ Akses Premium Seumur Hidup</div>
           <div className="price-hero">
-            <div className="price-big"><sup>Rp</sup>99.000</div>
+            <div className="price-big"><sup>Rp</sup>129.000</div>
           </div>
-          <div className="price-was-p"><s>Rp 299.000</s></div>
+          <div className="price-was-p"><s>Rp 2129.000</s></div>
           <div className="price-save-badge">🔥 Hemat 67% — Harga Promo Terbatas!</div>
           <ul className="include-list">
             <li>Aplikasi Web NIKAH RAPI — 22+ modul lengkap & terintegrasi</li>
@@ -339,7 +339,7 @@ const LandingMain = () => {
             className="btn-primary"
             style={{ width: '100%', justifyContent: 'center', fontSize: '15px', padding: '22px' }}
           >
-            💍 Ya, Saya Mau Nikah dengan Tenang — Rp 99.000
+            💍 Ya, Saya Mau Nikah dengan Tenang — Rp 129.000
           </a>
           <p className="urgency-note">⏰ Harga promo segera berakhir · Garansi 7 hari uang kembali · Akses instan via WA</p>
         </div>
