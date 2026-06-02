@@ -6,8 +6,8 @@ import { useLocation } from 'react-router-dom';
 export default function WhatsAppButton() {
   const location = useLocation();
   
-  // Hanya tampil di dalam dashboard
-  if (!location.pathname.startsWith('/dashboard')) {
+  // Hanya tampil di landing page utama
+  if (location.pathname !== '/') {
     return null;
   }
 
