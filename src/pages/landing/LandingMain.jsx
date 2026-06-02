@@ -10,7 +10,7 @@ const LandingMain = () => {
   const [openFaq, setOpenFaq] = useState(null);
   const videoRef = useRef(null);
 
-  const checkoutUrl = "https://checkout.nikahrapi.online/";
+  const checkoutUrl = "https://rapidigital.myscalev.com/nikah-rapi-checkout";
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
