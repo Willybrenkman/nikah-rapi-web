@@ -7,36 +7,6 @@
       ]
     },
     {
-      "source": "/global",
-      "headers": [
-        { "key": "Link", "value": "</landing-assets/dashboard.webp>; rel=preload; as=image; fetchpriority=high" }
-      ]
-    },
-    {
-      "source": "/untuk-ibu",
-      "headers": [
-        { "key": "Link", "value": "</landing-assets/dashboard.webp>; rel=preload; as=image; fetchpriority=high" }
-      ]
-    },
-    {
-      "source": "/untuk-pria",
-      "headers": [
-        { "key": "Link", "value": "</landing-assets/dashboard.webp>; rel=preload; as=image; fetchpriority=high" }
-      ]
-    },
-    {
-      "source": "/untuk-karir",
-      "headers": [
-        { "key": "Link", "value": "</landing-assets/dashboard.webp>; rel=preload; as=image; fetchpriority=high" }
-      ]
-    },
-    {
-      "source": "/v4",
-      "headers": [
-        { "key": "Link", "value": "</landing-assets/gambaran-produk-hp-480.webp>; rel=preload; as=image; fetchpriority=high" }
-      ]
-    },
-    {
       "source": "/landing-assets/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }

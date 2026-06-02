@@ -378,7 +378,7 @@ const Demo = () => {
             <div className="flex items-center gap-4">
               <span className="text-[10px] bg-rose-gold/20 text-rose-gold px-3 py-1 rounded-full font-bold border border-rose-gold/30 hidden lg:block">PREVIEW MODE</span>
               <button
-                onClick={() => navigate(lang === 'en' ? '/global' : '/')}
+                onClick={() => navigate('/')}
                 className="flex items-center justify-center text-brown-muted hover:text-rose-gold transition-colors border border-border w-9 h-9 md:w-auto md:h-auto md:px-3 md:py-1.5 rounded-full md:rounded-lg"
               >
                 <span className="hidden md:inline text-xs font-bold">{T.topbar.back}</span>

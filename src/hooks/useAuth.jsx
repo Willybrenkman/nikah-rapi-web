@@ -40,7 +40,7 @@ export function AuthProvider({ children }) {
     const initAuth = async () => {
       try {
         // PERF: Don't load Supabase eagerly on landing pages if not logged in
-        const isLandingPage = ['/', '/untuk-ibu', '/untuk-pria', '/untuk-karir', '/v4', '/global', '/demo'].includes(window.location.pathname)
+        const isLandingPage = ['/', '/demo'].includes(window.location.pathname)
         if (isLandingPage && !cached.user) {
           if (mounted && !initializedRef.current) {
             setLoading(false)

@@ -27,16 +27,6 @@ const MUABusana = lazy(() => import('./pages/MUABusana'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
 const ResetPassword = lazy(() => import('./pages/ResetPassword'))
 const LandingMain = lazy(() => import('./pages/landing/LandingMain'))
-const LandingIbu = lazy(() => import('./pages/landing/LandingIbu'))
-const LandingPria = lazy(() => import('./pages/landing/LandingPria'))
-const LandingKarir = lazy(() => import('./pages/landing/LandingKarir'))
-const LandingGlobal = lazy(() => import('./pages/landing/LandingGlobal'))
-const NikahRapiLanding = lazy(() => import('./pages/landing/NikahRapiLanding'))
-
-// Kick off chunk download immediately for /v4 visitors — paralel dengan React init
-if (window.location.pathname === '/v4') {
-  import('./pages/landing/NikahRapiLanding')
-}
 
 const Demo = lazy(() => import('./pages/Demo'))
 const FotoVideo = lazy(() => import('./pages/FotoVideo'))
@@ -120,11 +110,6 @@ export default function App() {
           <Routes>
             {/* ── Public ── */}
             <Route path="/" element={<LandingMain />} />
-            <Route path="/untuk-ibu" element={<LandingIbu />} />
-            <Route path="/untuk-pria" element={<LandingPria />} />
-            <Route path="/untuk-karir" element={<LandingKarir />} />
-            <Route path="/v4" element={<NikahRapiLanding />} />
-            <Route path="/global" element={<LandingGlobal />} />
             <Route path="/demo" element={<Demo />} />
             <Route path="/login" element={<Login />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
