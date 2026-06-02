@@ -51,24 +51,24 @@ const LandingMain = () => {
 
       {/* ══ HERO ══ */}
       <section className="hero">
-        <div className="badge">✦ Wedding Planner Khusus Pernikahan Indonesia</div>
-        <p className="hero-eyebrow">Untuk kamu yang mau menikah dengan tenang, terorganisir, dan tetap hemat</p>
+        <div className="badge">✦ Satu-satunya Wedding Planner dengan Seserahan & Angpao Tracker</div>
+        <p className="hero-eyebrow">Mau nikah tapi pusing urus ratusan hal sekaligus?</p>
         <h1 className="hero-title">
-          Atur Semua Persiapan Nikahmu di <em>1 Web App</em><br />
-          — Dari Budget Sampai Seserahan
+          Pernikahanmu Terlalu Penting<br />
+          untuk Dikelola dari <em>Grup WA & Spreadsheet</em>
         </h1>
         <p className="hero-hook">
-          "Stop pakai 5 spreadsheet berbeda yang bikin pusing.<br />
-          NIKAH RAPI rapikan budget, vendor, tamu, seserahan, dan angpao kamu — semua di 1 dashboard."
+          "Budget bocor tanpa sadar. Seserahan ada yang ketinggalan. Vendor susah dihubungi.<br />
+          NIKAH RAPI hadir supaya hari terbaikmu benar-benar terasa seperti hari terbaik — bukan hari paling chaos."
         </p>
         <p className="hero-title-sub">
-          22 modul terintegrasi · Otomatis kalkulasi · Bisa diakses berdua dengan pasangan
+          22 modul terintegrasi · Kalkulasi otomatis · Akses berdua dari mana saja
         </p>
         <div className="drama-tags">
-          <span className="drama-tag">😰 Budget Bocor</span>
-          <span className="drama-tag">📋 Seserahan Kacau</span>
-          <span className="drama-tag">🏢 Vendor Susah Ditrack</span>
-          <span className="drama-tag">🎁 Angpao Hilang Data</span>
+          <span className="drama-tag">😰 Budget Bocor Tanpa Sadar</span>
+          <span className="drama-tag">📋 Seserahan Ketinggalan</span>
+          <span className="drama-tag">🏢 Vendor Tiba-tiba Ghosting</span>
+          <span className="drama-tag">🎁 Data Angpao Hilang</span>
         </div>
 
         <div className="product-showcase">
@@ -112,24 +112,24 @@ const LandingMain = () => {
             <div className="price-save">HEMAT 67%</div>
           </div>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '20px' }}>
-            <a 
-              href={checkoutUrl} 
+            <a
+              href={checkoutUrl}
               className="btn-primary"
               onClick={() => {
                 if (window.fbq) {
-                  window.fbq('track', 'ViewContent', { 
-                    content_name: 'Nikah Rapi Main Package', 
+                  window.fbq('track', 'InitiateCheckout', {
+                    content_name: 'Nikah Rapi Main Package',
                     content_category: 'Wedding Planner',
-                    value: 99000, 
-                    currency: 'IDR' 
+                    value: 99000,
+                    currency: 'IDR'
                   });
                 }
               }}
             >
-              💍 Mulai Rapikan Pernikahanmu →
+              💍 Rapikan Pernikahanku Sekarang →
             </a>
             <button onClick={() => navigate('/demo')} className="btn-secondary">
-              👁️ Coba Demo Dulu (Gratis)
+              👁️ Lihat Demo Dulu (Gratis)
             </button>
           </div>
           <div className="cta-notes">
@@ -147,16 +147,16 @@ const LandingMain = () => {
             <div className="sp-avatar" style={{ background: 'linear-gradient(135deg,#A8B8AC,#7A8C7E)' }}>🍃</div>
           </div>
           <div className="stars">★★★★★</div>
-          <span>Dipercaya pasangan Indonesia</span>
+          <span>Dipercaya pasangan yang mau nikah tenang, bukan panik</span>
         </div>
       </section>
 
       {/* ══ VIDEO SECTION ══ */}
       <section className="video-section" id="cara-kerja">
-        <p className="section-eyebrow reveal">✨ Intip Dulu Sebelum Beli</p>
-        <h2 className="section-title reveal">Lihat <em>Cara Kerjanya</em></h2>
+        <p className="section-eyebrow reveal">✨ Sebelum Kamu Beli, Lihat Dulu</p>
+        <h2 className="section-title reveal">Semua Fitur dalam <em>Satu Dashboard</em></h2>
         <p className="video-sub reveal">
-          Tidak perlu download aplikasi apapun. Akses langsung via browser, data otomatis tersinkronisasi secara real-time.
+          Tidak perlu install apapun. Buka browser, login, langsung bisa. Data tersinkronisasi real-time — kamu isi di HP, pasanganmu lihat di laptop.
         </p>
         <div className="video-wrapper reveal">
           <div className="video-placeholder" ref={videoRef} onClick={loadVideo}>
@@ -197,16 +197,16 @@ const LandingMain = () => {
 
       {/* ══ DRAMA ══ */}
       <section className="drama-section">
-        <p className="section-eyebrow reveal">Cerita yang terlalu familiar...</p>
-        <h2 className="section-title reveal">Drama Menuju Pernikahan <br />yang <em>Bikin Capek Sebelum Hari H</em></h2>
+        <p className="section-eyebrow reveal">Jujur... ini yang biasanya terjadi</p>
+        <h2 className="section-title reveal">H-3 Bulan Menuju Nikah —<br /><em>Kok Malah Makin Panik?</em></h2>
         <div className="drama-grid">
           {[
-            { icon: '💰', title: 'Drama Budget Jebol', desc: 'Estimasi Rp 80jt, realisasi Rp 120jt. Pengeluaran kecil-kecil yang tidak tercatat akhirnya numpuk tanpa disadari.', scenario: '"Udah bayar DP katering, eh lupa dicatat. Sekarang gak tau sisa budget berapa."' },
-            { icon: '💍', title: 'Drama Seserahan Ketinggalan', desc: 'Daftar seserahan ditulis di kertas, notes HP, chat WA — tersebar mana-mana. Hari H ada barang yang ketinggalan.', scenario: '"Sampai di lokasi baru sadar parfum seserahan ketinggalan di rumah. Panik!"' },
-            { icon: '🏢', title: 'Drama Vendor Cabut', desc: 'Vendor cancel H-7, nomor susah dihubungi, kontrak tidak jelas. Semua info vendor tersebar di berbagai chat WA.', scenario: '"WO tiba-tiba bilang ada double booking. Kontraknya mana? Sudah bayar berapa?"' },
-            { icon: '💄', title: 'Drama MUA Double Booking', desc: 'MUA impian ternyata sudah di-booking orang lain di tanggal yang sama. Baru ketahuan 2 minggu sebelum hari H.', scenario: '"Udah fitting 3x, eh MUA-nya bilang double booking. Cari pengganti mendadak."' },
-            { icon: '🎁', title: 'Drama Kado & Angpao Kacau', desc: 'Siapa yang kasih kado apa? Amplop dari siapa? Mau kirim ucapan terima kasih tapi datanya tidak ada.', scenario: '"Mau WA ucapan terima kasih tapi lupa siapa yang kasih angpao berapa. Awkward."' },
-            { icon: '😫', title: 'Drama Tamu Overload', desc: 'Undangan 300 orang, kursi cuma 250. Konfirmasi hadir berantakan, catering kurang, meja tidak cukup.', scenario: '"Tamu yang konfirmasi hadir ternyata lebih dari kapasitas gedung. Chaos!"' }
+            { icon: '💰', title: 'Budget Bocor Tanpa Sadar', desc: 'Estimasi Rp 80jt, realisasi Rp 120jt. Pengeluaran kecil-kecil tidak pernah dicatat — sampai akhirnya kehabisan di saat yang paling tidak tepat.', scenario: '"DP katering sudah dibayar tapi lupa dicatat. Sekarang gak tau sisa budget berapa. Stres."' },
+            { icon: '💍', title: 'Seserahan Ada yang Ketinggalan', desc: 'Daftar di kertas. Beberapa di notes HP. Sebagian di chat WA. Sampai hari H baru sadar ada yang kurang.', scenario: '"Di lokasi baru sadar parfum seserahan ketinggalan di rumah. Semua orang udah tunggu."' },
+            { icon: '🏢', title: 'Vendor Tiba-tiba Ghosting', desc: 'Nomor vendor susah dihubungi mendadak. Info kontrak entah di chat WA yang mana. Sudah bayar berapa pun lupa.', scenario: '"WO bilang ada double booking H-7. Kontraknya mana? Berapa yang sudah dibayar? Chaos."' },
+            { icon: '💄', title: 'MUA Impian Double Booking', desc: 'Sudah fitting 3 kali, sudah cocok — tapi ternyata di-booking orang lain di tanggal yang sama. Ketahuan 2 minggu sebelum hari H.', scenario: '"Terpaksa cari MUA baru mendadak. Harganya 2x lipat karena mepet. Mau nangis."' },
+            { icon: '🎁', title: 'Data Angpao Hilang Semua', desc: 'Amplop dikumpul tapi tidak dicatat siapa dari siapa. Mau kirim ucapan terima kasih tapi datanya tidak ada sama sekali.', scenario: '"Mau WA terima kasih tapi tidak tahu siapa kasih berapa. Akhirnya gak jadi. Awkward banget."' },
+            { icon: '😫', title: 'Tamu Konfirmasi Overload', desc: 'Undangan 300 orang, kursi 250. RSVP tidak dikelola dengan baik — katering kurang, meja tidak cukup, tamu berdiri.', scenario: '"Tamu yang datang jauh lebih banyak dari yang konfirmasi. Makanan habis sebelum jam 2."' }
           ].map((item, i) => (
             <div key={i} className="drama-card reveal">
               <span className="drama-icon">{item.icon}</span>
@@ -216,18 +216,18 @@ const LandingMain = () => {
             </div>
           ))}
         </div>
-        <p className="drama-closer reveal">"Semua drama ini bisa dihindari — kalau semua tercatat di satu tempat yang benar."</p>
+        <p className="drama-closer reveal">"Semuanya nyata. Dan semuanya bisa dihindari — kalau ada satu tempat yang mencatat semuanya."</p>
       </section>
 
       {/* ══ SOLUTION ══ */}
       <section className="solution-section" id="fitur">
         <div className="solution-inner">
           <div className="solution-left">
-            <p className="section-eyebrow reveal" style={{ color: 'var(--blush)' }}>Solusi yang kamu butuhkan</p>
-            <h2 className="section-title reveal">Satu platform.<br />Semua drama<br />bisa dicegah.</h2>
+            <p className="section-eyebrow reveal" style={{ color: 'var(--blush)' }}>Solusinya sederhana</p>
+            <h2 className="section-title reveal">Satu tempat.<br />Semua tercatat.<br />Semua tenang.</h2>
             <p className="reveal">
-              NIKAH RAPI dirancang khusus untuk calon pengantin Indonesia — 22+ modul Web App terintegrasi yang saling terhubung otomatis. 
-              Input sekali, semua terupdate. Tersinkronisasi cloud, aman, dan bisa diakses berdua dari perangkat manapun.
+              NIKAH RAPI dirancang khusus untuk pernikahan Indonesia — 22+ modul yang saling terhubung otomatis.
+              Input sekali di mana saja, semua terupdate real-time. Kamu dan pasangan bisa akses bareng dari HP atau laptop, kapanpun.
             </p>
             <a href="#pricing" className="btn-secondary reveal" style={{ background: 'white', color: 'var(--mauve)', border: 'none' }}>Lihat Harga & Paket →</a>
           </div>
@@ -291,8 +291,8 @@ const LandingMain = () => {
 
       {/* ══ TESTIMONI ══ */}
       <section className="testi-section">
-        <p className="section-eyebrow reveal">Cerita Mereka</p>
-        <h2 className="section-title reveal">Sudah Membantu Calon Pengantin <em>Indonesia</em></h2>
+        <p className="section-eyebrow reveal">Kata Mereka</p>
+        <h2 className="section-title reveal">Dari yang Tadinya Panik —<br />Jadi <em>Tenang Sampai Hari H</em></h2>
         <div className="testi-photo-grid">
           {[
             { emoji: '🌸', bg: 'linear-gradient(135deg,#E8C4B8,#C4857A)', city: 'Jakarta', text: '"Seserahan Tracker-nya beneran game changer! Sebelumnya nyatat manual di kertas, ada yang ketinggalan terus. Sekarang tinggal ceklis, dan bisa di-akses suami juga."', name: 'Anisa R.', role: 'Calon Pengantin · Sept 2025' },
@@ -327,8 +327,8 @@ const LandingMain = () => {
 
       {/* ══ PRICING ══ */}
       <section className="pricing-section" id="pricing">
-        <p className="section-eyebrow reveal">Investasi terkecil untuk pernikahan terbaik</p>
-        <h2 className="section-title reveal">Dapatkan NIKAH RAPI Sekarang</h2>
+        <p className="section-eyebrow reveal">Lebih murah dari satu bouquet bunga</p>
+        <h2 className="section-title reveal">Satu Kali Bayar.<br />Tenang Sampai Hari H.</h2>
         <div className="pricing-card reveal">
           <div className="pricing-card-badge">✦ Akses Premium Seumur Hidup</div>
           <div className="price-hero">
@@ -344,24 +344,24 @@ const LandingMain = () => {
             <li>Update akses gratis seumur hidup</li>
             <li>Akses dari mana saja (HP, Tablet, Laptop)</li>
           </ul>
-          <a 
-            href={checkoutUrl} 
-            className="btn-primary" 
+          <a
+            href={checkoutUrl}
+            className="btn-primary"
             style={{ width: '100%', justifyContent: 'center', fontSize: '15px', padding: '22px' }}
             onClick={() => {
               if (window.fbq) {
-                window.fbq('track', 'ViewContent', { 
-                  content_name: 'Nikah Rapi Main Package', 
+                window.fbq('track', 'InitiateCheckout', {
+                  content_name: 'Nikah Rapi Main Package',
                   content_category: 'Wedding Planner',
-                  value: 99000, 
-                  currency: 'IDR' 
+                  value: 99000,
+                  currency: 'IDR'
                 });
               }
             }}
           >
-            💍 Dapatkan Sekarang — Rp 99.000
+            💍 Ya, Saya Mau Nikah dengan Tenang — Rp 99.000
           </a>
-          <p className="urgency-note">⏰ Harga segera naik ke Rp 299.000 · Garansi 7 hari · Akses langsung via WA</p>
+          <p className="urgency-note">⏰ Harga promo segera berakhir · Garansi 7 hari uang kembali · Akses instan via WA</p>
         </div>
       </section>
 
@@ -388,11 +388,11 @@ const LandingMain = () => {
 
       {/* ══ FINAL CTA ══ */}
       <section className="final-cta">
-        <p className="section-eyebrow reveal" style={{ color: 'var(--blush)' }}>Sudah siap?</p>
-        <h2 className="section-title reveal" style={{ color: 'white' }}>Mulai rencanakan pernikahanmu<br />dengan lebih <em style={{ color: '#E8D5B0' }}>tenang & rapi</em></h2>
-        <p className="reveal">Ratusan detail pernikahan dalam satu platform. Supaya hari terbaikmu benar-benar terasa seperti hari terbaik.</p>
+        <p className="section-eyebrow reveal" style={{ color: 'var(--blush)' }}>Hari H kamu cuma ada satu kali</p>
+        <h2 className="section-title reveal" style={{ color: 'white' }}>Jangan sampai dirusak hal-hal<br />yang seharusnya sudah <em style={{ color: '#E8D5B0' }}>terplan dari awal</em></h2>
+        <p className="reveal">Ratusan detail pernikahan dalam satu platform. Budget, vendor, seserahan, tamu, angpao — semua rapi. Supaya hari terbaikmu benar-benar terasa seperti hari terbaik.</p>
         <a href={checkoutUrl} className="btn-secondary reveal" style={{ margin: '0 auto', background: 'white', color: 'var(--mauve)', border: 'none' }}>
-          💍 Ambil Sekarang Sebelum Harga Naik
+          💍 Mulai Sekarang — Sebelum Harga Naik
         </a>
       </section>
 
