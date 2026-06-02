@@ -62,10 +62,10 @@ const LandingNav = ({ links, ctaText, ctaUrl }) => {
         {/* Actions */}
         <div className="flex items-center gap-4">
           <a
-            href={checkoutUrl}
+            href="/login"
             className="bg-[#8B5E6A] hover:bg-[#5C3D2E] text-white px-5 py-2 rounded-lg text-sm font-bold transition-all shadow-md shadow-[#8B5E6A]/20"
           >
-            {ctaText || 'Mulai Sekarang'}
+            {ctaText || 'Login'}
           </a>
         </div>
       </div>
