@@ -9,8 +9,6 @@
     <!-- Preconnect to critical third-party origins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://connect.facebook.net" />
-
     <!-- Google Fonts — non-blocking with display=swap -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" /></noscript>
@@ -31,32 +29,8 @@
     <meta property="twitter:title" content="Nikah Rapi - Solusi Cerdas Persiapan Pernikahan" />
     <meta property="twitter:description" content="Kelola budget, tamu, dan vendor pernikahanmu dengan lebih rapi dan profesional." />
 
-    <!-- Meta Pixel Code — deferred until idle -->
-    <script>
-    window.addEventListener('load', function() {
-      function initPixel() {
-        !function(f,b,e,v,n,t,s)
-        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window, document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '4326987370876034');
-        fbq('track', 'PageView');
-      }
-      'requestIdleCallback' in window
-        ? requestIdleCallback(initPixel, { timeout: 4000 })
-        : setTimeout(initPixel, 3500);
-    });
-    </script>
-    <!-- End Meta Pixel Code -->
   </head>
   <body>
-    <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=4326987370876034&ev=PageView&noscript=1"
-    /></noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

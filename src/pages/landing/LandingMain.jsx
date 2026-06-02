@@ -115,16 +115,6 @@ const LandingMain = () => {
             <a
               href={checkoutUrl}
               className="btn-primary"
-              onClick={() => {
-                if (window.fbq) {
-                  window.fbq('track', 'InitiateCheckout', {
-                    content_name: 'Nikah Rapi Main Package',
-                    content_category: 'Wedding Planner',
-                    value: 99000,
-                    currency: 'IDR'
-                  });
-                }
-              }}
             >
               💍 Rapikan Pernikahanku Sekarang →
             </a>
@@ -348,16 +338,6 @@ const LandingMain = () => {
             href={checkoutUrl}
             className="btn-primary"
             style={{ width: '100%', justifyContent: 'center', fontSize: '15px', padding: '22px' }}
-            onClick={() => {
-              if (window.fbq) {
-                window.fbq('track', 'InitiateCheckout', {
-                  content_name: 'Nikah Rapi Main Package',
-                  content_category: 'Wedding Planner',
-                  value: 99000,
-                  currency: 'IDR'
-                });
-              }
-            }}
           >
             💍 Ya, Saya Mau Nikah dengan Tenang — Rp 99.000
           </a>
